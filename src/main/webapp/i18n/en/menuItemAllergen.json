@@ -1,0 +1,26 @@
+{
+  "restaurantApp": {
+    "menuItemAllergen": {
+      "home": {
+        "title": "Menu Item Allergens",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Menu Item Allergen",
+        "createOrEditLabel": "Create or edit a Menu Item Allergen",
+        "notFound": "No Menu Item Allergens found"
+      },
+      "created": "A new Menu Item Allergen is created with identifier {{ param }}",
+      "updated": "A Menu Item Allergen is updated with identifier {{ param }}",
+      "deleted": "A Menu Item Allergen is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Menu Item Allergen {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Item Allergen"
+      },
+      "id": "ID",
+      "allergen": "Allergen",
+      "notes": "Notes",
+      "menuItem": "Menu Item"
+    }
+  }
+}

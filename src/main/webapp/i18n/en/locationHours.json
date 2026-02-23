@@ -1,0 +1,29 @@
+{
+  "restaurantApp": {
+    "locationHours": {
+      "home": {
+        "title": "Location Hours",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Location Hours",
+        "createOrEditLabel": "Create or edit a Location Hours",
+        "notFound": "No Location Hours found"
+      },
+      "created": "A new Location Hours is created with identifier {{ param }}",
+      "updated": "A Location Hours is updated with identifier {{ param }}",
+      "deleted": "A Location Hours is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Location Hours {{ id }}?"
+      },
+      "detail": {
+        "title": "Location Hours"
+      },
+      "id": "ID",
+      "dayOfWeek": "Day Of Week",
+      "openTime": "Open Time",
+      "closeTime": "Close Time",
+      "isClosed": "Is Closed",
+      "specialNote": "Special Note",
+      "location": "Location"
+    }
+  }
+}

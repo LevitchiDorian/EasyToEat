@@ -1,0 +1,40 @@
+{
+  "restaurantApp": {
+    "location": {
+      "home": {
+        "title": "Locations",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Location",
+        "createOrEditLabel": "Creeare sau editare Location",
+        "notFound": "No Locations found"
+      },
+      "created": "A fost creată o nouă entitate Location cu identificatorul {{ param }}",
+      "updated": "Location cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Location cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Location {{ id }}?"
+      },
+      "detail": {
+        "title": "Location"
+      },
+      "id": "ID",
+      "name": "Name",
+      "address": "Address",
+      "city": "City",
+      "phone": "Phone",
+      "email": "Email",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "reservationDurationOverride": "Reservation Duration Override",
+      "maxAdvanceBookingDaysOverride": "Max Advance Booking Days Override",
+      "cancellationDeadlineOverride": "Cancellation Deadline Override",
+      "isActive": "Is Active",
+      "createdAt": "Created At",
+      "hours": "Hours",
+      "rooms": "Rooms",
+      "localPromotions": "Local Promotions",
+      "menuOverrides": "Menu Overrides",
+      "brand": "Brand"
+    }
+  }
+}

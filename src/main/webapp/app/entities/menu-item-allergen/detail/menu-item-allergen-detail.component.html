@@ -1,0 +1,61 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (menuItemAllergen(); as menuItemAllergenRef) {
+      <div>
+        <h2 data-cy="menuItemAllergenDetailsHeading">
+          <span jhiTranslate="restaurantApp.menuItemAllergen.detail.title">Menu Item Allergen</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ menuItemAllergenRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemAllergen.allergen">Allergen</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.AllergenType.' + (menuItemAllergenRef.allergen ?? 'null')">{{
+              {
+                null: '',
+                GLUTEN: 'GLUTEN',
+                DAIRY: 'DAIRY',
+                EGGS: 'EGGS',
+                NUTS: 'NUTS',
+                PEANUTS: 'PEANUTS',
+                SOY: 'SOY',
+                FISH: 'FISH',
+                SHELLFISH: 'SHELLFISH',
+                SESAME: 'SESAME',
+              }[menuItemAllergenRef.allergen ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemAllergen.notes">Notes</span></dt>
+          <dd>
+            <span>{{ menuItemAllergenRef.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemAllergen.menuItem">Menu Item</span></dt>
+          <dd>
+            @if (menuItemAllergen()!.menuItem) {
+              <div>
+                <a [routerLink]="['/menu-item', menuItemAllergen()!.menuItem?.id, 'view']">{{ menuItemAllergenRef.menuItem?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/menu-item-allergen', menuItemAllergenRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

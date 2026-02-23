@@ -1,0 +1,28 @@
+@if (restaurantTable) {
+  <form name="deleteForm" (ngSubmit)="confirmDelete(restaurantTable.id!)">
+    <div class="modal-header">
+      <h4 class="modal-title" data-cy="restaurantTableDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
+    </div>
+
+    <div class="modal-body">
+      <jhi-alert-error />
+      <p
+        id="jhi-delete-restaurantTable-heading"
+        jhiTranslate="restaurantApp.restaurantTable.delete.question"
+        [translateValues]="{ id: restaurantTable.id }"
+      >
+        Are you sure you want to delete Restaurant Table {{ restaurantTable.id }}?
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
+        <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+      </button>
+
+      <button id="jhi-confirm-delete-restaurantTable" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger">
+        <fa-icon icon="times"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
+      </button>
+    </div>
+  </form>
+}

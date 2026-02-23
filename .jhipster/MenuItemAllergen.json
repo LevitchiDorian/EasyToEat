@@ -1,0 +1,35 @@
+{
+  "annotations": {
+    "changelogDate": "20260223152043"
+  },
+  "applications": ["restaurantApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "allergen",
+      "fieldType": "AllergenType",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "GLUTEN,DAIRY,EGGS,NUTS,PEANUTS,SOY,FISH,SHELLFISH,SESAME"
+    },
+    {
+      "fieldName": "notes",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    }
+  ],
+  "name": "MenuItemAllergen",
+  "relationships": [
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "menuItem",
+      "otherEntityRelationshipName": "allergens",
+      "relationshipName": "menuItem",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

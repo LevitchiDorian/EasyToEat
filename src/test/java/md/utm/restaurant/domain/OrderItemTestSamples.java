@@ -1,0 +1,29 @@
+package md.utm.restaurant.domain;
+
+import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
+public class OrderItemTestSamples {
+
+    private static final Random random = new Random();
+    private static final AtomicLong longCount = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+    private static final AtomicInteger intCount = new AtomicInteger(random.nextInt() + (2 * Short.MAX_VALUE));
+
+    public static OrderItem getOrderItemSample1() {
+        return new OrderItem().id(1L).quantity(1).specialInstructions("specialInstructions1").notes("notes1");
+    }
+
+    public static OrderItem getOrderItemSample2() {
+        return new OrderItem().id(2L).quantity(2).specialInstructions("specialInstructions2").notes("notes2");
+    }
+
+    public static OrderItem getOrderItemRandomSampleGenerator() {
+        return new OrderItem()
+            .id(longCount.incrementAndGet())
+            .quantity(intCount.incrementAndGet())
+            .specialInstructions(UUID.randomUUID().toString())
+            .notes(UUID.randomUUID().toString());
+    }
+}

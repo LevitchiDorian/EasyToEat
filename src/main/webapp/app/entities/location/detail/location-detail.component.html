@@ -1,0 +1,86 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (location(); as locationRef) {
+      <div>
+        <h2 data-cy="locationDetailsHeading"><span jhiTranslate="restaurantApp.location.detail.title">Location</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ locationRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.name">Name</span></dt>
+          <dd>
+            <span>{{ locationRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.address">Address</span></dt>
+          <dd>
+            <span>{{ locationRef.address }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.city">City</span></dt>
+          <dd>
+            <span>{{ locationRef.city }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.phone">Phone</span></dt>
+          <dd>
+            <span>{{ locationRef.phone }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.email">Email</span></dt>
+          <dd>
+            <span>{{ locationRef.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.latitude">Latitude</span></dt>
+          <dd>
+            <span>{{ locationRef.latitude }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.longitude">Longitude</span></dt>
+          <dd>
+            <span>{{ locationRef.longitude }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.reservationDurationOverride">Reservation Duration Override</span></dt>
+          <dd>
+            <span>{{ locationRef.reservationDurationOverride }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.maxAdvanceBookingDaysOverride">Max Advance Booking Days Override</span></dt>
+          <dd>
+            <span>{{ locationRef.maxAdvanceBookingDaysOverride }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.cancellationDeadlineOverride">Cancellation Deadline Override</span></dt>
+          <dd>
+            <span>{{ locationRef.cancellationDeadlineOverride }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.isActive">Is Active</span></dt>
+          <dd>
+            <span>{{ locationRef.isActive }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ locationRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.location.brand">Brand</span></dt>
+          <dd>
+            @if (location()!.brand) {
+              <div>
+                <a [routerLink]="['/brand', location()!.brand?.id, 'view']">{{ locationRef.brand?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/location', locationRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

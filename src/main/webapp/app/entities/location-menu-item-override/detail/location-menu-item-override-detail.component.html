@@ -1,0 +1,72 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (locationMenuItemOverride(); as locationMenuItemOverrideRef) {
+      <div>
+        <h2 data-cy="locationMenuItemOverrideDetailsHeading">
+          <span jhiTranslate="restaurantApp.locationMenuItemOverride.detail.title">Location Menu Item Override</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ locationMenuItemOverrideRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationMenuItemOverride.isAvailableAtLocation">Is Available At Location</span></dt>
+          <dd>
+            <span>{{ locationMenuItemOverrideRef.isAvailableAtLocation }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationMenuItemOverride.priceOverride">Price Override</span></dt>
+          <dd>
+            <span>{{ locationMenuItemOverrideRef.priceOverride }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationMenuItemOverride.preparationTimeOverride">Preparation Time Override</span></dt>
+          <dd>
+            <span>{{ locationMenuItemOverrideRef.preparationTimeOverride }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationMenuItemOverride.notes">Notes</span></dt>
+          <dd>
+            <span>{{ locationMenuItemOverrideRef.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationMenuItemOverride.menuItem">Menu Item</span></dt>
+          <dd>
+            @if (locationMenuItemOverride()!.menuItem) {
+              <div>
+                <a [routerLink]="['/menu-item', locationMenuItemOverride()!.menuItem?.id, 'view']">{{
+                  locationMenuItemOverrideRef.menuItem?.name
+                }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationMenuItemOverride.location">Location</span></dt>
+          <dd>
+            @if (locationMenuItemOverride()!.location) {
+              <div>
+                <a [routerLink]="['/location', locationMenuItemOverride()!.location?.id, 'view']">{{
+                  locationMenuItemOverrideRef.location?.name
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button
+          type="button"
+          [routerLink]="['/location-menu-item-override', locationMenuItemOverrideRef.id, 'edit']"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

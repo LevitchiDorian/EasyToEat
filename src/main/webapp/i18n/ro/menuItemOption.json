@@ -1,0 +1,29 @@
+{
+  "restaurantApp": {
+    "menuItemOption": {
+      "home": {
+        "title": "Menu Item Options",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Menu Item Option",
+        "createOrEditLabel": "Creeare sau editare Menu Item Option",
+        "notFound": "No Menu Item Options found"
+      },
+      "created": "A fost creată o nouă entitate Menu Item Option cu identificatorul {{ param }}",
+      "updated": "Menu Item Option cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Menu Item Option cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Menu Item Option {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Item Option"
+      },
+      "id": "ID",
+      "name": "Name",
+      "isRequired": "Is Required",
+      "maxSelections": "Max Selections",
+      "displayOrder": "Display Order",
+      "values": "Values",
+      "menuItem": "Menu Item"
+    }
+  }
+}

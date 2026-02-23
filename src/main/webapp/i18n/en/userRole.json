@@ -1,0 +1,10 @@
+{
+  "restaurantApp": {
+    "UserRole": {
+      "null": "",
+      "SUPER_ADMIN": "SUPER_ADMIN",
+      "MANAGER": "MANAGER",
+      "CLIENT": "CLIENT"
+    }
+  }
+}

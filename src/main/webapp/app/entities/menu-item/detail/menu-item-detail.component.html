@@ -1,0 +1,94 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (menuItem(); as menuItemRef) {
+      <div>
+        <h2 data-cy="menuItemDetailsHeading"><span jhiTranslate="restaurantApp.menuItem.detail.title">Menu Item</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ menuItemRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.name">Name</span></dt>
+          <dd>
+            <span>{{ menuItemRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.description">Description</span></dt>
+          <dd>
+            <span>{{ menuItemRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.price">Price</span></dt>
+          <dd>
+            <span>{{ menuItemRef.price }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.discountedPrice">Discounted Price</span></dt>
+          <dd>
+            <span>{{ menuItemRef.discountedPrice }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.preparationTimeMinutes">Preparation Time Minutes</span></dt>
+          <dd>
+            <span>{{ menuItemRef.preparationTimeMinutes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.calories">Calories</span></dt>
+          <dd>
+            <span>{{ menuItemRef.calories }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.imageUrl">Image Url</span></dt>
+          <dd>
+            <span>{{ menuItemRef.imageUrl }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.isAvailable">Is Available</span></dt>
+          <dd>
+            <span>{{ menuItemRef.isAvailable }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.isFeatured">Is Featured</span></dt>
+          <dd>
+            <span>{{ menuItemRef.isFeatured }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.isVegetarian">Is Vegetarian</span></dt>
+          <dd>
+            <span>{{ menuItemRef.isVegetarian }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.isVegan">Is Vegan</span></dt>
+          <dd>
+            <span>{{ menuItemRef.isVegan }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.isGlutenFree">Is Gluten Free</span></dt>
+          <dd>
+            <span>{{ menuItemRef.isGlutenFree }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.spicyLevel">Spicy Level</span></dt>
+          <dd>
+            <span>{{ menuItemRef.spicyLevel }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.displayOrder">Display Order</span></dt>
+          <dd>
+            <span>{{ menuItemRef.displayOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItem.category">Category</span></dt>
+          <dd>
+            @if (menuItem()!.category) {
+              <div>
+                <a [routerLink]="['/menu-category', menuItem()!.category?.id, 'view']">{{ menuItemRef.category?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/menu-item', menuItemRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,40 @@
+{
+  "restaurantApp": {
+    "location": {
+      "home": {
+        "title": "Locations",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Location",
+        "createOrEditLabel": "Create or edit a Location",
+        "notFound": "No Locations found"
+      },
+      "created": "A new Location is created with identifier {{ param }}",
+      "updated": "A Location is updated with identifier {{ param }}",
+      "deleted": "A Location is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Location {{ id }}?"
+      },
+      "detail": {
+        "title": "Location"
+      },
+      "id": "ID",
+      "name": "Name",
+      "address": "Address",
+      "city": "City",
+      "phone": "Phone",
+      "email": "Email",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "reservationDurationOverride": "Reservation Duration Override",
+      "maxAdvanceBookingDaysOverride": "Max Advance Booking Days Override",
+      "cancellationDeadlineOverride": "Cancellation Deadline Override",
+      "isActive": "Is Active",
+      "createdAt": "Created At",
+      "hours": "Hours",
+      "rooms": "Rooms",
+      "localPromotions": "Local Promotions",
+      "menuOverrides": "Menu Overrides",
+      "brand": "Brand"
+    }
+  }
+}

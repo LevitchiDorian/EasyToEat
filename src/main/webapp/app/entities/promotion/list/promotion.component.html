@@ -1,0 +1,213 @@
+<div>
+  <h2 id="page-heading" data-cy="PromotionHeading">
+    <span jhiTranslate="restaurantApp.promotion.home.title">Promotions</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.promotion.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-promotion"
+        [routerLink]="['/promotion/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.promotion.home.createLabel">Create a new Promotion</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (promotions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.promotion.home.notFound">No Promotions found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="code">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.code">Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.name">Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.description">Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discountType">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.discountType">Discount Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discountValue">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.discountValue">Discount Value</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="minimumOrderAmount">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.minimumOrderAmount">Minimum Order Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="maxUsageCount">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.maxUsageCount">Max Usage Count</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="currentUsageCount">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.currentUsageCount">Current Usage Count</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="startDate">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.startDate">Start Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="endDate">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.endDate">End Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isActive">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.isActive">Is Active</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="brand.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.brand">Brand</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="location.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.promotion.location">Location</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (promotion of promotions(); track trackId(promotion)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/promotion', promotion.id, 'view']">{{ promotion.id }}</a>
+              </td>
+              <td>{{ promotion.code }}</td>
+              <td>{{ promotion.name }}</td>
+              <td>{{ promotion.description }}</td>
+              <td [jhiTranslate]="'restaurantApp.DiscountType.' + (promotion.discountType ?? 'null')">
+                {{ { null: '', PERCENTAGE: 'PERCENTAGE', FIXED_AMOUNT: 'FIXED_AMOUNT' }[promotion.discountType ?? 'null'] }}
+              </td>
+              <td>{{ promotion.discountValue }}</td>
+              <td>{{ promotion.minimumOrderAmount }}</td>
+              <td>{{ promotion.maxUsageCount }}</td>
+              <td>{{ promotion.currentUsageCount }}</td>
+              <td>{{ promotion.startDate | formatMediumDate }}</td>
+              <td>{{ promotion.endDate | formatMediumDate }}</td>
+              <td>{{ promotion.isActive }}</td>
+              <td>
+                @if (promotion.brand) {
+                  <div>
+                    <a [routerLink]="['/brand', promotion.brand.id, 'view']">{{ promotion.brand.name }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (promotion.location) {
+                  <div>
+                    <a [routerLink]="['/location', promotion.location.id, 'view']">{{ promotion.location.name }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/promotion', promotion.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/promotion', promotion.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(promotion)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (promotions().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,11 @@
+id;name;address;city;phone;email;latitude;longitude;reservation_duration_override;max_advance_booking_days_override;cancellation_deadline_override;is_active;created_at;brand_id
+1;meh strict;quixotic quizzically;Mercedescester;1-256-854-0391;Richie.Koss@gmail.com;30216.54;23537.72;480;44;43;true;2026-02-23T03:31:23;1
+2;colorfully hierarchy;dwell;New Jeanette;1-877-781-7551 x4829;Elvera47@hotmail.com;15768.94;26765.72;299;215;42;true;2026-02-22T15:40:21;2
+3;bashfully;drat institute;Lakeville;475-246-2953 x03785;Vivien40@yahoo.com;20557.05;18618.97;256;60;61;false;2026-02-23T00:08:14;3
+4;anxiously;ah enrage;Robinberg;1-724-943-0258 x389;Abbie25@hotmail.com;19021.62;29821.75;282;19;63;false;2026-02-22T19:54:46;4
+5;silently about considering;rough why;Goyettemouth;1-290-788-0002;Gina83@yahoo.com;7512.31;19124.43;48;202;10;false;2026-02-23T05:19:17;5
+6;minus;under provider apropos;Port Litzycester;929.648.2351 x1409;Patience_Emard@hotmail.com;17278.07;20790.45;65;250;72;false;2026-02-22T21:35:06;6
+7;majestic cruelly;incidentally;East Aishabury;325-591-6867 x94164;Terence_Kirlin52@hotmail.com;9426.34;10010.92;401;140;30;false;2026-02-23T07:37:13;7
+8;mid ack;as;Folsom;347.821.6076 x74625;Otis88@yahoo.com;31287.47;18759.04;122;294;28;false;2026-02-22T23:43:55;8
+9;gleaming consequently supposing;trust;Lake Alyssontown;437.756.5555 x6272;Kaleigh2@gmail.com;2665.9;23350.8;133;194;10;true;2026-02-22T19:56:53;9
+10;gosh now;famously;Port Dimitri;943.957.2297 x174;Frances_OReilly15@gmail.com;2238.35;20792.99;145;12;39;true;2026-02-23T12:23:21;10

@@ -1,0 +1,33 @@
+{
+  "restaurantApp": {
+    "waitingList": {
+      "home": {
+        "title": "Waiting Lists",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Waiting List",
+        "createOrEditLabel": "Create or edit a Waiting List",
+        "notFound": "No Waiting Lists found"
+      },
+      "created": "A new Waiting List is created with identifier {{ param }}",
+      "updated": "A Waiting List is updated with identifier {{ param }}",
+      "deleted": "A Waiting List is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Waiting List {{ id }}?"
+      },
+      "detail": {
+        "title": "Waiting List"
+      },
+      "id": "ID",
+      "requestedDate": "Requested Date",
+      "requestedTime": "Requested Time",
+      "partySize": "Party Size",
+      "notes": "Notes",
+      "isNotified": "Is Notified",
+      "expiresAt": "Expires At",
+      "createdAt": "Created At",
+      "location": "Location",
+      "client": "Client",
+      "room": "Room"
+    }
+  }
+}

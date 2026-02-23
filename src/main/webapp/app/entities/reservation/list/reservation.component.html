@@ -1,0 +1,270 @@
+<div>
+  <h2 id="page-heading" data-cy="ReservationHeading">
+    <span jhiTranslate="restaurantApp.reservation.home.title">Reservations</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.reservation.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-reservation"
+        [routerLink]="['/reservation/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.reservation.home.createLabel">Create a new Reservation</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (reservations().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.reservation.home.notFound">No Reservations found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reservationCode">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.reservationCode">Reservation Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reservationDate">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.reservationDate">Reservation Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="startTime">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.startTime">Start Time</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="endTime">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.endTime">End Time</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="partySize">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.partySize">Party Size</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="specialRequests">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.specialRequests">Special Requests</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="internalNotes">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.internalNotes">Internal Notes</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reminderSentAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.reminderSentAt">Reminder Sent At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="confirmedAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.confirmedAt">Confirmed At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cancelledAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.cancelledAt">Cancelled At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cancellationReason">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.cancellationReason">Cancellation Reason</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updatedAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.updatedAt">Updated At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="location.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.location">Location</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="client.login">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.client">Client</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="room.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.reservation.room">Room</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reservation of reservations(); track trackId(reservation)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/reservation', reservation.id, 'view']">{{ reservation.id }}</a>
+              </td>
+              <td>{{ reservation.reservationCode }}</td>
+              <td>{{ reservation.reservationDate | formatMediumDate }}</td>
+              <td>{{ reservation.startTime }}</td>
+              <td>{{ reservation.endTime }}</td>
+              <td>{{ reservation.partySize }}</td>
+              <td [jhiTranslate]="'restaurantApp.ReservationStatus.' + (reservation.status ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    PENDING: 'PENDING',
+                    CONFIRMED: 'CONFIRMED',
+                    CANCELLED: 'CANCELLED',
+                    COMPLETED: 'COMPLETED',
+                    NO_SHOW: 'NO_SHOW',
+                  }[reservation.status ?? 'null']
+                }}
+              </td>
+              <td>{{ reservation.specialRequests }}</td>
+              <td>{{ reservation.internalNotes }}</td>
+              <td>{{ reservation.reminderSentAt | formatMediumDatetime }}</td>
+              <td>{{ reservation.confirmedAt | formatMediumDatetime }}</td>
+              <td>{{ reservation.cancelledAt | formatMediumDatetime }}</td>
+              <td>{{ reservation.cancellationReason }}</td>
+              <td>{{ reservation.createdAt | formatMediumDatetime }}</td>
+              <td>{{ reservation.updatedAt | formatMediumDatetime }}</td>
+              <td>
+                @if (reservation.location) {
+                  <div>
+                    <a [routerLink]="['/location', reservation.location.id, 'view']">{{ reservation.location.name }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                {{ reservation.client?.login }}
+              </td>
+              <td>
+                @if (reservation.room) {
+                  <div>
+                    <a [routerLink]="['/dining-room', reservation.room.id, 'view']">{{ reservation.room.name }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <button
+                    type="submit"
+                    [routerLink]="['/restaurant-order']"
+                    [queryParams]="{ 'filter[reservationId.in]': reservation.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('restaurantApp.reservation.orders' | translate) }"
+                      >Show Orders</span
+                    >
+                  </button>
+                  <a [routerLink]="['/reservation', reservation.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/reservation', reservation.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(reservation)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (reservations().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

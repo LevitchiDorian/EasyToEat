@@ -1,0 +1,29 @@
+{
+  "restaurantApp": {
+    "locationMenuItemOverride": {
+      "home": {
+        "title": "Location Menu Item Overrides",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Location Menu Item Override",
+        "createOrEditLabel": "Creeare sau editare Location Menu Item Override",
+        "notFound": "No Location Menu Item Overrides found"
+      },
+      "created": "A fost creată o nouă entitate Location Menu Item Override cu identificatorul {{ param }}",
+      "updated": "Location Menu Item Override cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Location Menu Item Override cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Location Menu Item Override {{ id }}?"
+      },
+      "detail": {
+        "title": "Location Menu Item Override"
+      },
+      "id": "ID",
+      "isAvailableAtLocation": "Is Available At Location",
+      "priceOverride": "Price Override",
+      "preparationTimeOverride": "Preparation Time Override",
+      "notes": "Notes",
+      "menuItem": "Menu Item",
+      "location": "Location"
+    }
+  }
+}

@@ -1,0 +1,244 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-notification-heading"
+        data-cy="NotificationCreateUpdateHeading"
+        jhiTranslate="restaurantApp.notification.home.createOrEditLabel"
+      >
+        Create or edit a Notification
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.notification.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let typeRef = editForm.get('type')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_type" jhiTranslate="restaurantApp.notification.type">Type</label>
+          <select class="form-control" name="type" formControlName="type" id="field_type" data-cy="type">
+            <option [ngValue]="null">{{ 'restaurantApp.NotificationType.null' | translate }}</option>
+            @for (notificationType of notificationTypeValues; track $index) {
+              <option [value]="notificationType">{{ 'restaurantApp.NotificationType.' + notificationType | translate }}</option>
+            }
+          </select>
+          @if (typeRef.invalid && (typeRef.dirty || typeRef.touched)) {
+            <div>
+              @if (editForm.get('type')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let channelRef = editForm.get('channel')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_channel" jhiTranslate="restaurantApp.notification.channel">Channel</label>
+          <select class="form-control" name="channel" formControlName="channel" id="field_channel" data-cy="channel">
+            <option [ngValue]="null">{{ 'restaurantApp.NotificationChannel.null' | translate }}</option>
+            @for (notificationChannel of notificationChannelValues; track $index) {
+              <option [value]="notificationChannel">{{ 'restaurantApp.NotificationChannel.' + notificationChannel | translate }}</option>
+            }
+          </select>
+          @if (channelRef.invalid && (channelRef.dirty || channelRef.touched)) {
+            <div>
+              @if (editForm.get('channel')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let subjectRef = editForm.get('subject')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_subject" jhiTranslate="restaurantApp.notification.subject">Subject</label>
+          <input type="text" class="form-control" name="subject" id="field_subject" data-cy="subject" formControlName="subject" />
+          @if (subjectRef.invalid && (subjectRef.dirty || subjectRef.touched)) {
+            <div>
+              @if (editForm.get('subject')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >This field cannot be longer than 255 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let bodyRef = editForm.get('body')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_body" jhiTranslate="restaurantApp.notification.body">Body</label>
+          <textarea class="form-control" name="body" id="field_body" data-cy="body" formControlName="body"></textarea>
+          @if (bodyRef.invalid && (bodyRef.dirty || bodyRef.touched)) {
+            <div>
+              @if (editForm.get('body')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let isReadRef = editForm.get('isRead')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isRead" jhiTranslate="restaurantApp.notification.isRead">Is Read</label>
+          <input type="checkbox" class="form-check" name="isRead" id="field_isRead" data-cy="isRead" formControlName="isRead" />
+          @if (isReadRef.invalid && (isReadRef.dirty || isReadRef.touched)) {
+            <div>
+              @if (editForm.get('isRead')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_sentAt" jhiTranslate="restaurantApp.notification.sentAt">Sent At</label>
+          <div class="d-flex">
+            <input
+              id="field_sentAt"
+              data-cy="sentAt"
+              type="datetime-local"
+              class="form-control"
+              name="sentAt"
+              formControlName="sentAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_readAt" jhiTranslate="restaurantApp.notification.readAt">Read At</label>
+          <div class="d-flex">
+            <input
+              id="field_readAt"
+              data-cy="readAt"
+              type="datetime-local"
+              class="form-control"
+              name="readAt"
+              formControlName="readAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="restaurantApp.notification.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_recipient" jhiTranslate="restaurantApp.notification.recipient">Recipient</label>
+          <select
+            class="form-control"
+            id="field_recipient"
+            data-cy="recipient"
+            name="recipient"
+            formControlName="recipient"
+            [compareWith]="compareUser"
+          >
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.notification.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            <option [ngValue]="null"></option>
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_reservation" jhiTranslate="restaurantApp.notification.reservation">Reservation</label>
+          <select
+            class="form-control"
+            id="field_reservation"
+            data-cy="reservation"
+            name="reservation"
+            formControlName="reservation"
+            [compareWith]="compareReservation"
+          >
+            <option [ngValue]="null"></option>
+            @for (reservationOption of reservationsSharedCollection; track $index) {
+              <option [ngValue]="reservationOption">{{ reservationOption.reservationCode }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_order" jhiTranslate="restaurantApp.notification.order">Order</label>
+          <select
+            class="form-control"
+            id="field_order"
+            data-cy="order"
+            name="order"
+            formControlName="order"
+            [compareWith]="compareRestaurantOrder"
+          >
+            <option [ngValue]="null"></option>
+            @for (restaurantOrderOption of restaurantOrdersSharedCollection; track $index) {
+              <option [ngValue]="restaurantOrderOption">{{ restaurantOrderOption.orderCode }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

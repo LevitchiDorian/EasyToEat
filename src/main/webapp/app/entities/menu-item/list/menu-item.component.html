@@ -1,0 +1,222 @@
+<div>
+  <h2 id="page-heading" data-cy="MenuItemHeading">
+    <span jhiTranslate="restaurantApp.menuItem.home.title">Menu Items</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.menuItem.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-menu-item"
+        [routerLink]="['/menu-item/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.menuItem.home.createLabel">Create a new Menu Item</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (menuItems().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.menuItem.home.notFound">No Menu Items found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.name">Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.description">Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="price">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.price">Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discountedPrice">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.discountedPrice">Discounted Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="preparationTimeMinutes">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.preparationTimeMinutes">Preparation Time Minutes</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="calories">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.calories">Calories</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="imageUrl">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.imageUrl">Image Url</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isAvailable">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.isAvailable">Is Available</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isFeatured">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.isFeatured">Is Featured</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isVegetarian">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.isVegetarian">Is Vegetarian</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isVegan">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.isVegan">Is Vegan</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isGlutenFree">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.isGlutenFree">Is Gluten Free</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="spicyLevel">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.spicyLevel">Spicy Level</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="displayOrder">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.displayOrder">Display Order</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="category.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItem.category">Category</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (menuItem of menuItems(); track trackId(menuItem)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/menu-item', menuItem.id, 'view']">{{ menuItem.id }}</a>
+              </td>
+              <td>{{ menuItem.name }}</td>
+              <td>{{ menuItem.description }}</td>
+              <td>{{ menuItem.price }}</td>
+              <td>{{ menuItem.discountedPrice }}</td>
+              <td>{{ menuItem.preparationTimeMinutes }}</td>
+              <td>{{ menuItem.calories }}</td>
+              <td>{{ menuItem.imageUrl }}</td>
+              <td>{{ menuItem.isAvailable }}</td>
+              <td>{{ menuItem.isFeatured }}</td>
+              <td>{{ menuItem.isVegetarian }}</td>
+              <td>{{ menuItem.isVegan }}</td>
+              <td>{{ menuItem.isGlutenFree }}</td>
+              <td>{{ menuItem.spicyLevel }}</td>
+              <td>{{ menuItem.displayOrder }}</td>
+              <td>
+                @if (menuItem.category) {
+                  <div>
+                    <a [routerLink]="['/menu-category', menuItem.category.id, 'view']">{{ menuItem.category.name }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/menu-item', menuItem.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/menu-item', menuItem.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(menuItem)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (menuItems().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

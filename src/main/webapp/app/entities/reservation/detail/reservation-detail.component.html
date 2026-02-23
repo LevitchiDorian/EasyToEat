@@ -1,0 +1,110 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (reservation(); as reservationRef) {
+      <div>
+        <h2 data-cy="reservationDetailsHeading"><span jhiTranslate="restaurantApp.reservation.detail.title">Reservation</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ reservationRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.reservationCode">Reservation Code</span></dt>
+          <dd>
+            <span>{{ reservationRef.reservationCode }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.reservationDate">Reservation Date</span></dt>
+          <dd>
+            <span>{{ reservationRef.reservationDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.startTime">Start Time</span></dt>
+          <dd>
+            <span>{{ reservationRef.startTime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.endTime">End Time</span></dt>
+          <dd>
+            <span>{{ reservationRef.endTime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.partySize">Party Size</span></dt>
+          <dd>
+            <span>{{ reservationRef.partySize }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.status">Status</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.ReservationStatus.' + (reservationRef.status ?? 'null')">{{
+              { null: '', PENDING: 'PENDING', CONFIRMED: 'CONFIRMED', CANCELLED: 'CANCELLED', COMPLETED: 'COMPLETED', NO_SHOW: 'NO_SHOW' }[
+                reservationRef.status ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.specialRequests">Special Requests</span></dt>
+          <dd>
+            <span>{{ reservationRef.specialRequests }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.internalNotes">Internal Notes</span></dt>
+          <dd>
+            <span>{{ reservationRef.internalNotes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.reminderSentAt">Reminder Sent At</span></dt>
+          <dd>
+            <span>{{ reservationRef.reminderSentAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.confirmedAt">Confirmed At</span></dt>
+          <dd>
+            <span>{{ reservationRef.confirmedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.cancelledAt">Cancelled At</span></dt>
+          <dd>
+            <span>{{ reservationRef.cancelledAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.cancellationReason">Cancellation Reason</span></dt>
+          <dd>
+            <span>{{ reservationRef.cancellationReason }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ reservationRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.updatedAt">Updated At</span></dt>
+          <dd>
+            <span>{{ reservationRef.updatedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.location">Location</span></dt>
+          <dd>
+            @if (reservation()!.location) {
+              <div>
+                <a [routerLink]="['/location', reservation()!.location?.id, 'view']">{{ reservationRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.client">Client</span></dt>
+          <dd>
+            <span>{{ reservationRef.client?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservation.room">Room</span></dt>
+          <dd>
+            @if (reservation()!.room) {
+              <div>
+                <a [routerLink]="['/dining-room', reservation()!.room?.id, 'view']">{{ reservationRef.room?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/reservation', reservationRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

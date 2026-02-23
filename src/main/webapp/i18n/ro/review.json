@@ -1,0 +1,34 @@
+{
+  "restaurantApp": {
+    "review": {
+      "home": {
+        "title": "Reviews",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Review",
+        "createOrEditLabel": "Creeare sau editare Review",
+        "notFound": "No Reviews found"
+      },
+      "created": "A fost creată o nouă entitate Review cu identificatorul {{ param }}",
+      "updated": "Review cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Review cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Review {{ id }}?"
+      },
+      "detail": {
+        "title": "Review"
+      },
+      "id": "ID",
+      "overallRating": "Overall Rating",
+      "foodRating": "Food Rating",
+      "serviceRating": "Service Rating",
+      "ambienceRating": "Ambience Rating",
+      "comment": "Comment",
+      "isApproved": "Is Approved",
+      "isAnonymous": "Is Anonymous",
+      "createdAt": "Created At",
+      "location": "Location",
+      "reservation": "Reservation",
+      "client": "Client"
+    }
+  }
+}

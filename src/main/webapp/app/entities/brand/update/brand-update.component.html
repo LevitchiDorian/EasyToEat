@@ -1,0 +1,372 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-brand-heading" data-cy="BrandCreateUpdateHeading" jhiTranslate="restaurantApp.brand.home.createOrEditLabel">
+        Create or edit a Brand
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.brand.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let nameRef = editForm.get('name')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_name" jhiTranslate="restaurantApp.brand.name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (nameRef.invalid && (nameRef.dirty || nameRef.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('name')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '2' }"
+                  >This field is required to be at least 2 characters.</small
+                >
+              }
+              @if (editForm.get('name')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >This field cannot be longer than 100 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_description" jhiTranslate="restaurantApp.brand.description">Description</label>
+          <textarea
+            class="form-control"
+            name="description"
+            id="field_description"
+            data-cy="description"
+            formControlName="description"
+          ></textarea>
+        </div>
+
+        @let logoUrlRef = editForm.get('logoUrl')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_logoUrl" jhiTranslate="restaurantApp.brand.logoUrl">Logo Url</label>
+          <input type="text" class="form-control" name="logoUrl" id="field_logoUrl" data-cy="logoUrl" formControlName="logoUrl" />
+          @if (logoUrlRef.invalid && (logoUrlRef.dirty || logoUrlRef.touched)) {
+            <div>
+              @if (editForm.get('logoUrl')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >This field cannot be longer than 500 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let coverImageUrlRef = editForm.get('coverImageUrl')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_coverImageUrl" jhiTranslate="restaurantApp.brand.coverImageUrl">Cover Image Url</label>
+          <input
+            type="text"
+            class="form-control"
+            name="coverImageUrl"
+            id="field_coverImageUrl"
+            data-cy="coverImageUrl"
+            formControlName="coverImageUrl"
+          />
+          @if (coverImageUrlRef.invalid && (coverImageUrlRef.dirty || coverImageUrlRef.touched)) {
+            <div>
+              @if (editForm.get('coverImageUrl')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >This field cannot be longer than 500 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let primaryColorRef = editForm.get('primaryColor')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_primaryColor" jhiTranslate="restaurantApp.brand.primaryColor">Primary Color</label>
+          <input
+            type="text"
+            class="form-control"
+            name="primaryColor"
+            id="field_primaryColor"
+            data-cy="primaryColor"
+            formControlName="primaryColor"
+          />
+          @if (primaryColorRef.invalid && (primaryColorRef.dirty || primaryColorRef.touched)) {
+            <div>
+              @if (editForm.get('primaryColor')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '7' }"
+                  >This field cannot be longer than 7 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let secondaryColorRef = editForm.get('secondaryColor')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_secondaryColor" jhiTranslate="restaurantApp.brand.secondaryColor">Secondary Color</label>
+          <input
+            type="text"
+            class="form-control"
+            name="secondaryColor"
+            id="field_secondaryColor"
+            data-cy="secondaryColor"
+            formControlName="secondaryColor"
+          />
+          @if (secondaryColorRef.invalid && (secondaryColorRef.dirty || secondaryColorRef.touched)) {
+            <div>
+              @if (editForm.get('secondaryColor')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '7' }"
+                  >This field cannot be longer than 7 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let websiteRef = editForm.get('website')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_website" jhiTranslate="restaurantApp.brand.website">Website</label>
+          <input type="text" class="form-control" name="website" id="field_website" data-cy="website" formControlName="website" />
+          @if (websiteRef.invalid && (websiteRef.dirty || websiteRef.touched)) {
+            <div>
+              @if (editForm.get('website')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >This field cannot be longer than 255 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let contactEmailRef = editForm.get('contactEmail')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_contactEmail" jhiTranslate="restaurantApp.brand.contactEmail">Contact Email</label>
+          <input
+            type="text"
+            class="form-control"
+            name="contactEmail"
+            id="field_contactEmail"
+            data-cy="contactEmail"
+            formControlName="contactEmail"
+          />
+          @if (contactEmailRef.invalid && (contactEmailRef.dirty || contactEmailRef.touched)) {
+            <div>
+              @if (editForm.get('contactEmail')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('contactEmail')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >This field cannot be longer than 100 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let contactPhoneRef = editForm.get('contactPhone')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_contactPhone" jhiTranslate="restaurantApp.brand.contactPhone">Contact Phone</label>
+          <input
+            type="text"
+            class="form-control"
+            name="contactPhone"
+            id="field_contactPhone"
+            data-cy="contactPhone"
+            formControlName="contactPhone"
+          />
+          @if (contactPhoneRef.invalid && (contactPhoneRef.dirty || contactPhoneRef.touched)) {
+            <div>
+              @if (editForm.get('contactPhone')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('contactPhone')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '20' }"
+                  >This field cannot be longer than 20 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let defaultReservationDurationRef = editForm.get('defaultReservationDuration')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_defaultReservationDuration" jhiTranslate="restaurantApp.brand.defaultReservationDuration"
+            >Default Reservation Duration</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="defaultReservationDuration"
+            id="field_defaultReservationDuration"
+            data-cy="defaultReservationDuration"
+            formControlName="defaultReservationDuration"
+          />
+          @if (defaultReservationDurationRef.invalid && (defaultReservationDurationRef.dirty || defaultReservationDurationRef.touched)) {
+            <div>
+              @if (editForm.get('defaultReservationDuration')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('defaultReservationDuration')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '15' }"
+                  >This field should be at least 15.</small
+                >
+              }
+              @if (editForm.get('defaultReservationDuration')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '480' }"
+                  >This field cannot be more than 480.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('defaultReservationDuration')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let maxAdvanceBookingDaysRef = editForm.get('maxAdvanceBookingDays')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_maxAdvanceBookingDays" jhiTranslate="restaurantApp.brand.maxAdvanceBookingDays"
+            >Max Advance Booking Days</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="maxAdvanceBookingDays"
+            id="field_maxAdvanceBookingDays"
+            data-cy="maxAdvanceBookingDays"
+            formControlName="maxAdvanceBookingDays"
+          />
+          @if (maxAdvanceBookingDaysRef.invalid && (maxAdvanceBookingDaysRef.dirty || maxAdvanceBookingDaysRef.touched)) {
+            <div>
+              @if (editForm.get('maxAdvanceBookingDays')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('maxAdvanceBookingDays')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              @if (editForm.get('maxAdvanceBookingDays')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '365' }"
+                  >This field cannot be more than 365.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('maxAdvanceBookingDays')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let cancellationDeadlineHoursRef = editForm.get('cancellationDeadlineHours')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_cancellationDeadlineHours" jhiTranslate="restaurantApp.brand.cancellationDeadlineHours"
+            >Cancellation Deadline Hours</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="cancellationDeadlineHours"
+            id="field_cancellationDeadlineHours"
+            data-cy="cancellationDeadlineHours"
+            formControlName="cancellationDeadlineHours"
+          />
+          @if (cancellationDeadlineHoursRef.invalid && (cancellationDeadlineHoursRef.dirty || cancellationDeadlineHoursRef.touched)) {
+            <div>
+              @if (editForm.get('cancellationDeadlineHours')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('cancellationDeadlineHours')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              @if (editForm.get('cancellationDeadlineHours')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '72' }"
+                  >This field cannot be more than 72.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('cancellationDeadlineHours')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let isActiveRef = editForm.get('isActive')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isActive" jhiTranslate="restaurantApp.brand.isActive">Is Active</label>
+          <input type="checkbox" class="form-check" name="isActive" id="field_isActive" data-cy="isActive" formControlName="isActive" />
+          @if (isActiveRef.invalid && (isActiveRef.dirty || isActiveRef.touched)) {
+            <div>
+              @if (editForm.get('isActive')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="restaurantApp.brand.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

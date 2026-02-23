@@ -1,0 +1,94 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (restaurantTable(); as restaurantTableRef) {
+      <div>
+        <h2 data-cy="restaurantTableDetailsHeading">
+          <span jhiTranslate="restaurantApp.restaurantTable.detail.title">Restaurant Table</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.tableNumber">Table Number</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.tableNumber }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.shape">Shape</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.TableShape.' + (restaurantTableRef.shape ?? 'null')">{{
+              { null: '', ROUND: 'ROUND', SQUARE: 'SQUARE', RECTANGLE: 'RECTANGLE' }[restaurantTableRef.shape ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.minCapacity">Min Capacity</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.minCapacity }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.maxCapacity">Max Capacity</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.maxCapacity }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.positionX">Position X</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.positionX }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.positionY">Position Y</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.positionY }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.widthPx">Width Px</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.widthPx }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.heightPx">Height Px</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.heightPx }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.rotation">Rotation</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.rotation }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.status">Status</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.TableStatus.' + (restaurantTableRef.status ?? 'null')">{{
+              { null: '', AVAILABLE: 'AVAILABLE', RESERVED: 'RESERVED', OCCUPIED: 'OCCUPIED', OUT_OF_SERVICE: 'OUT_OF_SERVICE' }[
+                restaurantTableRef.status ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.isActive">Is Active</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.isActive }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.notes">Notes</span></dt>
+          <dd>
+            <span>{{ restaurantTableRef.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantTable.room">Room</span></dt>
+          <dd>
+            @if (restaurantTable()!.room) {
+              <div>
+                <a [routerLink]="['/dining-room', restaurantTable()!.room?.id, 'view']">{{ restaurantTableRef.room?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/restaurant-table', restaurantTableRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

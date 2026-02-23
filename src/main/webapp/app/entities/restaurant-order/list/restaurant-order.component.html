@@ -1,0 +1,315 @@
+<div>
+  <h2 id="page-heading" data-cy="RestaurantOrderHeading">
+    <span jhiTranslate="restaurantApp.restaurantOrder.home.title">Restaurant Orders</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.restaurantOrder.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-restaurant-order"
+        [routerLink]="['/restaurant-order/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.restaurantOrder.home.createLabel">Create a new Restaurant Order</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (restaurantOrders().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.restaurantOrder.home.notFound">No Restaurant Orders found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="orderCode">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.orderCode">Order Code</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isPreOrder">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.isPreOrder">Is Pre Order</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="scheduledFor">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.scheduledFor">Scheduled For</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="subtotal">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.subtotal">Subtotal</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="discountAmount">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.discountAmount">Discount Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="taxAmount">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.taxAmount">Tax Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="totalAmount">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.totalAmount">Total Amount</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="specialInstructions">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.specialInstructions">Special Instructions</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="estimatedReadyTime">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.estimatedReadyTime">Estimated Ready Time</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="confirmedAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.confirmedAt">Confirmed At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="completedAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.completedAt">Completed At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="updatedAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.updatedAt">Updated At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="location.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.location">Location</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="client.login">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.client">Client</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="assignedWaiter.login">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.assignedWaiter">Assigned Waiter</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="table.tableNumber">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.table">Table</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="promotion.code">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.promotion">Promotion</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reservation.id">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantOrder.reservation">Reservation</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (restaurantOrder of restaurantOrders(); track trackId(restaurantOrder)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/restaurant-order', restaurantOrder.id, 'view']">{{ restaurantOrder.id }}</a>
+              </td>
+              <td>{{ restaurantOrder.orderCode }}</td>
+              <td [jhiTranslate]="'restaurantApp.OrderStatus.' + (restaurantOrder.status ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    DRAFT: 'DRAFT',
+                    SUBMITTED: 'SUBMITTED',
+                    CONFIRMED: 'CONFIRMED',
+                    PREPARING: 'PREPARING',
+                    READY: 'READY',
+                    SERVED: 'SERVED',
+                    CANCELLED: 'CANCELLED',
+                  }[restaurantOrder.status ?? 'null']
+                }}
+              </td>
+              <td>{{ restaurantOrder.isPreOrder }}</td>
+              <td>{{ restaurantOrder.scheduledFor | formatMediumDatetime }}</td>
+              <td>{{ restaurantOrder.subtotal }}</td>
+              <td>{{ restaurantOrder.discountAmount }}</td>
+              <td>{{ restaurantOrder.taxAmount }}</td>
+              <td>{{ restaurantOrder.totalAmount }}</td>
+              <td>{{ restaurantOrder.specialInstructions }}</td>
+              <td>{{ restaurantOrder.estimatedReadyTime | formatMediumDatetime }}</td>
+              <td>{{ restaurantOrder.confirmedAt | formatMediumDatetime }}</td>
+              <td>{{ restaurantOrder.completedAt | formatMediumDatetime }}</td>
+              <td>{{ restaurantOrder.createdAt | formatMediumDatetime }}</td>
+              <td>{{ restaurantOrder.updatedAt | formatMediumDatetime }}</td>
+              <td>
+                @if (restaurantOrder.location) {
+                  <div>
+                    <a [routerLink]="['/location', restaurantOrder.location.id, 'view']">{{ restaurantOrder.location.name }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                {{ restaurantOrder.client?.login }}
+              </td>
+              <td>
+                {{ restaurantOrder.assignedWaiter?.login }}
+              </td>
+              <td>
+                @if (restaurantOrder.table) {
+                  <div>
+                    <a [routerLink]="['/restaurant-table', restaurantOrder.table.id, 'view']">{{ restaurantOrder.table.tableNumber }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (restaurantOrder.promotion) {
+                  <div>
+                    <a [routerLink]="['/promotion', restaurantOrder.promotion.id, 'view']">{{ restaurantOrder.promotion.code }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (restaurantOrder.reservation) {
+                  <div>
+                    <a [routerLink]="['/reservation', restaurantOrder.reservation.id, 'view']">{{ restaurantOrder.reservation.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <button
+                    type="submit"
+                    [routerLink]="['/payment']"
+                    [queryParams]="{ 'filter[orderId.in]': restaurantOrder.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('restaurantApp.restaurantOrder.payments' | translate) }"
+                      >Show Payments</span
+                    >
+                  </button>
+                  <a
+                    [routerLink]="['/restaurant-order', restaurantOrder.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/restaurant-order', restaurantOrder.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(restaurantOrder)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (restaurantOrders().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

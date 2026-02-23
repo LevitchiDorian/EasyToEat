@@ -1,0 +1,92 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (promotion(); as promotionRef) {
+      <div>
+        <h2 data-cy="promotionDetailsHeading"><span jhiTranslate="restaurantApp.promotion.detail.title">Promotion</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ promotionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.code">Code</span></dt>
+          <dd>
+            <span>{{ promotionRef.code }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.name">Name</span></dt>
+          <dd>
+            <span>{{ promotionRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.description">Description</span></dt>
+          <dd>
+            <span>{{ promotionRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.discountType">Discount Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.DiscountType.' + (promotionRef.discountType ?? 'null')">{{
+              { null: '', PERCENTAGE: 'PERCENTAGE', FIXED_AMOUNT: 'FIXED_AMOUNT' }[promotionRef.discountType ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.discountValue">Discount Value</span></dt>
+          <dd>
+            <span>{{ promotionRef.discountValue }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.minimumOrderAmount">Minimum Order Amount</span></dt>
+          <dd>
+            <span>{{ promotionRef.minimumOrderAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.maxUsageCount">Max Usage Count</span></dt>
+          <dd>
+            <span>{{ promotionRef.maxUsageCount }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.currentUsageCount">Current Usage Count</span></dt>
+          <dd>
+            <span>{{ promotionRef.currentUsageCount }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.startDate">Start Date</span></dt>
+          <dd>
+            <span>{{ promotionRef.startDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.endDate">End Date</span></dt>
+          <dd>
+            <span>{{ promotionRef.endDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.isActive">Is Active</span></dt>
+          <dd>
+            <span>{{ promotionRef.isActive }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.brand">Brand</span></dt>
+          <dd>
+            @if (promotion()!.brand) {
+              <div>
+                <a [routerLink]="['/brand', promotion()!.brand?.id, 'view']">{{ promotionRef.brand?.name }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.promotion.location">Location</span></dt>
+          <dd>
+            @if (promotion()!.location) {
+              <div>
+                <a [routerLink]="['/location', promotion()!.location?.id, 'view']">{{ promotionRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/promotion', promotionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

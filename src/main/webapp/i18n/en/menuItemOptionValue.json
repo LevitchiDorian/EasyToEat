@@ -1,0 +1,29 @@
+{
+  "restaurantApp": {
+    "menuItemOptionValue": {
+      "home": {
+        "title": "Menu Item Option Values",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Menu Item Option Value",
+        "createOrEditLabel": "Create or edit a Menu Item Option Value",
+        "notFound": "No Menu Item Option Values found"
+      },
+      "created": "A new Menu Item Option Value is created with identifier {{ param }}",
+      "updated": "A Menu Item Option Value is updated with identifier {{ param }}",
+      "deleted": "A Menu Item Option Value is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Menu Item Option Value {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Item Option Value"
+      },
+      "id": "ID",
+      "label": "Label",
+      "priceAdjustment": "Price Adjustment",
+      "isDefault": "Is Default",
+      "isAvailable": "Is Available",
+      "displayOrder": "Display Order",
+      "option": "Option"
+    }
+  }
+}

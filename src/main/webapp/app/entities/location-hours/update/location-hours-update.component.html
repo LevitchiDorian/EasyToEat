@@ -1,0 +1,155 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-location-hours-heading"
+        data-cy="LocationHoursCreateUpdateHeading"
+        jhiTranslate="restaurantApp.locationHours.home.createOrEditLabel"
+      >
+        Create or edit a Location Hours
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.locationHours.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let dayOfWeekRef = editForm.get('dayOfWeek')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_dayOfWeek" jhiTranslate="restaurantApp.locationHours.dayOfWeek">Day Of Week</label>
+          <select class="form-control" name="dayOfWeek" formControlName="dayOfWeek" id="field_dayOfWeek" data-cy="dayOfWeek">
+            <option [ngValue]="null">{{ 'restaurantApp.DayOfWeek.null' | translate }}</option>
+            @for (dayOfWeek of dayOfWeekValues; track $index) {
+              <option [value]="dayOfWeek">{{ 'restaurantApp.DayOfWeek.' + dayOfWeek | translate }}</option>
+            }
+          </select>
+          @if (dayOfWeekRef.invalid && (dayOfWeekRef.dirty || dayOfWeekRef.touched)) {
+            <div>
+              @if (editForm.get('dayOfWeek')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let openTimeRef = editForm.get('openTime')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_openTime" jhiTranslate="restaurantApp.locationHours.openTime">Open Time</label>
+          <input type="text" class="form-control" name="openTime" id="field_openTime" data-cy="openTime" formControlName="openTime" />
+          @if (openTimeRef.invalid && (openTimeRef.dirty || openTimeRef.touched)) {
+            <div>
+              @if (editForm.get('openTime')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('openTime')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '5' }"
+                  >This field cannot be longer than 5 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let closeTimeRef = editForm.get('closeTime')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_closeTime" jhiTranslate="restaurantApp.locationHours.closeTime">Close Time</label>
+          <input type="text" class="form-control" name="closeTime" id="field_closeTime" data-cy="closeTime" formControlName="closeTime" />
+          @if (closeTimeRef.invalid && (closeTimeRef.dirty || closeTimeRef.touched)) {
+            <div>
+              @if (editForm.get('closeTime')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('closeTime')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '5' }"
+                  >This field cannot be longer than 5 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let isClosedRef = editForm.get('isClosed')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isClosed" jhiTranslate="restaurantApp.locationHours.isClosed">Is Closed</label>
+          <input type="checkbox" class="form-check" name="isClosed" id="field_isClosed" data-cy="isClosed" formControlName="isClosed" />
+          @if (isClosedRef.invalid && (isClosedRef.dirty || isClosedRef.touched)) {
+            <div>
+              @if (editForm.get('isClosed')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let specialNoteRef = editForm.get('specialNote')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_specialNote" jhiTranslate="restaurantApp.locationHours.specialNote">Special Note</label>
+          <input
+            type="text"
+            class="form-control"
+            name="specialNote"
+            id="field_specialNote"
+            data-cy="specialNote"
+            formControlName="specialNote"
+          />
+          @if (specialNoteRef.invalid && (specialNoteRef.dirty || specialNoteRef.touched)) {
+            <div>
+              @if (editForm.get('specialNote')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >This field cannot be longer than 255 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.locationHours.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            @if (editForm.get(['location'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['location'])!.invalid && (editForm.get(['location'])!.dirty || editForm.get(['location'])!.touched)) {
+          <div>
+            @if (editForm.get(['location'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

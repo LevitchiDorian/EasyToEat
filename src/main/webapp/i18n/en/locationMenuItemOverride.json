@@ -1,0 +1,29 @@
+{
+  "restaurantApp": {
+    "locationMenuItemOverride": {
+      "home": {
+        "title": "Location Menu Item Overrides",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Location Menu Item Override",
+        "createOrEditLabel": "Create or edit a Location Menu Item Override",
+        "notFound": "No Location Menu Item Overrides found"
+      },
+      "created": "A new Location Menu Item Override is created with identifier {{ param }}",
+      "updated": "A Location Menu Item Override is updated with identifier {{ param }}",
+      "deleted": "A Location Menu Item Override is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Location Menu Item Override {{ id }}?"
+      },
+      "detail": {
+        "title": "Location Menu Item Override"
+      },
+      "id": "ID",
+      "isAvailableAtLocation": "Is Available At Location",
+      "priceOverride": "Price Override",
+      "preparationTimeOverride": "Preparation Time Override",
+      "notes": "Notes",
+      "menuItem": "Menu Item",
+      "location": "Location"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "restaurantApp": {
+    "restaurantTable": {
+      "home": {
+        "title": "Restaurant Tables",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Restaurant Table",
+        "createOrEditLabel": "Creeare sau editare Restaurant Table",
+        "notFound": "No Restaurant Tables found"
+      },
+      "created": "A fost creată o nouă entitate Restaurant Table cu identificatorul {{ param }}",
+      "updated": "Restaurant Table cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Restaurant Table cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Restaurant Table {{ id }}?"
+      },
+      "detail": {
+        "title": "Restaurant Table"
+      },
+      "id": "ID",
+      "tableNumber": "Table Number",
+      "shape": "Shape",
+      "minCapacity": "Min Capacity",
+      "maxCapacity": "Max Capacity",
+      "positionX": "Position X",
+      "positionY": "Position Y",
+      "widthPx": "Width Px",
+      "heightPx": "Height Px",
+      "rotation": "Rotation",
+      "status": "Status",
+      "isActive": "Is Active",
+      "notes": "Notes",
+      "room": "Room"
+    }
+  }
+}

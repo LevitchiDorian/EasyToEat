@@ -1,0 +1,11 @@
+id;code;name;description;discount_type;discount_value;minimum_order_amount;max_usage_count;current_usage_count;start_date;end_date;is_active;brand_id
+1;mantua mockingly;yuck;../fake-data/blob/hipster.txt;PERCENTAGE;16236.34;6574.97;16959;27180;2026-02-23;2026-02-23;false;1
+2;know;instance but;../fake-data/blob/hipster.txt;PERCENTAGE;8092.73;13314.4;26849;593;2026-02-23;2026-02-23;true;2
+3;happily with hairy;bracelet;../fake-data/blob/hipster.txt;PERCENTAGE;3290.14;24234.79;18566;5506;2026-02-23;2026-02-23;true;3
+4;rapidly modulo ah;yowza;../fake-data/blob/hipster.txt;PERCENTAGE;7382.33;15944.36;9263;9436;2026-02-23;2026-02-22;false;4
+5;denitrify honestly beret;finding battle jovially;../fake-data/blob/hipster.txt;FIXED_AMOUNT;272.87;31405.23;22154;30078;2026-02-23;2026-02-23;true;5
+6;blah drat including;jacket yogurt against;../fake-data/blob/hipster.txt;PERCENTAGE;10748.46;19176.21;27463;6338;2026-02-23;2026-02-23;false;6
+7;provision after;out;../fake-data/blob/hipster.txt;PERCENTAGE;15319.53;16239.34;28377;30924;2026-02-22;2026-02-23;true;7
+8;brr vicinity;unibody;../fake-data/blob/hipster.txt;FIXED_AMOUNT;22120.67;20475.06;2793;11969;2026-02-23;2026-02-22;false;8
+9;trustworthy psst gadzooks;subsidy;../fake-data/blob/hipster.txt;FIXED_AMOUNT;2534.46;31306.61;4838;1415;2026-02-23;2026-02-22;false;9
+10;smug;inasmuch lumpy till;../fake-data/blob/hipster.txt;FIXED_AMOUNT;13828.41;5471.21;7725;10811;2026-02-22;2026-02-23;false;10

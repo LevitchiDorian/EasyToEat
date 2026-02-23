@@ -1,0 +1,127 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-reservation-table-heading"
+        data-cy="ReservationTableCreateUpdateHeading"
+        jhiTranslate="restaurantApp.reservationTable.home.createOrEditLabel"
+      >
+        Create or edit a Reservation Table
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.reservationTable.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let assignedAtRef = editForm.get('assignedAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_assignedAt" jhiTranslate="restaurantApp.reservationTable.assignedAt">Assigned At</label>
+          <div class="d-flex">
+            <input
+              id="field_assignedAt"
+              data-cy="assignedAt"
+              type="datetime-local"
+              class="form-control"
+              name="assignedAt"
+              formControlName="assignedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (assignedAtRef.invalid && (assignedAtRef.dirty || assignedAtRef.touched)) {
+            <div>
+              @if (editForm.get('assignedAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('assignedAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let notesRef = editForm.get('notes')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_notes" jhiTranslate="restaurantApp.reservationTable.notes">Notes</label>
+          <input type="text" class="form-control" name="notes" id="field_notes" data-cy="notes" formControlName="notes" />
+          @if (notesRef.invalid && (notesRef.dirty || notesRef.touched)) {
+            <div>
+              @if (editForm.get('notes')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >This field cannot be longer than 255 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_table" jhiTranslate="restaurantApp.reservationTable.table">Table</label>
+          <select
+            class="form-control"
+            id="field_table"
+            data-cy="table"
+            name="table"
+            formControlName="table"
+            [compareWith]="compareRestaurantTable"
+          >
+            <option [ngValue]="null"></option>
+            @for (restaurantTableOption of restaurantTablesSharedCollection; track $index) {
+              <option [ngValue]="restaurantTableOption">{{ restaurantTableOption.tableNumber }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_reservation" jhiTranslate="restaurantApp.reservationTable.reservation">Reservation</label>
+          <select
+            class="form-control"
+            id="field_reservation"
+            data-cy="reservation"
+            name="reservation"
+            formControlName="reservation"
+            [compareWith]="compareReservation"
+          >
+            @if (editForm.get(['reservation'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (reservationOption of reservationsSharedCollection; track $index) {
+              <option [ngValue]="reservationOption">{{ reservationOption.id }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['reservation'])!.invalid && (editForm.get(['reservation'])!.dirty || editForm.get(['reservation'])!.touched)) {
+          <div>
+            @if (editForm.get(['reservation'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

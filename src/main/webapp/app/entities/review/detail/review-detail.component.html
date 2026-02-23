@@ -1,0 +1,82 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (review(); as reviewRef) {
+      <div>
+        <h2 data-cy="reviewDetailsHeading"><span jhiTranslate="restaurantApp.review.detail.title">Review</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ reviewRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.overallRating">Overall Rating</span></dt>
+          <dd>
+            <span>{{ reviewRef.overallRating }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.foodRating">Food Rating</span></dt>
+          <dd>
+            <span>{{ reviewRef.foodRating }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.serviceRating">Service Rating</span></dt>
+          <dd>
+            <span>{{ reviewRef.serviceRating }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.ambienceRating">Ambience Rating</span></dt>
+          <dd>
+            <span>{{ reviewRef.ambienceRating }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.comment">Comment</span></dt>
+          <dd>
+            <span>{{ reviewRef.comment }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.isApproved">Is Approved</span></dt>
+          <dd>
+            <span>{{ reviewRef.isApproved }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.isAnonymous">Is Anonymous</span></dt>
+          <dd>
+            <span>{{ reviewRef.isAnonymous }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ reviewRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.location">Location</span></dt>
+          <dd>
+            @if (review()!.location) {
+              <div>
+                <a [routerLink]="['/location', review()!.location?.id, 'view']">{{ reviewRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.reservation">Reservation</span></dt>
+          <dd>
+            @if (review()!.reservation) {
+              <div>
+                <a [routerLink]="['/reservation', review()!.reservation?.id, 'view']">{{ reviewRef.reservation?.reservationCode }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.review.client">Client</span></dt>
+          <dd>
+            <span>{{ reviewRef.client?.login }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/review', reviewRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

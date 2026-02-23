@@ -1,0 +1,239 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-waiting-list-heading"
+        data-cy="WaitingListCreateUpdateHeading"
+        jhiTranslate="restaurantApp.waitingList.home.createOrEditLabel"
+      >
+        Create or edit a Waiting List
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.waitingList.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let requestedDateRef = editForm.get('requestedDate')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_requestedDate" jhiTranslate="restaurantApp.waitingList.requestedDate">Requested Date</label>
+          <div class="input-group">
+            <input
+              id="field_requestedDate"
+              data-cy="requestedDate"
+              type="text"
+              class="form-control"
+              name="requestedDate"
+              ngbDatepicker
+              #requestedDateDp="ngbDatepicker"
+              formControlName="requestedDate"
+            />
+            <button type="button" class="btn btn-secondary" (click)="requestedDateDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+          @if (requestedDateRef.invalid && (requestedDateRef.dirty || requestedDateRef.touched)) {
+            <div>
+              @if (editForm.get('requestedDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let requestedTimeRef = editForm.get('requestedTime')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_requestedTime" jhiTranslate="restaurantApp.waitingList.requestedTime">Requested Time</label>
+          <input
+            type="text"
+            class="form-control"
+            name="requestedTime"
+            id="field_requestedTime"
+            data-cy="requestedTime"
+            formControlName="requestedTime"
+          />
+          @if (requestedTimeRef.invalid && (requestedTimeRef.dirty || requestedTimeRef.touched)) {
+            <div>
+              @if (editForm.get('requestedTime')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('requestedTime')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '5' }"
+                  >This field cannot be longer than 5 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let partySizeRef = editForm.get('partySize')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_partySize" jhiTranslate="restaurantApp.waitingList.partySize">Party Size</label>
+          <input type="number" class="form-control" name="partySize" id="field_partySize" data-cy="partySize" formControlName="partySize" />
+          @if (partySizeRef.invalid && (partySizeRef.dirty || partySizeRef.touched)) {
+            <div>
+              @if (editForm.get('partySize')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('partySize')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('partySize')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let notesRef = editForm.get('notes')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_notes" jhiTranslate="restaurantApp.waitingList.notes">Notes</label>
+          <input type="text" class="form-control" name="notes" id="field_notes" data-cy="notes" formControlName="notes" />
+          @if (notesRef.invalid && (notesRef.dirty || notesRef.touched)) {
+            <div>
+              @if (editForm.get('notes')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >This field cannot be longer than 500 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let isNotifiedRef = editForm.get('isNotified')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isNotified" jhiTranslate="restaurantApp.waitingList.isNotified">Is Notified</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isNotified"
+            id="field_isNotified"
+            data-cy="isNotified"
+            formControlName="isNotified"
+          />
+          @if (isNotifiedRef.invalid && (isNotifiedRef.dirty || isNotifiedRef.touched)) {
+            <div>
+              @if (editForm.get('isNotified')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_expiresAt" jhiTranslate="restaurantApp.waitingList.expiresAt">Expires At</label>
+          <div class="d-flex">
+            <input
+              id="field_expiresAt"
+              data-cy="expiresAt"
+              type="datetime-local"
+              class="form-control"
+              name="expiresAt"
+              formControlName="expiresAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="restaurantApp.waitingList.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.waitingList.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            <option [ngValue]="null"></option>
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_client" jhiTranslate="restaurantApp.waitingList.client">Client</label>
+          <select
+            class="form-control"
+            id="field_client"
+            data-cy="client"
+            name="client"
+            formControlName="client"
+            [compareWith]="compareUser"
+          >
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_room" jhiTranslate="restaurantApp.waitingList.room">Room</label>
+          <select class="form-control" id="field_room" data-cy="room" name="room" formControlName="room" [compareWith]="compareDiningRoom">
+            <option [ngValue]="null"></option>
+            @for (diningRoomOption of diningRoomsSharedCollection; track $index) {
+              <option [ngValue]="diningRoomOption">{{ diningRoomOption.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

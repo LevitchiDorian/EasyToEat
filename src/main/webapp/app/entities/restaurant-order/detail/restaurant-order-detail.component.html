@@ -1,0 +1,141 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (restaurantOrder(); as restaurantOrderRef) {
+      <div>
+        <h2 data-cy="restaurantOrderDetailsHeading">
+          <span jhiTranslate="restaurantApp.restaurantOrder.detail.title">Restaurant Order</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.orderCode">Order Code</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.orderCode }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.status">Status</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.OrderStatus.' + (restaurantOrderRef.status ?? 'null')">{{
+              {
+                null: '',
+                DRAFT: 'DRAFT',
+                SUBMITTED: 'SUBMITTED',
+                CONFIRMED: 'CONFIRMED',
+                PREPARING: 'PREPARING',
+                READY: 'READY',
+                SERVED: 'SERVED',
+                CANCELLED: 'CANCELLED',
+              }[restaurantOrderRef.status ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.isPreOrder">Is Pre Order</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.isPreOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.scheduledFor">Scheduled For</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.scheduledFor | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.subtotal">Subtotal</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.subtotal }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.discountAmount">Discount Amount</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.discountAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.taxAmount">Tax Amount</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.taxAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.totalAmount">Total Amount</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.totalAmount }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.specialInstructions">Special Instructions</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.specialInstructions }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.estimatedReadyTime">Estimated Ready Time</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.estimatedReadyTime | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.confirmedAt">Confirmed At</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.confirmedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.completedAt">Completed At</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.completedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.updatedAt">Updated At</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.updatedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.location">Location</span></dt>
+          <dd>
+            @if (restaurantOrder()!.location) {
+              <div>
+                <a [routerLink]="['/location', restaurantOrder()!.location?.id, 'view']">{{ restaurantOrderRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.client">Client</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.client?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.assignedWaiter">Assigned Waiter</span></dt>
+          <dd>
+            <span>{{ restaurantOrderRef.assignedWaiter?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.table">Table</span></dt>
+          <dd>
+            @if (restaurantOrder()!.table) {
+              <div>
+                <a [routerLink]="['/restaurant-table', restaurantOrder()!.table?.id, 'view']">{{
+                  restaurantOrderRef.table?.tableNumber
+                }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.promotion">Promotion</span></dt>
+          <dd>
+            @if (restaurantOrder()!.promotion) {
+              <div>
+                <a [routerLink]="['/promotion', restaurantOrder()!.promotion?.id, 'view']">{{ restaurantOrderRef.promotion?.code }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.restaurantOrder.reservation">Reservation</span></dt>
+          <dd>
+            @if (restaurantOrder()!.reservation) {
+              <div>
+                <a [routerLink]="['/reservation', restaurantOrder()!.reservation?.id, 'view']">{{ restaurantOrderRef.reservation?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/restaurant-order', restaurantOrderRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity RestaurantOrder.
+    -->
+    <changeSet id="20260223152643-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="location_id"
+                                 baseTableName="restaurant_order"
+                                 constraintName="fk_restaurant_order__location_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="location"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="client_id"
+                                 baseTableName="restaurant_order"
+                                 constraintName="fk_restaurant_order__client_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="assigned_waiter_id"
+                                 baseTableName="restaurant_order"
+                                 constraintName="fk_restaurant_order__assigned_waiter_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="table_id"
+                                 baseTableName="restaurant_order"
+                                 constraintName="fk_restaurant_order__table_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="restaurant_table"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="promotion_id"
+                                 baseTableName="restaurant_order"
+                                 constraintName="fk_restaurant_order__promotion_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="promotion"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="reservation_id"
+                                 baseTableName="restaurant_order"
+                                 constraintName="fk_restaurant_order__reservation_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="reservation"
+                                 />
+    </changeSet>
+</databaseChangeLog>

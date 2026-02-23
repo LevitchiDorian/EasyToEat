@@ -1,0 +1,33 @@
+{
+  "restaurantApp": {
+    "waitingList": {
+      "home": {
+        "title": "Waiting Lists",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Waiting List",
+        "createOrEditLabel": "Creeare sau editare Waiting List",
+        "notFound": "No Waiting Lists found"
+      },
+      "created": "A fost creată o nouă entitate Waiting List cu identificatorul {{ param }}",
+      "updated": "Waiting List cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Waiting List cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Waiting List {{ id }}?"
+      },
+      "detail": {
+        "title": "Waiting List"
+      },
+      "id": "ID",
+      "requestedDate": "Requested Date",
+      "requestedTime": "Requested Time",
+      "partySize": "Party Size",
+      "notes": "Notes",
+      "isNotified": "Is Notified",
+      "expiresAt": "Expires At",
+      "createdAt": "Created At",
+      "location": "Location",
+      "client": "Client",
+      "room": "Room"
+    }
+  }
+}

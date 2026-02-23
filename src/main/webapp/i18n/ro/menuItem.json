@@ -1,0 +1,40 @@
+{
+  "restaurantApp": {
+    "menuItem": {
+      "home": {
+        "title": "Menu Items",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Menu Item",
+        "createOrEditLabel": "Creeare sau editare Menu Item",
+        "notFound": "No Menu Items found"
+      },
+      "created": "A fost creată o nouă entitate Menu Item cu identificatorul {{ param }}",
+      "updated": "Menu Item cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Menu Item cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Menu Item {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Item"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "discountedPrice": "Discounted Price",
+      "preparationTimeMinutes": "Preparation Time Minutes",
+      "calories": "Calories",
+      "imageUrl": "Image Url",
+      "isAvailable": "Is Available",
+      "isFeatured": "Is Featured",
+      "isVegetarian": "Is Vegetarian",
+      "isVegan": "Is Vegan",
+      "isGlutenFree": "Is Gluten Free",
+      "spicyLevel": "Spicy Level",
+      "displayOrder": "Display Order",
+      "allergens": "Allergens",
+      "options": "Options",
+      "category": "Category"
+    }
+  }
+}

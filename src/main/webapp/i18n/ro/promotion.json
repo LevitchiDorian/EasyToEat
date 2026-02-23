@@ -1,0 +1,36 @@
+{
+  "restaurantApp": {
+    "promotion": {
+      "home": {
+        "title": "Promotions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Promotion",
+        "createOrEditLabel": "Creeare sau editare Promotion",
+        "notFound": "No Promotions found"
+      },
+      "created": "A fost creată o nouă entitate Promotion cu identificatorul {{ param }}",
+      "updated": "Promotion cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Promotion cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Promotion {{ id }}?"
+      },
+      "detail": {
+        "title": "Promotion"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "discountType": "Discount Type",
+      "discountValue": "Discount Value",
+      "minimumOrderAmount": "Minimum Order Amount",
+      "maxUsageCount": "Max Usage Count",
+      "currentUsageCount": "Current Usage Count",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "isActive": "Is Active",
+      "brand": "Brand",
+      "location": "Location"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "restaurantApp": {
+    "NotificationType": {
+      "null": "",
+      "RESERVATION_CONFIRMED": "RESERVATION_CONFIRMED",
+      "RESERVATION_CANCELLED": "RESERVATION_CANCELLED",
+      "ORDER_READY": "ORDER_READY",
+      "ORDER_STATUS_CHANGED": "ORDER_STATUS_CHANGED",
+      "REMINDER": "REMINDER"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "restaurantApp": {
+    "restaurantOrder": {
+      "home": {
+        "title": "Restaurant Orders",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Restaurant Order",
+        "createOrEditLabel": "Create or edit a Restaurant Order",
+        "notFound": "No Restaurant Orders found"
+      },
+      "created": "A new Restaurant Order is created with identifier {{ param }}",
+      "updated": "A Restaurant Order is updated with identifier {{ param }}",
+      "deleted": "A Restaurant Order is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Restaurant Order {{ id }}?"
+      },
+      "detail": {
+        "title": "Restaurant Order"
+      },
+      "id": "ID",
+      "orderCode": "Order Code",
+      "status": "Status",
+      "isPreOrder": "Is Pre Order",
+      "scheduledFor": "Scheduled For",
+      "subtotal": "Subtotal",
+      "discountAmount": "Discount Amount",
+      "taxAmount": "Tax Amount",
+      "totalAmount": "Total Amount",
+      "specialInstructions": "Special Instructions",
+      "estimatedReadyTime": "Estimated Ready Time",
+      "confirmedAt": "Confirmed At",
+      "completedAt": "Completed At",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "items": "Items",
+      "payments": "Payments",
+      "location": "Location",
+      "client": "Client",
+      "assignedWaiter": "Assigned Waiter",
+      "table": "Table",
+      "promotion": "Promotion",
+      "reservation": "Reservation"
+    }
+  }
+}

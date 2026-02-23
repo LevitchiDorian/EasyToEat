@@ -1,0 +1,78 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (payment(); as paymentRef) {
+      <div>
+        <h2 data-cy="paymentDetailsHeading"><span jhiTranslate="restaurantApp.payment.detail.title">Payment</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ paymentRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.transactionCode">Transaction Code</span></dt>
+          <dd>
+            <span>{{ paymentRef.transactionCode }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.amount">Amount</span></dt>
+          <dd>
+            <span>{{ paymentRef.amount }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.method">Method</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.PaymentMethod.' + (paymentRef.method ?? 'null')">{{
+              { null: '', CASH: 'CASH', CARD: 'CARD' }[paymentRef.method ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.status">Status</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.PaymentStatus.' + (paymentRef.status ?? 'null')">{{
+              { null: '', PENDING: 'PENDING', PAID: 'PAID', FAILED: 'FAILED' }[paymentRef.status ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.paidAt">Paid At</span></dt>
+          <dd>
+            <span>{{ paymentRef.paidAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.receiptUrl">Receipt Url</span></dt>
+          <dd>
+            <span>{{ paymentRef.receiptUrl }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.notes">Notes</span></dt>
+          <dd>
+            <span>{{ paymentRef.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ paymentRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.processedBy">Processed By</span></dt>
+          <dd>
+            <span>{{ paymentRef.processedBy?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.payment.order">Order</span></dt>
+          <dd>
+            @if (payment()!.order) {
+              <div>
+                <a [routerLink]="['/restaurant-order', payment()!.order?.id, 'view']">{{ paymentRef.order?.orderCode }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/payment', paymentRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

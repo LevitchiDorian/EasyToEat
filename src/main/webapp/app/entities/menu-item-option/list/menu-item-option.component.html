@@ -1,0 +1,129 @@
+<div>
+  <h2 id="page-heading" data-cy="MenuItemOptionHeading">
+    <span jhiTranslate="restaurantApp.menuItemOption.home.title">Menu Item Options</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.menuItemOption.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-menu-item-option"
+        [routerLink]="['/menu-item-option/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.menuItemOption.home.createLabel">Create a new Menu Item Option</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (menuItemOptions().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.menuItemOption.home.notFound">No Menu Item Options found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItemOption.name">Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isRequired">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItemOption.isRequired">Is Required</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="maxSelections">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItemOption.maxSelections">Max Selections</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="displayOrder">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItemOption.displayOrder">Display Order</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="menuItem.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.menuItemOption.menuItem">Menu Item</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (menuItemOption of menuItemOptions(); track trackId(menuItemOption)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/menu-item-option', menuItemOption.id, 'view']">{{ menuItemOption.id }}</a>
+              </td>
+              <td>{{ menuItemOption.name }}</td>
+              <td>{{ menuItemOption.isRequired }}</td>
+              <td>{{ menuItemOption.maxSelections }}</td>
+              <td>{{ menuItemOption.displayOrder }}</td>
+              <td>
+                @if (menuItemOption.menuItem) {
+                  <div>
+                    <a [routerLink]="['/menu-item', menuItemOption.menuItem.id, 'view']">{{ menuItemOption.menuItem.name }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/menu-item-option', menuItemOption.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/menu-item-option', menuItemOption.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(menuItemOption)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

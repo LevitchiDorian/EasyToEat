@@ -1,0 +1,11 @@
+id;name;description;price;discounted_price;preparation_time_minutes;calories;image_url;is_available;is_featured;is_vegetarian;is_vegan;is_gluten_free;spicy_level;display_order;category_id
+1;quizzically considering unruly;../fake-data/blob/hipster.txt;3633.1;4385.06;0;9541;ick ugh under;false;false;false;true;true;1;1343;1
+2;than versus reproachfully;../fake-data/blob/hipster.txt;2787.77;32589.32;85;18120;tune-up and gah;true;false;true;true;false;3;2639;2
+3;unlike;../fake-data/blob/hipster.txt;28102.97;1020.3;175;17922;oof less if;false;true;false;false;true;1;13527;3
+4;haversack;../fake-data/blob/hipster.txt;16549.42;13458.44;47;18922;before madly;true;false;true;false;true;2;13571;4
+5;when outside abaft;../fake-data/blob/hipster.txt;7555.7;5854.3;170;13230;yawn who;false;true;true;false;true;0;5826;5
+6;enthusiastically;../fake-data/blob/hipster.txt;16005.78;2340.86;134;9939;showboat keenly doorpost;false;true;true;false;false;0;14032;6
+7;remark;../fake-data/blob/hipster.txt;26293.77;7215.8;26;11673;since finally;false;false;true;true;true;3;5733;7
+8;wombat fort;../fake-data/blob/hipster.txt;19944.89;19762.96;5;9547;creative;false;true;true;true;true;2;25265;8
+9;solicit unless;../fake-data/blob/hipster.txt;21668.41;24384.53;172;2012;justly;false;true;false;true;false;3;12945;9
+10;goat safely;../fake-data/blob/hipster.txt;17963.39;15387.89;113;10373;hm;false;true;false;false;true;1;3334;10

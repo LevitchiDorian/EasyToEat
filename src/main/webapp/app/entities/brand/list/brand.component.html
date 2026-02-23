@@ -1,0 +1,254 @@
+<div>
+  <h2 id="page-heading" data-cy="BrandHeading">
+    <span jhiTranslate="restaurantApp.brand.home.title">Brands</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.brand.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-brand"
+        [routerLink]="['/brand/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.brand.home.createLabel">Create a new Brand</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (brands().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.brand.home.notFound">No Brands found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.name">Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.description">Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="logoUrl">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.logoUrl">Logo Url</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="coverImageUrl">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.coverImageUrl">Cover Image Url</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="primaryColor">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.primaryColor">Primary Color</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="secondaryColor">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.secondaryColor">Secondary Color</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="website">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.website">Website</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contactEmail">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.contactEmail">Contact Email</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contactPhone">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.contactPhone">Contact Phone</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="defaultReservationDuration">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.defaultReservationDuration">Default Reservation Duration</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="maxAdvanceBookingDays">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.maxAdvanceBookingDays">Max Advance Booking Days</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cancellationDeadlineHours">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.cancellationDeadlineHours">Cancellation Deadline Hours</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isActive">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.isActive">Is Active</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.brand.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (brand of brands(); track trackId(brand)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/brand', brand.id, 'view']">{{ brand.id }}</a>
+              </td>
+              <td>{{ brand.name }}</td>
+              <td>{{ brand.description }}</td>
+              <td>{{ brand.logoUrl }}</td>
+              <td>{{ brand.coverImageUrl }}</td>
+              <td>{{ brand.primaryColor }}</td>
+              <td>{{ brand.secondaryColor }}</td>
+              <td>{{ brand.website }}</td>
+              <td>{{ brand.contactEmail }}</td>
+              <td>{{ brand.contactPhone }}</td>
+              <td>{{ brand.defaultReservationDuration }}</td>
+              <td>{{ brand.maxAdvanceBookingDays }}</td>
+              <td>{{ brand.cancellationDeadlineHours }}</td>
+              <td>{{ brand.isActive }}</td>
+              <td>{{ brand.createdAt | formatMediumDatetime }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <button
+                    type="submit"
+                    [routerLink]="['/location']"
+                    [queryParams]="{ 'filter[brandId.in]': brand.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('restaurantApp.brand.locations' | translate) }"
+                      >Show Locations</span
+                    >
+                  </button>
+                  <button
+                    type="submit"
+                    [routerLink]="['/menu-category']"
+                    [queryParams]="{ 'filter[brandId.in]': brand.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('restaurantApp.brand.categories' | translate) }"
+                      >Show Categories</span
+                    >
+                  </button>
+                  <button
+                    type="submit"
+                    [routerLink]="['/promotion']"
+                    [queryParams]="{ 'filter[brandId.in]': brand.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('restaurantApp.brand.promotions' | translate) }"
+                      >Show Promotions</span
+                    >
+                  </button>
+                  <a [routerLink]="['/brand', brand.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/brand', brand.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(brand)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (brands().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

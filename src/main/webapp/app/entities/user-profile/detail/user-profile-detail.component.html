@@ -1,0 +1,76 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (userProfile(); as userProfileRef) {
+      <div>
+        <h2 data-cy="userProfileDetailsHeading"><span jhiTranslate="restaurantApp.userProfile.detail.title">User Profile</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ userProfileRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.phone">Phone</span></dt>
+          <dd>
+            <span>{{ userProfileRef.phone }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.avatarUrl">Avatar Url</span></dt>
+          <dd>
+            <span>{{ userProfileRef.avatarUrl }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.role">Role</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.UserRole.' + (userProfileRef.role ?? 'null')">{{
+              { null: '', SUPER_ADMIN: 'SUPER_ADMIN', MANAGER: 'MANAGER', CLIENT: 'CLIENT' }[userProfileRef.role ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.preferredLanguage">Preferred Language</span></dt>
+          <dd>
+            <span>{{ userProfileRef.preferredLanguage }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.receiveEmailNotifications">Receive Email Notifications</span></dt>
+          <dd>
+            <span>{{ userProfileRef.receiveEmailNotifications }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.receivePushNotifications">Receive Push Notifications</span></dt>
+          <dd>
+            <span>{{ userProfileRef.receivePushNotifications }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.loyaltyPoints">Loyalty Points</span></dt>
+          <dd>
+            <span>{{ userProfileRef.loyaltyPoints }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ userProfileRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.user">User</span></dt>
+          <dd>
+            <span>{{ userProfileRef.user?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.userProfile.location">Location</span></dt>
+          <dd>
+            @if (userProfile()!.location) {
+              <div>
+                <a [routerLink]="['/location', userProfile()!.location?.id, 'view']">{{ userProfileRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/user-profile', userProfileRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

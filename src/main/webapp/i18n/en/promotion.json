@@ -1,0 +1,36 @@
+{
+  "restaurantApp": {
+    "promotion": {
+      "home": {
+        "title": "Promotions",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Promotion",
+        "createOrEditLabel": "Create or edit a Promotion",
+        "notFound": "No Promotions found"
+      },
+      "created": "A new Promotion is created with identifier {{ param }}",
+      "updated": "A Promotion is updated with identifier {{ param }}",
+      "deleted": "A Promotion is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Promotion {{ id }}?"
+      },
+      "detail": {
+        "title": "Promotion"
+      },
+      "id": "ID",
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "discountType": "Discount Type",
+      "discountValue": "Discount Value",
+      "minimumOrderAmount": "Minimum Order Amount",
+      "maxUsageCount": "Max Usage Count",
+      "currentUsageCount": "Current Usage Count",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "isActive": "Is Active",
+      "brand": "Brand",
+      "location": "Location"
+    }
+  }
+}

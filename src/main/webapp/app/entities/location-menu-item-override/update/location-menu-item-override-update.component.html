@@ -1,0 +1,191 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-location-menu-item-override-heading"
+        data-cy="LocationMenuItemOverrideCreateUpdateHeading"
+        jhiTranslate="restaurantApp.locationMenuItemOverride.home.createOrEditLabel"
+      >
+        Create or edit a Location Menu Item Override
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.locationMenuItemOverride.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let isAvailableAtLocationRef = editForm.get('isAvailableAtLocation')!;
+        <div class="mb-3">
+          <label
+            class="form-label"
+            for="field_isAvailableAtLocation"
+            jhiTranslate="restaurantApp.locationMenuItemOverride.isAvailableAtLocation"
+            >Is Available At Location</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isAvailableAtLocation"
+            id="field_isAvailableAtLocation"
+            data-cy="isAvailableAtLocation"
+            formControlName="isAvailableAtLocation"
+          />
+          @if (isAvailableAtLocationRef.invalid && (isAvailableAtLocationRef.dirty || isAvailableAtLocationRef.touched)) {
+            <div>
+              @if (editForm.get('isAvailableAtLocation')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let priceOverrideRef = editForm.get('priceOverride')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_priceOverride" jhiTranslate="restaurantApp.locationMenuItemOverride.priceOverride"
+            >Price Override</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="priceOverride"
+            id="field_priceOverride"
+            data-cy="priceOverride"
+            formControlName="priceOverride"
+          />
+          @if (priceOverrideRef.invalid && (priceOverrideRef.dirty || priceOverrideRef.touched)) {
+            <div>
+              @if (editForm.get('priceOverride')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('priceOverride')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let preparationTimeOverrideRef = editForm.get('preparationTimeOverride')!;
+        <div class="mb-3">
+          <label
+            class="form-label"
+            for="field_preparationTimeOverride"
+            jhiTranslate="restaurantApp.locationMenuItemOverride.preparationTimeOverride"
+            >Preparation Time Override</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="preparationTimeOverride"
+            id="field_preparationTimeOverride"
+            data-cy="preparationTimeOverride"
+            formControlName="preparationTimeOverride"
+          />
+          @if (preparationTimeOverrideRef.invalid && (preparationTimeOverrideRef.dirty || preparationTimeOverrideRef.touched)) {
+            <div>
+              @if (editForm.get('preparationTimeOverride')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              @if (editForm.get('preparationTimeOverride')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '180' }"
+                  >This field cannot be more than 180.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('preparationTimeOverride')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let notesRef = editForm.get('notes')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_notes" jhiTranslate="restaurantApp.locationMenuItemOverride.notes">Notes</label>
+          <input type="text" class="form-control" name="notes" id="field_notes" data-cy="notes" formControlName="notes" />
+          @if (notesRef.invalid && (notesRef.dirty || notesRef.touched)) {
+            <div>
+              @if (editForm.get('notes')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >This field cannot be longer than 500 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_menuItem" jhiTranslate="restaurantApp.locationMenuItemOverride.menuItem">Menu Item</label>
+          <select
+            class="form-control"
+            id="field_menuItem"
+            data-cy="menuItem"
+            name="menuItem"
+            formControlName="menuItem"
+            [compareWith]="compareMenuItem"
+          >
+            <option [ngValue]="null"></option>
+            @for (menuItemOption of menuItemsSharedCollection; track $index) {
+              <option [ngValue]="menuItemOption">{{ menuItemOption.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.locationMenuItemOverride.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            @if (editForm.get(['location'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['location'])!.invalid && (editForm.get(['location'])!.dirty || editForm.get(['location'])!.touched)) {
+          <div>
+            @if (editForm.get(['location'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

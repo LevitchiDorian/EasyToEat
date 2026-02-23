@@ -1,0 +1,33 @@
+{
+  "restaurantApp": {
+    "payment": {
+      "home": {
+        "title": "Payments",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Payment",
+        "createOrEditLabel": "Creeare sau editare Payment",
+        "notFound": "No Payments found"
+      },
+      "created": "A fost creată o nouă entitate Payment cu identificatorul {{ param }}",
+      "updated": "Payment cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Payment cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Payment {{ id }}?"
+      },
+      "detail": {
+        "title": "Payment"
+      },
+      "id": "ID",
+      "transactionCode": "Transaction Code",
+      "amount": "Amount",
+      "method": "Method",
+      "status": "Status",
+      "paidAt": "Paid At",
+      "receiptUrl": "Receipt Url",
+      "notes": "Notes",
+      "createdAt": "Created At",
+      "processedBy": "Processed By",
+      "order": "Order"
+    }
+  }
+}

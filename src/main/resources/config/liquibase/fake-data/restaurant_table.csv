@@ -1,0 +1,11 @@
+id;table_number;shape;min_capacity;max_capacity;position_x;position_y;width_px;height_px;rotation;status;is_active;notes;room_id
+1;grounded;RECTANGLE;1722;5332;16774.72;29752.65;7380.69;13532.6;8904.34;AVAILABLE;false;inasmuch;1
+2;abscond though;SQUARE;17678;4023;3520.21;14712.33;16588.97;26340.53;22050.39;OUT_OF_SERVICE;true;ah;2
+3;over queasily;ROUND;6929;6822;17059.52;16569.84;20618.82;26141.88;6794.12;RESERVED;true;alarmed boohoo;3
+4;vary;SQUARE;9905;16305;15744.75;19350;4644.42;16665.99;6751.24;AVAILABLE;false;unfurl manage;4
+5;knowingly;ROUND;25172;8158;9088.28;25344.23;13042.6;31063.81;12260.58;AVAILABLE;false;fond matter asset;5
+6;pfft ready;SQUARE;30693;28065;28518.91;29503.57;27737.33;20741.2;2959.39;OCCUPIED;true;bowler;6
+7;bah;ROUND;9119;9332;27368.43;19716.84;4709.04;24605.96;22495.46;OUT_OF_SERVICE;false;nicely midwife lest;7
+8;superficial;ROUND;2942;9533;7380.85;14692.33;16165.3;14986.55;18337.23;RESERVED;false;ew upright below;8
+9;butter instantly;SQUARE;9802;22796;32080.12;17409.75;1056.64;11301.34;16016.32;OUT_OF_SERVICE;false;incidentally;9
+10;after roughly when;SQUARE;12703;8938;2766;3240.82;23728.84;26908.37;20582.54;OCCUPIED;true;however steel;10

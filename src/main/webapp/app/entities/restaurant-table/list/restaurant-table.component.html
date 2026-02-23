@@ -1,0 +1,222 @@
+<div>
+  <h2 id="page-heading" data-cy="RestaurantTableHeading">
+    <span jhiTranslate="restaurantApp.restaurantTable.home.title">Restaurant Tables</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.restaurantTable.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-restaurant-table"
+        [routerLink]="['/restaurant-table/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.restaurantTable.home.createLabel">Create a new Restaurant Table</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (restaurantTables().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.restaurantTable.home.notFound">No Restaurant Tables found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tableNumber">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.tableNumber">Table Number</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="shape">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.shape">Shape</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="minCapacity">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.minCapacity">Min Capacity</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="maxCapacity">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.maxCapacity">Max Capacity</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="positionX">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.positionX">Position X</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="positionY">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.positionY">Position Y</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="widthPx">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.widthPx">Width Px</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="heightPx">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.heightPx">Height Px</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="rotation">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.rotation">Rotation</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.status">Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isActive">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.isActive">Is Active</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="notes">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.notes">Notes</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="room.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.restaurantTable.room">Room</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (restaurantTable of restaurantTables(); track trackId(restaurantTable)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/restaurant-table', restaurantTable.id, 'view']">{{ restaurantTable.id }}</a>
+              </td>
+              <td>{{ restaurantTable.tableNumber }}</td>
+              <td [jhiTranslate]="'restaurantApp.TableShape.' + (restaurantTable.shape ?? 'null')">
+                {{ { null: '', ROUND: 'ROUND', SQUARE: 'SQUARE', RECTANGLE: 'RECTANGLE' }[restaurantTable.shape ?? 'null'] }}
+              </td>
+              <td>{{ restaurantTable.minCapacity }}</td>
+              <td>{{ restaurantTable.maxCapacity }}</td>
+              <td>{{ restaurantTable.positionX }}</td>
+              <td>{{ restaurantTable.positionY }}</td>
+              <td>{{ restaurantTable.widthPx }}</td>
+              <td>{{ restaurantTable.heightPx }}</td>
+              <td>{{ restaurantTable.rotation }}</td>
+              <td [jhiTranslate]="'restaurantApp.TableStatus.' + (restaurantTable.status ?? 'null')">
+                {{
+                  { null: '', AVAILABLE: 'AVAILABLE', RESERVED: 'RESERVED', OCCUPIED: 'OCCUPIED', OUT_OF_SERVICE: 'OUT_OF_SERVICE' }[
+                    restaurantTable.status ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ restaurantTable.isActive }}</td>
+              <td>{{ restaurantTable.notes }}</td>
+              <td>
+                @if (restaurantTable.room) {
+                  <div>
+                    <a [routerLink]="['/dining-room', restaurantTable.room.id, 'view']">{{ restaurantTable.room.name }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/restaurant-table', restaurantTable.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/restaurant-table', restaurantTable.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(restaurantTable)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (restaurantTables().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

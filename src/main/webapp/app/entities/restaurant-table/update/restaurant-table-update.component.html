@@ -1,0 +1,240 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-restaurant-table-heading"
+        data-cy="RestaurantTableCreateUpdateHeading"
+        jhiTranslate="restaurantApp.restaurantTable.home.createOrEditLabel"
+      >
+        Create or edit a Restaurant Table
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.restaurantTable.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let tableNumberRef = editForm.get('tableNumber')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_tableNumber" jhiTranslate="restaurantApp.restaurantTable.tableNumber">Table Number</label>
+          <input
+            type="text"
+            class="form-control"
+            name="tableNumber"
+            id="field_tableNumber"
+            data-cy="tableNumber"
+            formControlName="tableNumber"
+          />
+          @if (tableNumberRef.invalid && (tableNumberRef.dirty || tableNumberRef.touched)) {
+            <div>
+              @if (editForm.get('tableNumber')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('tableNumber')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '1' }"
+                  >This field is required to be at least 1 characters.</small
+                >
+              }
+              @if (editForm.get('tableNumber')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '20' }"
+                  >This field cannot be longer than 20 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let shapeRef = editForm.get('shape')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_shape" jhiTranslate="restaurantApp.restaurantTable.shape">Shape</label>
+          <select class="form-control" name="shape" formControlName="shape" id="field_shape" data-cy="shape">
+            <option [ngValue]="null">{{ 'restaurantApp.TableShape.null' | translate }}</option>
+            @for (tableShape of tableShapeValues; track $index) {
+              <option [value]="tableShape">{{ 'restaurantApp.TableShape.' + tableShape | translate }}</option>
+            }
+          </select>
+          @if (shapeRef.invalid && (shapeRef.dirty || shapeRef.touched)) {
+            <div>
+              @if (editForm.get('shape')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let minCapacityRef = editForm.get('minCapacity')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_minCapacity" jhiTranslate="restaurantApp.restaurantTable.minCapacity">Min Capacity</label>
+          <input
+            type="number"
+            class="form-control"
+            name="minCapacity"
+            id="field_minCapacity"
+            data-cy="minCapacity"
+            formControlName="minCapacity"
+          />
+          @if (minCapacityRef.invalid && (minCapacityRef.dirty || minCapacityRef.touched)) {
+            <div>
+              @if (editForm.get('minCapacity')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('minCapacity')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('minCapacity')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let maxCapacityRef = editForm.get('maxCapacity')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_maxCapacity" jhiTranslate="restaurantApp.restaurantTable.maxCapacity">Max Capacity</label>
+          <input
+            type="number"
+            class="form-control"
+            name="maxCapacity"
+            id="field_maxCapacity"
+            data-cy="maxCapacity"
+            formControlName="maxCapacity"
+          />
+          @if (maxCapacityRef.invalid && (maxCapacityRef.dirty || maxCapacityRef.touched)) {
+            <div>
+              @if (editForm.get('maxCapacity')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('maxCapacity')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('maxCapacity')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_positionX" jhiTranslate="restaurantApp.restaurantTable.positionX">Position X</label>
+          <input type="number" class="form-control" name="positionX" id="field_positionX" data-cy="positionX" formControlName="positionX" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_positionY" jhiTranslate="restaurantApp.restaurantTable.positionY">Position Y</label>
+          <input type="number" class="form-control" name="positionY" id="field_positionY" data-cy="positionY" formControlName="positionY" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_widthPx" jhiTranslate="restaurantApp.restaurantTable.widthPx">Width Px</label>
+          <input type="number" class="form-control" name="widthPx" id="field_widthPx" data-cy="widthPx" formControlName="widthPx" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_heightPx" jhiTranslate="restaurantApp.restaurantTable.heightPx">Height Px</label>
+          <input type="number" class="form-control" name="heightPx" id="field_heightPx" data-cy="heightPx" formControlName="heightPx" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_rotation" jhiTranslate="restaurantApp.restaurantTable.rotation">Rotation</label>
+          <input type="number" class="form-control" name="rotation" id="field_rotation" data-cy="rotation" formControlName="rotation" />
+        </div>
+
+        @let statusRef = editForm.get('status')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_status" jhiTranslate="restaurantApp.restaurantTable.status">Status</label>
+          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+            <option [ngValue]="null">{{ 'restaurantApp.TableStatus.null' | translate }}</option>
+            @for (tableStatus of tableStatusValues; track $index) {
+              <option [value]="tableStatus">{{ 'restaurantApp.TableStatus.' + tableStatus | translate }}</option>
+            }
+          </select>
+          @if (statusRef.invalid && (statusRef.dirty || statusRef.touched)) {
+            <div>
+              @if (editForm.get('status')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let isActiveRef = editForm.get('isActive')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isActive" jhiTranslate="restaurantApp.restaurantTable.isActive">Is Active</label>
+          <input type="checkbox" class="form-check" name="isActive" id="field_isActive" data-cy="isActive" formControlName="isActive" />
+          @if (isActiveRef.invalid && (isActiveRef.dirty || isActiveRef.touched)) {
+            <div>
+              @if (editForm.get('isActive')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let notesRef = editForm.get('notes')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_notes" jhiTranslate="restaurantApp.restaurantTable.notes">Notes</label>
+          <input type="text" class="form-control" name="notes" id="field_notes" data-cy="notes" formControlName="notes" />
+          @if (notesRef.invalid && (notesRef.dirty || notesRef.touched)) {
+            <div>
+              @if (editForm.get('notes')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >This field cannot be longer than 500 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_room" jhiTranslate="restaurantApp.restaurantTable.room">Room</label>
+          <select class="form-control" id="field_room" data-cy="room" name="room" formControlName="room" [compareWith]="compareDiningRoom">
+            @if (editForm.get(['room'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (diningRoomOption of diningRoomsSharedCollection; track $index) {
+              <option [ngValue]="diningRoomOption">{{ diningRoomOption.name }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['room'])!.invalid && (editForm.get(['room'])!.dirty || editForm.get(['room'])!.touched)) {
+          <div>
+            @if (editForm.get(['room'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

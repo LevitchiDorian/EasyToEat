@@ -1,0 +1,9 @@
+{
+  "restaurantApp": {
+    "PaymentMethod": {
+      "null": "",
+      "CASH": "CASH",
+      "CARD": "CARD"
+    }
+  }
+}

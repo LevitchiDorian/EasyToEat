@@ -1,0 +1,29 @@
+{
+  "restaurantApp": {
+    "locationHours": {
+      "home": {
+        "title": "Location Hours",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Location Hours",
+        "createOrEditLabel": "Creeare sau editare Location Hours",
+        "notFound": "No Location Hours found"
+      },
+      "created": "A fost creată o nouă entitate Location Hours cu identificatorul {{ param }}",
+      "updated": "Location Hours cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Location Hours cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Location Hours {{ id }}?"
+      },
+      "detail": {
+        "title": "Location Hours"
+      },
+      "id": "ID",
+      "dayOfWeek": "Day Of Week",
+      "openTime": "Open Time",
+      "closeTime": "Close Time",
+      "isClosed": "Is Closed",
+      "specialNote": "Special Note",
+      "location": "Location"
+    }
+  }
+}

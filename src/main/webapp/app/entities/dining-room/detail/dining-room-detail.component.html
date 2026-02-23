@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (diningRoom(); as diningRoomRef) {
+      <div>
+        <h2 data-cy="diningRoomDetailsHeading"><span jhiTranslate="restaurantApp.diningRoom.detail.title">Dining Room</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.name">Name</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.description">Description</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.floor">Floor</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.floor }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.capacity">Capacity</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.capacity }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.isActive">Is Active</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.isActive }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.floorPlanUrl">Floor Plan Url</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.floorPlanUrl }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.widthPx">Width Px</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.widthPx }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.heightPx">Height Px</span></dt>
+          <dd>
+            <span>{{ diningRoomRef.heightPx }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.diningRoom.location">Location</span></dt>
+          <dd>
+            @if (diningRoom()!.location) {
+              <div>
+                <a [routerLink]="['/location', diningRoom()!.location?.id, 'view']">{{ diningRoomRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/dining-room', diningRoomRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

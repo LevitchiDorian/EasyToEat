@@ -1,0 +1,177 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-menu-item-option-value-heading"
+        data-cy="MenuItemOptionValueCreateUpdateHeading"
+        jhiTranslate="restaurantApp.menuItemOptionValue.home.createOrEditLabel"
+      >
+        Create or edit a Menu Item Option Value
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.menuItemOptionValue.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let labelRef = editForm.get('label')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_label" jhiTranslate="restaurantApp.menuItemOptionValue.label">Label</label>
+          <input type="text" class="form-control" name="label" id="field_label" data-cy="label" formControlName="label" />
+          @if (labelRef.invalid && (labelRef.dirty || labelRef.touched)) {
+            <div>
+              @if (editForm.get('label')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('label')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '100' }"
+                  >This field cannot be longer than 100 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let priceAdjustmentRef = editForm.get('priceAdjustment')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_priceAdjustment" jhiTranslate="restaurantApp.menuItemOptionValue.priceAdjustment"
+            >Price Adjustment</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="priceAdjustment"
+            id="field_priceAdjustment"
+            data-cy="priceAdjustment"
+            formControlName="priceAdjustment"
+          />
+          @if (priceAdjustmentRef.invalid && (priceAdjustmentRef.dirty || priceAdjustmentRef.touched)) {
+            <div>
+              @if (editForm.get('priceAdjustment')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('priceAdjustment')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let isDefaultRef = editForm.get('isDefault')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isDefault" jhiTranslate="restaurantApp.menuItemOptionValue.isDefault">Is Default</label>
+          <input type="checkbox" class="form-check" name="isDefault" id="field_isDefault" data-cy="isDefault" formControlName="isDefault" />
+          @if (isDefaultRef.invalid && (isDefaultRef.dirty || isDefaultRef.touched)) {
+            <div>
+              @if (editForm.get('isDefault')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let isAvailableRef = editForm.get('isAvailable')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isAvailable" jhiTranslate="restaurantApp.menuItemOptionValue.isAvailable"
+            >Is Available</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isAvailable"
+            id="field_isAvailable"
+            data-cy="isAvailable"
+            formControlName="isAvailable"
+          />
+          @if (isAvailableRef.invalid && (isAvailableRef.dirty || isAvailableRef.touched)) {
+            <div>
+              @if (editForm.get('isAvailable')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let displayOrderRef = editForm.get('displayOrder')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_displayOrder" jhiTranslate="restaurantApp.menuItemOptionValue.displayOrder"
+            >Display Order</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="displayOrder"
+            id="field_displayOrder"
+            data-cy="displayOrder"
+            formControlName="displayOrder"
+          />
+          @if (displayOrderRef.invalid && (displayOrderRef.dirty || displayOrderRef.touched)) {
+            <div>
+              @if (editForm.get('displayOrder')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('displayOrder')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_option" jhiTranslate="restaurantApp.menuItemOptionValue.option">Option</label>
+          <select
+            class="form-control"
+            id="field_option"
+            data-cy="option"
+            name="option"
+            formControlName="option"
+            [compareWith]="compareMenuItemOption"
+          >
+            @if (editForm.get(['option'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (menuItemOptionOption of menuItemOptionsSharedCollection; track $index) {
+              <option [ngValue]="menuItemOptionOption">{{ menuItemOptionOption.name }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['option'])!.invalid && (editForm.get(['option'])!.dirty || editForm.get(['option'])!.touched)) {
+          <div>
+            @if (editForm.get(['option'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

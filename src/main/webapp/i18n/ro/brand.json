@@ -1,0 +1,40 @@
+{
+  "restaurantApp": {
+    "brand": {
+      "home": {
+        "title": "Brands",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Brand",
+        "createOrEditLabel": "Creeare sau editare Brand",
+        "notFound": "No Brands found"
+      },
+      "created": "A fost creată o nouă entitate Brand cu identificatorul {{ param }}",
+      "updated": "Brand cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Brand cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Brand {{ id }}?"
+      },
+      "detail": {
+        "title": "Brand"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "logoUrl": "Logo Url",
+      "coverImageUrl": "Cover Image Url",
+      "primaryColor": "Primary Color",
+      "secondaryColor": "Secondary Color",
+      "website": "Website",
+      "contactEmail": "Contact Email",
+      "contactPhone": "Contact Phone",
+      "defaultReservationDuration": "Default Reservation Duration",
+      "maxAdvanceBookingDays": "Max Advance Booking Days",
+      "cancellationDeadlineHours": "Cancellation Deadline Hours",
+      "isActive": "Is Active",
+      "createdAt": "Created At",
+      "locations": "Locations",
+      "categories": "Categories",
+      "promotions": "Promotions"
+    }
+  }
+}

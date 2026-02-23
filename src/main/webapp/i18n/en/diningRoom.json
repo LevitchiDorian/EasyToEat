@@ -1,0 +1,33 @@
+{
+  "restaurantApp": {
+    "diningRoom": {
+      "home": {
+        "title": "Dining Rooms",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Dining Room",
+        "createOrEditLabel": "Create or edit a Dining Room",
+        "notFound": "No Dining Rooms found"
+      },
+      "created": "A new Dining Room is created with identifier {{ param }}",
+      "updated": "A Dining Room is updated with identifier {{ param }}",
+      "deleted": "A Dining Room is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Dining Room {{ id }}?"
+      },
+      "detail": {
+        "title": "Dining Room"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "floor": "Floor",
+      "capacity": "Capacity",
+      "isActive": "Is Active",
+      "floorPlanUrl": "Floor Plan Url",
+      "widthPx": "Width Px",
+      "heightPx": "Height Px",
+      "tables": "Tables",
+      "location": "Location"
+    }
+  }
+}

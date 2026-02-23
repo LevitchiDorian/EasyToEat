@@ -1,0 +1,222 @@
+<div>
+  <h2 id="page-heading" data-cy="NotificationHeading">
+    <span jhiTranslate="restaurantApp.notification.home.title">Notifications</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.notification.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-notification"
+        [routerLink]="['/notification/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.notification.home.createLabel">Create a new Notification</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (notifications().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.notification.home.notFound">No Notifications found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.type">Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="channel">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.channel">Channel</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="subject">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.subject">Subject</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="body">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.body">Body</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="isRead">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.isRead">Is Read</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sentAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.sentAt">Sent At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="readAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.readAt">Read At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdAt">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.createdAt">Created At</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="recipient.login">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.recipient">Recipient</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="location.name">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.location">Location</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reservation.reservationCode">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.reservation">Reservation</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="order.orderCode">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.notification.order">Order</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (notification of notifications(); track trackId(notification)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/notification', notification.id, 'view']">{{ notification.id }}</a>
+              </td>
+              <td [jhiTranslate]="'restaurantApp.NotificationType.' + (notification.type ?? 'null')">
+                {{
+                  {
+                    null: '',
+                    RESERVATION_CONFIRMED: 'RESERVATION_CONFIRMED',
+                    RESERVATION_CANCELLED: 'RESERVATION_CANCELLED',
+                    ORDER_READY: 'ORDER_READY',
+                    ORDER_STATUS_CHANGED: 'ORDER_STATUS_CHANGED',
+                    REMINDER: 'REMINDER',
+                  }[notification.type ?? 'null']
+                }}
+              </td>
+              <td [jhiTranslate]="'restaurantApp.NotificationChannel.' + (notification.channel ?? 'null')">
+                {{ { null: '', EMAIL: 'EMAIL', IN_APP: 'IN_APP', PUSH: 'PUSH' }[notification.channel ?? 'null'] }}
+              </td>
+              <td>{{ notification.subject }}</td>
+              <td>{{ notification.body }}</td>
+              <td>{{ notification.isRead }}</td>
+              <td>{{ notification.sentAt | formatMediumDatetime }}</td>
+              <td>{{ notification.readAt | formatMediumDatetime }}</td>
+              <td>{{ notification.createdAt | formatMediumDatetime }}</td>
+              <td>
+                {{ notification.recipient?.login }}
+              </td>
+              <td>
+                @if (notification.location) {
+                  <div>
+                    <a [routerLink]="['/location', notification.location.id, 'view']">{{ notification.location.name }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (notification.reservation) {
+                  <div>
+                    <a [routerLink]="['/reservation', notification.reservation.id, 'view']">{{
+                      notification.reservation.reservationCode
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (notification.order) {
+                  <div>
+                    <a [routerLink]="['/restaurant-order', notification.order.id, 'view']">{{ notification.order.orderCode }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/notification', notification.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a [routerLink]="['/notification', notification.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(notification)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (notifications().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</div>

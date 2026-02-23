@@ -1,0 +1,10 @@
+{
+  "restaurantApp": {
+    "TableShape": {
+      "null": "",
+      "ROUND": "ROUND",
+      "SQUARE": "SQUARE",
+      "RECTANGLE": "RECTANGLE"
+    }
+  }
+}

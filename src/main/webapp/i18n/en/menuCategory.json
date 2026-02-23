@@ -1,0 +1,31 @@
+{
+  "restaurantApp": {
+    "menuCategory": {
+      "home": {
+        "title": "Menu Categories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Menu Category",
+        "createOrEditLabel": "Create or edit a Menu Category",
+        "notFound": "No Menu Categories found"
+      },
+      "created": "A new Menu Category is created with identifier {{ param }}",
+      "updated": "A Menu Category is updated with identifier {{ param }}",
+      "deleted": "A Menu Category is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Menu Category {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Category"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "imageUrl": "Image Url",
+      "displayOrder": "Display Order",
+      "isActive": "Is Active",
+      "items": "Items",
+      "parent": "Parent",
+      "brand": "Brand"
+    }
+  }
+}

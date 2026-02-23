@@ -1,0 +1,78 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (waitingList(); as waitingListRef) {
+      <div>
+        <h2 data-cy="waitingListDetailsHeading"><span jhiTranslate="restaurantApp.waitingList.detail.title">Waiting List</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ waitingListRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.requestedDate">Requested Date</span></dt>
+          <dd>
+            <span>{{ waitingListRef.requestedDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.requestedTime">Requested Time</span></dt>
+          <dd>
+            <span>{{ waitingListRef.requestedTime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.partySize">Party Size</span></dt>
+          <dd>
+            <span>{{ waitingListRef.partySize }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.notes">Notes</span></dt>
+          <dd>
+            <span>{{ waitingListRef.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.isNotified">Is Notified</span></dt>
+          <dd>
+            <span>{{ waitingListRef.isNotified }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.expiresAt">Expires At</span></dt>
+          <dd>
+            <span>{{ waitingListRef.expiresAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ waitingListRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.location">Location</span></dt>
+          <dd>
+            @if (waitingList()!.location) {
+              <div>
+                <a [routerLink]="['/location', waitingList()!.location?.id, 'view']">{{ waitingListRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.client">Client</span></dt>
+          <dd>
+            <span>{{ waitingListRef.client?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.waitingList.room">Room</span></dt>
+          <dd>
+            @if (waitingList()!.room) {
+              <div>
+                <a [routerLink]="['/dining-room', waitingList()!.room?.id, 'view']">{{ waitingListRef.room?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/waiting-list', waitingListRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

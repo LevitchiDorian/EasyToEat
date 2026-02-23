@@ -1,0 +1,69 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (locationHours(); as locationHoursRef) {
+      <div>
+        <h2 data-cy="locationHoursDetailsHeading"><span jhiTranslate="restaurantApp.locationHours.detail.title">Location Hours</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ locationHoursRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationHours.dayOfWeek">Day Of Week</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.DayOfWeek.' + (locationHoursRef.dayOfWeek ?? 'null')">{{
+              {
+                null: '',
+                MONDAY: 'MONDAY',
+                TUESDAY: 'TUESDAY',
+                WEDNESDAY: 'WEDNESDAY',
+                THURSDAY: 'THURSDAY',
+                FRIDAY: 'FRIDAY',
+                SATURDAY: 'SATURDAY',
+                SUNDAY: 'SUNDAY',
+              }[locationHoursRef.dayOfWeek ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationHours.openTime">Open Time</span></dt>
+          <dd>
+            <span>{{ locationHoursRef.openTime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationHours.closeTime">Close Time</span></dt>
+          <dd>
+            <span>{{ locationHoursRef.closeTime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationHours.isClosed">Is Closed</span></dt>
+          <dd>
+            <span>{{ locationHoursRef.isClosed }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationHours.specialNote">Special Note</span></dt>
+          <dd>
+            <span>{{ locationHoursRef.specialNote }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.locationHours.location">Location</span></dt>
+          <dd>
+            @if (locationHours()!.location) {
+              <div>
+                <a [routerLink]="['/location', locationHours()!.location?.id, 'view']">{{ locationHoursRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/location-hours', locationHoursRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

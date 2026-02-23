@@ -1,0 +1,557 @@
+// ============================================================
+// 1. APPLICATION CONFIG
+// ============================================================
+
+application {
+  config {
+    baseName                restaurantApp
+    applicationType         monolith
+    packageName             md.utm.restaurant
+    authenticationType      jwt
+    databaseType            sql
+    devDatabaseType         postgresql
+    prodDatabaseType        postgresql
+    buildTool               maven
+    clientFramework         angular
+    clientPackageManager    npm
+    languages               [en, ro]
+    nativeLanguage          en
+    testFrameworks          [cypress]
+    enableSwaggerCodegen    true
+    cacheProvider           ehcache
+    enableHibernateCache    true
+    websocket               spring-websocket
+    serviceDiscoveryType    no
+    skipClient              false
+    skipServer              false
+    dtoSuffix               DTO
+  }
+  entities *
+}
+
+enum UserRole {
+    SUPER_ADMIN,
+    MANAGER,
+    CLIENT
+}
+
+enum ReservationStatus {
+    PENDING,
+    CONFIRMED,
+    CANCELLED,
+    COMPLETED,
+    NO_SHOW
+}
+
+enum OrderStatus {
+    DRAFT,
+    SUBMITTED,
+    CONFIRMED,
+    PREPARING,
+    READY,
+    SERVED,
+    CANCELLED
+}
+
+enum OrderItemStatus {
+    PENDING,
+    PREPARING,
+    READY,
+    SERVED,
+    CANCELLED
+}
+
+enum TableStatus {
+    AVAILABLE,
+    RESERVED,
+    OCCUPIED,
+    OUT_OF_SERVICE
+}
+
+enum TableShape {
+    ROUND,
+    SQUARE,
+    RECTANGLE
+}
+
+enum PaymentStatus {
+    PENDING,
+    PAID,
+    FAILED
+}
+
+enum PaymentMethod {
+    CASH,
+    CARD
+}
+
+enum DayOfWeek {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+}
+
+enum NotificationType {
+    RESERVATION_CONFIRMED,
+    RESERVATION_CANCELLED,
+    ORDER_READY,
+    ORDER_STATUS_CHANGED,
+    REMINDER
+}
+
+enum NotificationChannel {
+    EMAIL,
+    IN_APP,
+    PUSH
+}
+
+enum AllergenType {
+    GLUTEN,
+    DAIRY,
+    EGGS,
+    NUTS,
+    PEANUTS,
+    SOY,
+    FISH,
+    SHELLFISH,
+    SESAME
+}
+
+enum DiscountType {
+    PERCENTAGE,
+    FIXED_AMOUNT
+}
+
+entity Brand {
+    name                        String      required minlength(2) maxlength(100)
+    description                 TextBlob
+    logoUrl                     String      maxlength(500)
+    coverImageUrl               String      maxlength(500)
+    primaryColor                String      maxlength(7)
+    secondaryColor              String      maxlength(7)
+    website                     String      maxlength(255)
+    contactEmail                String      required maxlength(100)
+    contactPhone                String      required maxlength(20)
+    defaultReservationDuration  Integer     required min(15) max(480)
+    maxAdvanceBookingDays       Integer     required min(1) max(365)
+    cancellationDeadlineHours   Integer     required min(0) max(72)
+    isActive                    Boolean     required
+    createdAt                   Instant     required
+}
+
+entity Location {
+    name                            String      required minlength(2) maxlength(100)
+    address                         String      required maxlength(255)
+    city                            String      required maxlength(100)
+    phone                           String      required maxlength(20)
+    email                           String      required maxlength(100)
+    latitude                        Double
+    longitude                       Double
+    reservationDurationOverride     Integer     min(15) max(480)
+    maxAdvanceBookingDaysOverride   Integer     min(1) max(365)
+    cancellationDeadlineOverride    Integer     min(0) max(72)
+    isActive                        Boolean     required
+    createdAt                       Instant     required
+}
+
+entity LocationHours {
+    dayOfWeek   DayOfWeek   required
+    openTime    String      required maxlength(5)
+    closeTime   String      required maxlength(5)
+    isClosed    Boolean     required
+    specialNote String      maxlength(255)
+}
+
+entity DiningRoom {
+    name            String  required minlength(2) maxlength(100)
+    description     String  maxlength(500)
+    floor           Integer
+    capacity        Integer required min(1)
+    isActive        Boolean required
+    floorPlanUrl    String  maxlength(500)
+    widthPx         Double
+    heightPx        Double
+}
+
+entity RestaurantTable {
+    tableNumber String      required minlength(1) maxlength(20)
+    shape       TableShape  required
+    minCapacity Integer     required min(1)
+    maxCapacity Integer     required min(1)
+    positionX   Double
+    positionY   Double
+    widthPx     Double
+    heightPx    Double
+    rotation    Double
+    status      TableStatus required
+    isActive    Boolean     required
+    notes       String      maxlength(500)
+}
+
+entity UserProfile {
+    phone                       String      maxlength(20)
+    avatarUrl                   String      maxlength(500)
+    role                        UserRole    required
+    preferredLanguage           String      maxlength(10)
+    receiveEmailNotifications   Boolean
+    receivePushNotifications    Boolean
+    loyaltyPoints               Integer     min(0)
+    createdAt                   Instant     required
+}
+
+entity MenuCategory {
+    name            String  required minlength(2) maxlength(100)
+    description     String  maxlength(500)
+    imageUrl        String  maxlength(500)
+    displayOrder    Integer required min(0)
+    isActive        Boolean required
+}
+
+entity MenuItem {
+    name                    String      required minlength(2) maxlength(150)
+    description             TextBlob
+    price                   BigDecimal  required min(0)
+    discountedPrice         BigDecimal  min(0)
+    preparationTimeMinutes  Integer     min(0) max(180)
+    calories                Integer     min(0)
+    imageUrl                String      maxlength(500)
+    isAvailable             Boolean     required
+    isFeatured              Boolean     required
+    isVegetarian            Boolean
+    isVegan                 Boolean
+    isGlutenFree            Boolean
+    spicyLevel              Integer     min(0) max(3)
+    displayOrder            Integer     required min(0)
+}
+
+entity LocationMenuItemOverride {
+    isAvailableAtLocation   Boolean     required
+    priceOverride           BigDecimal  min(0)
+    preparationTimeOverride Integer     min(0) max(180)
+    notes                   String      maxlength(500)
+}
+
+entity MenuItemAllergen {
+    allergen    AllergenType    required
+    notes       String          maxlength(255)
+}
+
+entity MenuItemOption {
+    name            String  required maxlength(100)
+    isRequired      Boolean required
+    maxSelections   Integer min(1)
+    displayOrder    Integer min(0)
+}
+
+entity MenuItemOptionValue {
+    label           String      required maxlength(100)
+    priceAdjustment BigDecimal  required
+    isDefault       Boolean     required
+    isAvailable     Boolean     required
+    displayOrder    Integer     min(0)
+}
+
+entity Reservation {
+    reservationCode     String              required minlength(6) maxlength(20) unique
+    reservationDate     LocalDate           required
+    startTime           String              required maxlength(5)
+    endTime             String              required maxlength(5)
+    partySize           Integer             required min(1) max(50)
+    status              ReservationStatus   required
+    specialRequests     TextBlob
+    internalNotes       TextBlob
+    reminderSentAt      Instant
+    confirmedAt         Instant
+    cancelledAt         Instant
+    cancellationReason  String              maxlength(500)
+    createdAt           Instant             required
+    updatedAt           Instant
+}
+
+entity ReservationTable {
+    assignedAt  Instant     required
+    notes       String      maxlength(255)
+}
+
+entity WaitingList {
+    requestedDate   LocalDate   required
+    requestedTime   String      required maxlength(5)
+    partySize       Integer     required min(1)
+    notes           String      maxlength(500)
+    isNotified      Boolean     required
+    expiresAt       Instant
+    createdAt       Instant     required
+}
+
+entity RestaurantOrder {
+    orderCode               String          required minlength(6) maxlength(20) unique
+    status                  OrderStatus     required
+    isPreOrder              Boolean         required
+    scheduledFor            Instant
+    subtotal                BigDecimal      required min(0)
+    discountAmount          BigDecimal      min(0)
+    taxAmount               BigDecimal      min(0)
+    totalAmount             BigDecimal      required min(0)
+    specialInstructions     TextBlob
+    estimatedReadyTime      Instant
+    confirmedAt             Instant
+    completedAt             Instant
+    createdAt               Instant         required
+    updatedAt               Instant
+}
+
+entity OrderItem {
+    quantity                Integer         required min(1)
+    unitPrice               BigDecimal      required min(0)
+    totalPrice              BigDecimal      required min(0)
+    status                  OrderItemStatus required
+    specialInstructions     String          maxlength(500)
+    notes                   String          maxlength(255)
+}
+
+entity OrderItemOptionSelection {
+    quantity    Integer     min(1)
+    unitPrice   BigDecimal  required min(0)
+}
+
+entity Payment {
+    transactionCode String          required maxlength(100) unique
+    amount          BigDecimal      required min(0)
+    method          PaymentMethod   required
+    status          PaymentStatus   required
+    paidAt          Instant
+    receiptUrl      String          maxlength(500)
+    notes           String          maxlength(500)
+    createdAt       Instant         required
+}
+
+entity Review {
+    overallRating   Integer     required min(1) max(5)
+    foodRating      Integer     min(1) max(5)
+    serviceRating   Integer     min(1) max(5)
+    ambienceRating  Integer     min(1) max(5)
+    comment         TextBlob
+    isApproved      Boolean     required
+    isAnonymous     Boolean     required
+    createdAt       Instant     required
+}
+
+entity Notification {
+    type        NotificationType    required
+    channel     NotificationChannel required
+    subject     String              maxlength(255)
+    body        TextBlob            required
+    isRead      Boolean             required
+    sentAt      Instant
+    readAt      Instant
+    createdAt   Instant             required
+}
+
+entity Promotion {
+    code                String          required minlength(3) maxlength(50) unique
+    name                String          required maxlength(100)
+    description         TextBlob
+    discountType        DiscountType    required
+    discountValue       BigDecimal      required min(0)
+    minimumOrderAmount  BigDecimal      min(0)
+    maxUsageCount       Integer         min(1)
+    currentUsageCount   Integer         min(0)
+    startDate           LocalDate       required
+    endDate             LocalDate       required
+    isActive            Boolean         required
+}
+
+// ============================================================
+// 4. RELATIONSHIPS
+// ============================================================
+
+relationship OneToMany {
+    Brand{locations}    to Location{brand(name) required}
+    Brand{categories}   to MenuCategory{brand(name) required}
+    Brand{promotions}   to Promotion{brand(name) required}
+}
+
+relationship OneToMany {
+    Location{hours}             to LocationHours{location(name) required}
+    Location{rooms}             to DiningRoom{location(name) required}
+    Location{localPromotions}   to Promotion{location(name)}
+    Location{menuOverrides}     to LocationMenuItemOverride{location(name) required}
+}
+
+relationship OneToMany {
+    DiningRoom{tables} to RestaurantTable{room(name) required}
+}
+
+relationship OneToOne {
+    UserProfile{user(login)} to User with builtInEntity
+}
+
+relationship ManyToOne {
+    UserProfile{location(name)} to Location
+}
+
+relationship ManyToOne {
+    MenuCategory{parent(name)} to MenuCategory
+}
+
+relationship OneToMany {
+    MenuCategory{items} to MenuItem{category(name) required}
+}
+
+relationship OneToMany {
+    MenuItem{allergens} to MenuItemAllergen{menuItem(name) required}
+    MenuItem{options}   to MenuItemOption{menuItem(name) required}
+}
+
+relationship ManyToOne {
+    LocationMenuItemOverride{menuItem(name)} to MenuItem
+}
+
+relationship OneToMany {
+    MenuItemOption{values} to MenuItemOptionValue{option(name) required}
+}
+
+relationship ManyToOne {
+    Reservation{location(name)}     to Location
+    Reservation{client(login)}      to User with builtInEntity
+    Reservation{room(name)}         to DiningRoom
+}
+
+relationship OneToMany {
+    Reservation{tableAssignments}   to ReservationTable{reservation required}
+    Reservation{orders}             to RestaurantOrder{reservation}
+}
+
+relationship ManyToOne {
+    ReservationTable{table(tableNumber)} to RestaurantTable
+}
+
+relationship ManyToOne {
+    WaitingList{location(name)}     to Location
+    WaitingList{client(login)}      to User with builtInEntity
+    WaitingList{room(name)}         to DiningRoom
+}
+
+relationship ManyToOne {
+    RestaurantOrder{location(name)}             to Location
+    RestaurantOrder{client(login)}              to User with builtInEntity
+    RestaurantOrder{assignedWaiter(login)}      to User with builtInEntity
+    RestaurantOrder{table(tableNumber)}         to RestaurantTable
+    RestaurantOrder{promotion(code)}            to Promotion
+}
+
+relationship OneToMany {
+    RestaurantOrder{items}      to OrderItem{order required}
+    RestaurantOrder{payments}   to Payment{order(orderCode) required}
+}
+
+relationship ManyToOne {
+    OrderItem{menuItem(name)} to MenuItem
+}
+
+relationship OneToMany {
+    OrderItem{optionSelections} to OrderItemOptionSelection{orderItem required}
+}
+
+relationship ManyToOne {
+    OrderItemOptionSelection{optionValue(label)} to MenuItemOptionValue
+}
+
+relationship ManyToOne {
+    Payment{processedBy(login)} to User with builtInEntity
+}
+
+relationship ManyToOne {
+    Review{location(name)}                  to Location
+    Review{reservation(reservationCode)}    to Reservation
+    Review{client(login)}                   to User with builtInEntity
+}
+
+relationship ManyToOne {
+    Notification{recipient(login)}              to User with builtInEntity
+    Notification{location(name)}                to Location
+    Notification{reservation(reservationCode)}  to Reservation
+    Notification{order(orderCode)}              to RestaurantOrder
+}
+
+// ============================================================
+// 5. DTO
+// ============================================================
+
+dto * with mapstruct
+
+// ============================================================
+// 6. SERVICE LAYER
+// ============================================================
+
+service Brand,
+        Location,
+        DiningRoom,
+        RestaurantTable,
+        Reservation,
+        ReservationTable,
+        WaitingList,
+        RestaurantOrder,
+        OrderItem,
+        Payment,
+        MenuItem,
+        MenuCategory,
+        LocationMenuItemOverride,
+        Review,
+        Notification,
+        Promotion,
+        UserProfile
+    with serviceImpl
+
+service LocationHours,
+        MenuItemAllergen,
+        MenuItemOption,
+        MenuItemOptionValue,
+        OrderItemOptionSelection
+    with serviceClass
+
+// ============================================================
+// 7. PAGINATION
+// ============================================================
+
+paginate Location,
+         Reservation,
+         RestaurantOrder,
+         OrderItem,
+         MenuItem,
+         Review,
+         Notification,
+         Payment,
+         WaitingList,
+         LocationMenuItemOverride
+    with pagination
+
+paginate Brand,
+         DiningRoom,
+         RestaurantTable,
+         MenuCategory,
+         Promotion
+    with pagination
+
+// ============================================================
+// 8. FILTERING
+// ============================================================
+
+filter Brand,
+       Location,
+       Reservation,
+       RestaurantOrder,
+       MenuItem,
+       MenuCategory,
+       Promotion,
+       Review,
+       Payment,
+       WaitingList,
+       RestaurantTable,
+       DiningRoom,
+       LocationMenuItemOverride,
+       UserProfile

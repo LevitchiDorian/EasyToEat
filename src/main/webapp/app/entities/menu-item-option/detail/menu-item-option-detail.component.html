@@ -1,0 +1,56 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (menuItemOption(); as menuItemOptionRef) {
+      <div>
+        <h2 data-cy="menuItemOptionDetailsHeading">
+          <span jhiTranslate="restaurantApp.menuItemOption.detail.title">Menu Item Option</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ menuItemOptionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOption.name">Name</span></dt>
+          <dd>
+            <span>{{ menuItemOptionRef.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOption.isRequired">Is Required</span></dt>
+          <dd>
+            <span>{{ menuItemOptionRef.isRequired }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOption.maxSelections">Max Selections</span></dt>
+          <dd>
+            <span>{{ menuItemOptionRef.maxSelections }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOption.displayOrder">Display Order</span></dt>
+          <dd>
+            <span>{{ menuItemOptionRef.displayOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOption.menuItem">Menu Item</span></dt>
+          <dd>
+            @if (menuItemOption()!.menuItem) {
+              <div>
+                <a [routerLink]="['/menu-item', menuItemOption()!.menuItem?.id, 'view']">{{ menuItemOptionRef.menuItem?.name }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/menu-item-option', menuItemOptionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

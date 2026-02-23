@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (menuItemOptionValue(); as menuItemOptionValueRef) {
+      <div>
+        <h2 data-cy="menuItemOptionValueDetailsHeading">
+          <span jhiTranslate="restaurantApp.menuItemOptionValue.detail.title">Menu Item Option Value</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ menuItemOptionValueRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOptionValue.label">Label</span></dt>
+          <dd>
+            <span>{{ menuItemOptionValueRef.label }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOptionValue.priceAdjustment">Price Adjustment</span></dt>
+          <dd>
+            <span>{{ menuItemOptionValueRef.priceAdjustment }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOptionValue.isDefault">Is Default</span></dt>
+          <dd>
+            <span>{{ menuItemOptionValueRef.isDefault }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOptionValue.isAvailable">Is Available</span></dt>
+          <dd>
+            <span>{{ menuItemOptionValueRef.isAvailable }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOptionValue.displayOrder">Display Order</span></dt>
+          <dd>
+            <span>{{ menuItemOptionValueRef.displayOrder }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.menuItemOptionValue.option">Option</span></dt>
+          <dd>
+            @if (menuItemOptionValue()!.option) {
+              <div>
+                <a [routerLink]="['/menu-item-option', menuItemOptionValue()!.option?.id, 'view']">{{
+                  menuItemOptionValueRef.option?.name
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/menu-item-option-value', menuItemOptionValueRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

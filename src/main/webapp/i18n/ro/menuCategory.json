@@ -1,0 +1,31 @@
+{
+  "restaurantApp": {
+    "menuCategory": {
+      "home": {
+        "title": "Menu Categories",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Menu Category",
+        "createOrEditLabel": "Creeare sau editare Menu Category",
+        "notFound": "No Menu Categories found"
+      },
+      "created": "A fost creată o nouă entitate Menu Category cu identificatorul {{ param }}",
+      "updated": "Menu Category cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Menu Category cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Menu Category {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Category"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "imageUrl": "Image Url",
+      "displayOrder": "Display Order",
+      "isActive": "Is Active",
+      "items": "Items",
+      "parent": "Parent",
+      "brand": "Brand"
+    }
+  }
+}

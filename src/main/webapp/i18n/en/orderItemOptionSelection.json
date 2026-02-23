@@ -1,0 +1,27 @@
+{
+  "restaurantApp": {
+    "orderItemOptionSelection": {
+      "home": {
+        "title": "Order Item Option Selections",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Order Item Option Selection",
+        "createOrEditLabel": "Create or edit a Order Item Option Selection",
+        "notFound": "No Order Item Option Selections found"
+      },
+      "created": "A new Order Item Option Selection is created with identifier {{ param }}",
+      "updated": "A Order Item Option Selection is updated with identifier {{ param }}",
+      "deleted": "A Order Item Option Selection is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Order Item Option Selection {{ id }}?"
+      },
+      "detail": {
+        "title": "Order Item Option Selection"
+      },
+      "id": "ID",
+      "quantity": "Quantity",
+      "unitPrice": "Unit Price",
+      "optionValue": "Option Value",
+      "orderItem": "Order Item"
+    }
+  }
+}

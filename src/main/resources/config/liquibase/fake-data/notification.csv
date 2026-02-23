@@ -1,0 +1,11 @@
+id;type;channel;subject;body;is_read;sent_at;read_at;created_at
+1;ORDER_READY;IN_APP;under angelic;../fake-data/blob/hipster.txt;false;2026-02-23T13:34:52;2026-02-22T23:12:13;2026-02-22T21:50:11
+2;ORDER_STATUS_CHANGED;IN_APP;lest forgo;../fake-data/blob/hipster.txt;false;2026-02-23T11:59:41;2026-02-23T02:09:39;2026-02-23T06:47:29
+3;RESERVATION_CANCELLED;IN_APP;considering;../fake-data/blob/hipster.txt;false;2026-02-23T00:23:50;2026-02-23T07:13:20;2026-02-23T04:28:37
+4;ORDER_READY;IN_APP;tidy tuba deer;../fake-data/blob/hipster.txt;false;2026-02-22T19:55:54;2026-02-23T10:25:01;2026-02-23T14:33:16
+5;ORDER_STATUS_CHANGED;EMAIL;widow deliberately dearly;../fake-data/blob/hipster.txt;false;2026-02-22T17:43:15;2026-02-22T17:47:44;2026-02-23T03:42:23
+6;RESERVATION_CONFIRMED;IN_APP;outfox;../fake-data/blob/hipster.txt;true;2026-02-22T18:24:01;2026-02-23T03:11:15;2026-02-23T06:13:07
+7;ORDER_READY;IN_APP;towards reproachfully aw;../fake-data/blob/hipster.txt;true;2026-02-22T23:52:56;2026-02-23T02:11:17;2026-02-23T10:33:20
+8;REMINDER;EMAIL;without likewise mid;../fake-data/blob/hipster.txt;true;2026-02-23T02:02:37;2026-02-23T08:15:12;2026-02-22T23:30:41
+9;REMINDER;EMAIL;delicious eek;../fake-data/blob/hipster.txt;true;2026-02-22T16:49:57;2026-02-22T17:30:24;2026-02-23T07:38:30
+10;ORDER_STATUS_CHANGED;PUSH;railway;../fake-data/blob/hipster.txt;true;2026-02-22T23:49:26;2026-02-23T09:52:39;2026-02-23T13:01:38

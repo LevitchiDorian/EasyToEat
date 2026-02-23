@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-menu-item-allergen-heading"
+        data-cy="MenuItemAllergenCreateUpdateHeading"
+        jhiTranslate="restaurantApp.menuItemAllergen.home.createOrEditLabel"
+      >
+        Create or edit a Menu Item Allergen
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.menuItemAllergen.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let allergenRef = editForm.get('allergen')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_allergen" jhiTranslate="restaurantApp.menuItemAllergen.allergen">Allergen</label>
+          <select class="form-control" name="allergen" formControlName="allergen" id="field_allergen" data-cy="allergen">
+            <option [ngValue]="null">{{ 'restaurantApp.AllergenType.null' | translate }}</option>
+            @for (allergenType of allergenTypeValues; track $index) {
+              <option [value]="allergenType">{{ 'restaurantApp.AllergenType.' + allergenType | translate }}</option>
+            }
+          </select>
+          @if (allergenRef.invalid && (allergenRef.dirty || allergenRef.touched)) {
+            <div>
+              @if (editForm.get('allergen')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let notesRef = editForm.get('notes')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_notes" jhiTranslate="restaurantApp.menuItemAllergen.notes">Notes</label>
+          <input type="text" class="form-control" name="notes" id="field_notes" data-cy="notes" formControlName="notes" />
+          @if (notesRef.invalid && (notesRef.dirty || notesRef.touched)) {
+            <div>
+              @if (editForm.get('notes')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '255' }"
+                  >This field cannot be longer than 255 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_menuItem" jhiTranslate="restaurantApp.menuItemAllergen.menuItem">Menu Item</label>
+          <select
+            class="form-control"
+            id="field_menuItem"
+            data-cy="menuItem"
+            name="menuItem"
+            formControlName="menuItem"
+            [compareWith]="compareMenuItem"
+          >
+            @if (editForm.get(['menuItem'])!.value === null) {
+              <option [ngValue]="null" selected></option>
+            }
+            @for (menuItemOption of menuItemsSharedCollection; track $index) {
+              <option [ngValue]="menuItemOption">{{ menuItemOption.name }}</option>
+            }
+          </select>
+        </div>
+        @if (editForm.get(['menuItem'])!.invalid && (editForm.get(['menuItem'])!.dirty || editForm.get(['menuItem'])!.touched)) {
+          <div>
+            @if (editForm.get(['menuItem'])?.errors?.required) {
+              <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

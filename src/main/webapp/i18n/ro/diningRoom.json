@@ -1,0 +1,33 @@
+{
+  "restaurantApp": {
+    "diningRoom": {
+      "home": {
+        "title": "Dining Rooms",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Dining Room",
+        "createOrEditLabel": "Creeare sau editare Dining Room",
+        "notFound": "No Dining Rooms found"
+      },
+      "created": "A fost creată o nouă entitate Dining Room cu identificatorul {{ param }}",
+      "updated": "Dining Room cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Dining Room cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Dining Room {{ id }}?"
+      },
+      "detail": {
+        "title": "Dining Room"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "floor": "Floor",
+      "capacity": "Capacity",
+      "isActive": "Is Active",
+      "floorPlanUrl": "Floor Plan Url",
+      "widthPx": "Width Px",
+      "heightPx": "Height Px",
+      "tables": "Tables",
+      "location": "Location"
+    }
+  }
+}

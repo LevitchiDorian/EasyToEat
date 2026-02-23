@@ -1,0 +1,15 @@
+export enum OrderStatus {
+  DRAFT = 'DRAFT',
+
+  SUBMITTED = 'SUBMITTED',
+
+  CONFIRMED = 'CONFIRMED',
+
+  PREPARING = 'PREPARING',
+
+  READY = 'READY',
+
+  SERVED = 'SERVED',
+
+  CANCELLED = 'CANCELLED',
+}

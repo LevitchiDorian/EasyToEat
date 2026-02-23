@@ -1,0 +1,430 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-restaurant-order-heading"
+        data-cy="RestaurantOrderCreateUpdateHeading"
+        jhiTranslate="restaurantApp.restaurantOrder.home.createOrEditLabel"
+      >
+        Create or edit a Restaurant Order
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.restaurantOrder.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let orderCodeRef = editForm.get('orderCode')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_orderCode" jhiTranslate="restaurantApp.restaurantOrder.orderCode">Order Code</label>
+          <input type="text" class="form-control" name="orderCode" id="field_orderCode" data-cy="orderCode" formControlName="orderCode" />
+          @if (orderCodeRef.invalid && (orderCodeRef.dirty || orderCodeRef.touched)) {
+            <div>
+              @if (editForm.get('orderCode')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('orderCode')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '6' }"
+                  >This field is required to be at least 6 characters.</small
+                >
+              }
+              @if (editForm.get('orderCode')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '20' }"
+                  >This field cannot be longer than 20 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let statusRef = editForm.get('status')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_status" jhiTranslate="restaurantApp.restaurantOrder.status">Status</label>
+          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+            <option [ngValue]="null">{{ 'restaurantApp.OrderStatus.null' | translate }}</option>
+            @for (orderStatus of orderStatusValues; track $index) {
+              <option [value]="orderStatus">{{ 'restaurantApp.OrderStatus.' + orderStatus | translate }}</option>
+            }
+          </select>
+          @if (statusRef.invalid && (statusRef.dirty || statusRef.touched)) {
+            <div>
+              @if (editForm.get('status')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let isPreOrderRef = editForm.get('isPreOrder')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isPreOrder" jhiTranslate="restaurantApp.restaurantOrder.isPreOrder">Is Pre Order</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isPreOrder"
+            id="field_isPreOrder"
+            data-cy="isPreOrder"
+            formControlName="isPreOrder"
+          />
+          @if (isPreOrderRef.invalid && (isPreOrderRef.dirty || isPreOrderRef.touched)) {
+            <div>
+              @if (editForm.get('isPreOrder')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_scheduledFor" jhiTranslate="restaurantApp.restaurantOrder.scheduledFor">Scheduled For</label>
+          <div class="d-flex">
+            <input
+              id="field_scheduledFor"
+              data-cy="scheduledFor"
+              type="datetime-local"
+              class="form-control"
+              name="scheduledFor"
+              formControlName="scheduledFor"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let subtotalRef = editForm.get('subtotal')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_subtotal" jhiTranslate="restaurantApp.restaurantOrder.subtotal">Subtotal</label>
+          <input type="number" class="form-control" name="subtotal" id="field_subtotal" data-cy="subtotal" formControlName="subtotal" />
+          @if (subtotalRef.invalid && (subtotalRef.dirty || subtotalRef.touched)) {
+            <div>
+              @if (editForm.get('subtotal')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('subtotal')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('subtotal')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let discountAmountRef = editForm.get('discountAmount')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_discountAmount" jhiTranslate="restaurantApp.restaurantOrder.discountAmount"
+            >Discount Amount</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="discountAmount"
+            id="field_discountAmount"
+            data-cy="discountAmount"
+            formControlName="discountAmount"
+          />
+          @if (discountAmountRef.invalid && (discountAmountRef.dirty || discountAmountRef.touched)) {
+            <div>
+              @if (editForm.get('discountAmount')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('discountAmount')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let taxAmountRef = editForm.get('taxAmount')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_taxAmount" jhiTranslate="restaurantApp.restaurantOrder.taxAmount">Tax Amount</label>
+          <input type="number" class="form-control" name="taxAmount" id="field_taxAmount" data-cy="taxAmount" formControlName="taxAmount" />
+          @if (taxAmountRef.invalid && (taxAmountRef.dirty || taxAmountRef.touched)) {
+            <div>
+              @if (editForm.get('taxAmount')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('taxAmount')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let totalAmountRef = editForm.get('totalAmount')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_totalAmount" jhiTranslate="restaurantApp.restaurantOrder.totalAmount">Total Amount</label>
+          <input
+            type="number"
+            class="form-control"
+            name="totalAmount"
+            id="field_totalAmount"
+            data-cy="totalAmount"
+            formControlName="totalAmount"
+          />
+          @if (totalAmountRef.invalid && (totalAmountRef.dirty || totalAmountRef.touched)) {
+            <div>
+              @if (editForm.get('totalAmount')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('totalAmount')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('totalAmount')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_specialInstructions" jhiTranslate="restaurantApp.restaurantOrder.specialInstructions"
+            >Special Instructions</label
+          >
+          <textarea
+            class="form-control"
+            name="specialInstructions"
+            id="field_specialInstructions"
+            data-cy="specialInstructions"
+            formControlName="specialInstructions"
+          ></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_estimatedReadyTime" jhiTranslate="restaurantApp.restaurantOrder.estimatedReadyTime"
+            >Estimated Ready Time</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_estimatedReadyTime"
+              data-cy="estimatedReadyTime"
+              type="datetime-local"
+              class="form-control"
+              name="estimatedReadyTime"
+              formControlName="estimatedReadyTime"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_confirmedAt" jhiTranslate="restaurantApp.restaurantOrder.confirmedAt">Confirmed At</label>
+          <div class="d-flex">
+            <input
+              id="field_confirmedAt"
+              data-cy="confirmedAt"
+              type="datetime-local"
+              class="form-control"
+              name="confirmedAt"
+              formControlName="confirmedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_completedAt" jhiTranslate="restaurantApp.restaurantOrder.completedAt">Completed At</label>
+          <div class="d-flex">
+            <input
+              id="field_completedAt"
+              data-cy="completedAt"
+              type="datetime-local"
+              class="form-control"
+              name="completedAt"
+              formControlName="completedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="restaurantApp.restaurantOrder.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_updatedAt" jhiTranslate="restaurantApp.restaurantOrder.updatedAt">Updated At</label>
+          <div class="d-flex">
+            <input
+              id="field_updatedAt"
+              data-cy="updatedAt"
+              type="datetime-local"
+              class="form-control"
+              name="updatedAt"
+              formControlName="updatedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.restaurantOrder.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            <option [ngValue]="null"></option>
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_client" jhiTranslate="restaurantApp.restaurantOrder.client">Client</label>
+          <select
+            class="form-control"
+            id="field_client"
+            data-cy="client"
+            name="client"
+            formControlName="client"
+            [compareWith]="compareUser"
+          >
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_assignedWaiter" jhiTranslate="restaurantApp.restaurantOrder.assignedWaiter"
+            >Assigned Waiter</label
+          >
+          <select
+            class="form-control"
+            id="field_assignedWaiter"
+            data-cy="assignedWaiter"
+            name="assignedWaiter"
+            formControlName="assignedWaiter"
+            [compareWith]="compareUser"
+          >
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_table" jhiTranslate="restaurantApp.restaurantOrder.table">Table</label>
+          <select
+            class="form-control"
+            id="field_table"
+            data-cy="table"
+            name="table"
+            formControlName="table"
+            [compareWith]="compareRestaurantTable"
+          >
+            <option [ngValue]="null"></option>
+            @for (restaurantTableOption of restaurantTablesSharedCollection; track $index) {
+              <option [ngValue]="restaurantTableOption">{{ restaurantTableOption.tableNumber }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_promotion" jhiTranslate="restaurantApp.restaurantOrder.promotion">Promotion</label>
+          <select
+            class="form-control"
+            id="field_promotion"
+            data-cy="promotion"
+            name="promotion"
+            formControlName="promotion"
+            [compareWith]="comparePromotion"
+          >
+            <option [ngValue]="null"></option>
+            @for (promotionOption of promotionsSharedCollection; track $index) {
+              <option [ngValue]="promotionOption">{{ promotionOption.code }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_reservation" jhiTranslate="restaurantApp.restaurantOrder.reservation">Reservation</label>
+          <select
+            class="form-control"
+            id="field_reservation"
+            data-cy="reservation"
+            name="reservation"
+            formControlName="reservation"
+            [compareWith]="compareReservation"
+          >
+            <option [ngValue]="null"></option>
+            @for (reservationOption of reservationsSharedCollection; track $index) {
+              <option [ngValue]="reservationOption">{{ reservationOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

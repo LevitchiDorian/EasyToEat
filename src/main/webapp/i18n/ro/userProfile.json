@@ -1,0 +1,33 @@
+{
+  "restaurantApp": {
+    "userProfile": {
+      "home": {
+        "title": "User Profiles",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate User Profile",
+        "createOrEditLabel": "Creeare sau editare User Profile",
+        "notFound": "No User Profiles found"
+      },
+      "created": "A fost creată o nouă entitate User Profile cu identificatorul {{ param }}",
+      "updated": "User Profile cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "User Profile cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți User Profile {{ id }}?"
+      },
+      "detail": {
+        "title": "User Profile"
+      },
+      "id": "ID",
+      "phone": "Phone",
+      "avatarUrl": "Avatar Url",
+      "role": "Role",
+      "preferredLanguage": "Preferred Language",
+      "receiveEmailNotifications": "Receive Email Notifications",
+      "receivePushNotifications": "Receive Push Notifications",
+      "loyaltyPoints": "Loyalty Points",
+      "createdAt": "Created At",
+      "user": "User",
+      "location": "Location"
+    }
+  }
+}

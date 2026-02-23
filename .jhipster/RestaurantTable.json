@@ -1,0 +1,87 @@
+{
+  "annotations": {
+    "changelogDate": "20260223151543"
+  },
+  "applications": ["restaurantApp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "tableNumber",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "20",
+      "fieldValidateRulesMinlength": "1"
+    },
+    {
+      "fieldName": "shape",
+      "fieldType": "TableShape",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "ROUND,SQUARE,RECTANGLE"
+    },
+    {
+      "fieldName": "minCapacity",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "maxCapacity",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    },
+    {
+      "fieldName": "positionX",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "positionY",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "widthPx",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "heightPx",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "rotation",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "TableStatus",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "AVAILABLE,RESERVED,OCCUPIED,OUT_OF_SERVICE"
+    },
+    {
+      "fieldName": "isActive",
+      "fieldType": "Boolean",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "notes",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "500"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "RestaurantTable",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "diningRoom",
+      "otherEntityRelationshipName": "tables",
+      "relationshipName": "room",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

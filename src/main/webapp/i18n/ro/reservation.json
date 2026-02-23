@@ -1,0 +1,42 @@
+{
+  "restaurantApp": {
+    "reservation": {
+      "home": {
+        "title": "Reservations",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Reservation",
+        "createOrEditLabel": "Creeare sau editare Reservation",
+        "notFound": "No Reservations found"
+      },
+      "created": "A fost creată o nouă entitate Reservation cu identificatorul {{ param }}",
+      "updated": "Reservation cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Reservation cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Reservation {{ id }}?"
+      },
+      "detail": {
+        "title": "Reservation"
+      },
+      "id": "ID",
+      "reservationCode": "Reservation Code",
+      "reservationDate": "Reservation Date",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "partySize": "Party Size",
+      "status": "Status",
+      "specialRequests": "Special Requests",
+      "internalNotes": "Internal Notes",
+      "reminderSentAt": "Reminder Sent At",
+      "confirmedAt": "Confirmed At",
+      "cancelledAt": "Cancelled At",
+      "cancellationReason": "Cancellation Reason",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "tableAssignments": "Table Assignments",
+      "orders": "Orders",
+      "location": "Location",
+      "client": "Client",
+      "room": "Room"
+    }
+  }
+}

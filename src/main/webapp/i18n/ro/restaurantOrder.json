@@ -1,0 +1,45 @@
+{
+  "restaurantApp": {
+    "restaurantOrder": {
+      "home": {
+        "title": "Restaurant Orders",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Restaurant Order",
+        "createOrEditLabel": "Creeare sau editare Restaurant Order",
+        "notFound": "No Restaurant Orders found"
+      },
+      "created": "A fost creată o nouă entitate Restaurant Order cu identificatorul {{ param }}",
+      "updated": "Restaurant Order cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Restaurant Order cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Restaurant Order {{ id }}?"
+      },
+      "detail": {
+        "title": "Restaurant Order"
+      },
+      "id": "ID",
+      "orderCode": "Order Code",
+      "status": "Status",
+      "isPreOrder": "Is Pre Order",
+      "scheduledFor": "Scheduled For",
+      "subtotal": "Subtotal",
+      "discountAmount": "Discount Amount",
+      "taxAmount": "Tax Amount",
+      "totalAmount": "Total Amount",
+      "specialInstructions": "Special Instructions",
+      "estimatedReadyTime": "Estimated Ready Time",
+      "confirmedAt": "Confirmed At",
+      "completedAt": "Completed At",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "items": "Items",
+      "payments": "Payments",
+      "location": "Location",
+      "client": "Client",
+      "assignedWaiter": "Assigned Waiter",
+      "table": "Table",
+      "promotion": "Promotion",
+      "reservation": "Reservation"
+    }
+  }
+}

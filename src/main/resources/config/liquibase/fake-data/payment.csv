@@ -1,0 +1,11 @@
+id;transaction_code;amount;method;status;paid_at;receipt_url;notes;created_at;order_id
+1;beside materialise;3861.17;CASH;PENDING;2026-02-22T18:08:00;gurn which well-made;whoa;2026-02-23T12:55:05;1
+2;numeracy;1612.83;CARD;FAILED;2026-02-22T15:54:00;responsible because darn;from;2026-02-22T20:53:10;2
+3;likewise pillow;10324.5;CASH;PAID;2026-02-23T04:48:36;truthfully giving;cheerful circa mmm;2026-02-23T06:54:26;3
+4;exactly from rudely;25652.7;CARD;PENDING;2026-02-22T18:24:43;finally oof;thoroughly unfurl;2026-02-23T04:36:20;4
+5;optimal;7004.61;CARD;PAID;2026-02-23T08:43:42;decide short;battle;2026-02-23T01:47:32;5
+6;membership gadzooks;2214.14;CASH;PAID;2026-02-23T04:01:12;against;roadway;2026-02-23T04:02:55;6
+7;carefully sometimes;4879.16;CARD;PENDING;2026-02-23T11:11:50;but disconnection;smoothly blah sandbar;2026-02-23T04:01:43;7
+8;likewise;5245.39;CARD;PENDING;2026-02-22T23:24:44;tromp micromanage;or emulsify bob;2026-02-22T20:27:28;8
+9;geez for intellect;14412.33;CARD;FAILED;2026-02-23T04:42:32;hmph;selfishly;2026-02-22T21:20:56;9
+10;desecrate degrease;30746.96;CARD;PENDING;2026-02-23T02:22:05;if;until upward editor;2026-02-23T12:36:19;10

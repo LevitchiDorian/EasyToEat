@@ -1,0 +1,367 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-reservation-heading"
+        data-cy="ReservationCreateUpdateHeading"
+        jhiTranslate="restaurantApp.reservation.home.createOrEditLabel"
+      >
+        Create or edit a Reservation
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.reservation.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let reservationCodeRef = editForm.get('reservationCode')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_reservationCode" jhiTranslate="restaurantApp.reservation.reservationCode"
+            >Reservation Code</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="reservationCode"
+            id="field_reservationCode"
+            data-cy="reservationCode"
+            formControlName="reservationCode"
+          />
+          @if (reservationCodeRef.invalid && (reservationCodeRef.dirty || reservationCodeRef.touched)) {
+            <div>
+              @if (editForm.get('reservationCode')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('reservationCode')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: '6' }"
+                  >This field is required to be at least 6 characters.</small
+                >
+              }
+              @if (editForm.get('reservationCode')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '20' }"
+                  >This field cannot be longer than 20 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let reservationDateRef = editForm.get('reservationDate')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_reservationDate" jhiTranslate="restaurantApp.reservation.reservationDate"
+            >Reservation Date</label
+          >
+          <div class="input-group">
+            <input
+              id="field_reservationDate"
+              data-cy="reservationDate"
+              type="text"
+              class="form-control"
+              name="reservationDate"
+              ngbDatepicker
+              #reservationDateDp="ngbDatepicker"
+              formControlName="reservationDate"
+            />
+            <button type="button" class="btn btn-secondary" (click)="reservationDateDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+          @if (reservationDateRef.invalid && (reservationDateRef.dirty || reservationDateRef.touched)) {
+            <div>
+              @if (editForm.get('reservationDate')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let startTimeRef = editForm.get('startTime')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_startTime" jhiTranslate="restaurantApp.reservation.startTime">Start Time</label>
+          <input type="text" class="form-control" name="startTime" id="field_startTime" data-cy="startTime" formControlName="startTime" />
+          @if (startTimeRef.invalid && (startTimeRef.dirty || startTimeRef.touched)) {
+            <div>
+              @if (editForm.get('startTime')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('startTime')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '5' }"
+                  >This field cannot be longer than 5 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let endTimeRef = editForm.get('endTime')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_endTime" jhiTranslate="restaurantApp.reservation.endTime">End Time</label>
+          <input type="text" class="form-control" name="endTime" id="field_endTime" data-cy="endTime" formControlName="endTime" />
+          @if (endTimeRef.invalid && (endTimeRef.dirty || endTimeRef.touched)) {
+            <div>
+              @if (editForm.get('endTime')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('endTime')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '5' }"
+                  >This field cannot be longer than 5 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let partySizeRef = editForm.get('partySize')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_partySize" jhiTranslate="restaurantApp.reservation.partySize">Party Size</label>
+          <input type="number" class="form-control" name="partySize" id="field_partySize" data-cy="partySize" formControlName="partySize" />
+          @if (partySizeRef.invalid && (partySizeRef.dirty || partySizeRef.touched)) {
+            <div>
+              @if (editForm.get('partySize')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('partySize')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              @if (editForm.get('partySize')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '50' }"
+                  >This field cannot be more than 50.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('partySize')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let statusRef = editForm.get('status')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_status" jhiTranslate="restaurantApp.reservation.status">Status</label>
+          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+            <option [ngValue]="null">{{ 'restaurantApp.ReservationStatus.null' | translate }}</option>
+            @for (reservationStatus of reservationStatusValues; track $index) {
+              <option [value]="reservationStatus">{{ 'restaurantApp.ReservationStatus.' + reservationStatus | translate }}</option>
+            }
+          </select>
+          @if (statusRef.invalid && (statusRef.dirty || statusRef.touched)) {
+            <div>
+              @if (editForm.get('status')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_specialRequests" jhiTranslate="restaurantApp.reservation.specialRequests"
+            >Special Requests</label
+          >
+          <textarea
+            class="form-control"
+            name="specialRequests"
+            id="field_specialRequests"
+            data-cy="specialRequests"
+            formControlName="specialRequests"
+          ></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_internalNotes" jhiTranslate="restaurantApp.reservation.internalNotes">Internal Notes</label>
+          <textarea
+            class="form-control"
+            name="internalNotes"
+            id="field_internalNotes"
+            data-cy="internalNotes"
+            formControlName="internalNotes"
+          ></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_reminderSentAt" jhiTranslate="restaurantApp.reservation.reminderSentAt"
+            >Reminder Sent At</label
+          >
+          <div class="d-flex">
+            <input
+              id="field_reminderSentAt"
+              data-cy="reminderSentAt"
+              type="datetime-local"
+              class="form-control"
+              name="reminderSentAt"
+              formControlName="reminderSentAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_confirmedAt" jhiTranslate="restaurantApp.reservation.confirmedAt">Confirmed At</label>
+          <div class="d-flex">
+            <input
+              id="field_confirmedAt"
+              data-cy="confirmedAt"
+              type="datetime-local"
+              class="form-control"
+              name="confirmedAt"
+              formControlName="confirmedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_cancelledAt" jhiTranslate="restaurantApp.reservation.cancelledAt">Cancelled At</label>
+          <div class="d-flex">
+            <input
+              id="field_cancelledAt"
+              data-cy="cancelledAt"
+              type="datetime-local"
+              class="form-control"
+              name="cancelledAt"
+              formControlName="cancelledAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        @let cancellationReasonRef = editForm.get('cancellationReason')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_cancellationReason" jhiTranslate="restaurantApp.reservation.cancellationReason"
+            >Cancellation Reason</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="cancellationReason"
+            id="field_cancellationReason"
+            data-cy="cancellationReason"
+            formControlName="cancellationReason"
+          />
+          @if (cancellationReasonRef.invalid && (cancellationReasonRef.dirty || cancellationReasonRef.touched)) {
+            <div>
+              @if (editForm.get('cancellationReason')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >This field cannot be longer than 500 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="restaurantApp.reservation.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_updatedAt" jhiTranslate="restaurantApp.reservation.updatedAt">Updated At</label>
+          <div class="d-flex">
+            <input
+              id="field_updatedAt"
+              data-cy="updatedAt"
+              type="datetime-local"
+              class="form-control"
+              name="updatedAt"
+              formControlName="updatedAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.reservation.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            <option [ngValue]="null"></option>
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_client" jhiTranslate="restaurantApp.reservation.client">Client</label>
+          <select
+            class="form-control"
+            id="field_client"
+            data-cy="client"
+            name="client"
+            formControlName="client"
+            [compareWith]="compareUser"
+          >
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_room" jhiTranslate="restaurantApp.reservation.room">Room</label>
+          <select class="form-control" id="field_room" data-cy="room" name="room" formControlName="room" [compareWith]="compareDiningRoom">
+            <option [ngValue]="null"></option>
+            @for (diningRoomOption of diningRoomsSharedCollection; track $index) {
+              <option [ngValue]="diningRoomOption">{{ diningRoomOption.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

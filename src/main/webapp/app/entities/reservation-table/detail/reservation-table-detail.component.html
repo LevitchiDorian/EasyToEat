@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (reservationTable(); as reservationTableRef) {
+      <div>
+        <h2 data-cy="reservationTableDetailsHeading">
+          <span jhiTranslate="restaurantApp.reservationTable.detail.title">Reservation Table</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ reservationTableRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservationTable.assignedAt">Assigned At</span></dt>
+          <dd>
+            <span>{{ reservationTableRef.assignedAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservationTable.notes">Notes</span></dt>
+          <dd>
+            <span>{{ reservationTableRef.notes }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservationTable.table">Table</span></dt>
+          <dd>
+            @if (reservationTable()!.table) {
+              <div>
+                <a [routerLink]="['/restaurant-table', reservationTable()!.table?.id, 'view']">{{
+                  reservationTableRef.table?.tableNumber
+                }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.reservationTable.reservation">Reservation</span></dt>
+          <dd>
+            @if (reservationTable()!.reservation) {
+              <div>
+                <a [routerLink]="['/reservation', reservationTable()!.reservation?.id, 'view']">{{
+                  reservationTableRef.reservation?.id
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/reservation-table', reservationTableRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

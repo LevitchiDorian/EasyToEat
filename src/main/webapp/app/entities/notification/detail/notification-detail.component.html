@@ -1,0 +1,103 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (notification(); as notificationRef) {
+      <div>
+        <h2 data-cy="notificationDetailsHeading"><span jhiTranslate="restaurantApp.notification.detail.title">Notification</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ notificationRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.type">Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.NotificationType.' + (notificationRef.type ?? 'null')">{{
+              {
+                null: '',
+                RESERVATION_CONFIRMED: 'RESERVATION_CONFIRMED',
+                RESERVATION_CANCELLED: 'RESERVATION_CANCELLED',
+                ORDER_READY: 'ORDER_READY',
+                ORDER_STATUS_CHANGED: 'ORDER_STATUS_CHANGED',
+                REMINDER: 'REMINDER',
+              }[notificationRef.type ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.channel">Channel</span></dt>
+          <dd>
+            <span [jhiTranslate]="'restaurantApp.NotificationChannel.' + (notificationRef.channel ?? 'null')">{{
+              { null: '', EMAIL: 'EMAIL', IN_APP: 'IN_APP', PUSH: 'PUSH' }[notificationRef.channel ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.subject">Subject</span></dt>
+          <dd>
+            <span>{{ notificationRef.subject }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.body">Body</span></dt>
+          <dd>
+            <span>{{ notificationRef.body }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.isRead">Is Read</span></dt>
+          <dd>
+            <span>{{ notificationRef.isRead }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.sentAt">Sent At</span></dt>
+          <dd>
+            <span>{{ notificationRef.sentAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.readAt">Read At</span></dt>
+          <dd>
+            <span>{{ notificationRef.readAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.createdAt">Created At</span></dt>
+          <dd>
+            <span>{{ notificationRef.createdAt | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.recipient">Recipient</span></dt>
+          <dd>
+            <span>{{ notificationRef.recipient?.login }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.location">Location</span></dt>
+          <dd>
+            @if (notification()!.location) {
+              <div>
+                <a [routerLink]="['/location', notification()!.location?.id, 'view']">{{ notificationRef.location?.name }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.reservation">Reservation</span></dt>
+          <dd>
+            @if (notification()!.reservation) {
+              <div>
+                <a [routerLink]="['/reservation', notification()!.reservation?.id, 'view']">{{
+                  notificationRef.reservation?.reservationCode
+                }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.notification.order">Order</span></dt>
+          <dd>
+            @if (notification()!.order) {
+              <div>
+                <a [routerLink]="['/restaurant-order', notification()!.order?.id, 'view']">{{ notificationRef.order?.orderCode }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/notification', notificationRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

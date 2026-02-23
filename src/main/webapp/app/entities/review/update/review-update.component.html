@@ -1,0 +1,296 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-review-heading" data-cy="ReviewCreateUpdateHeading" jhiTranslate="restaurantApp.review.home.createOrEditLabel">
+        Create or edit a Review
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.review.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let overallRatingRef = editForm.get('overallRating')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_overallRating" jhiTranslate="restaurantApp.review.overallRating">Overall Rating</label>
+          <input
+            type="number"
+            class="form-control"
+            name="overallRating"
+            id="field_overallRating"
+            data-cy="overallRating"
+            formControlName="overallRating"
+          />
+          @if (overallRatingRef.invalid && (overallRatingRef.dirty || overallRatingRef.touched)) {
+            <div>
+              @if (editForm.get('overallRating')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              @if (editForm.get('overallRating')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              @if (editForm.get('overallRating')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '5' }"
+                  >This field cannot be more than 5.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('overallRating')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let foodRatingRef = editForm.get('foodRating')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_foodRating" jhiTranslate="restaurantApp.review.foodRating">Food Rating</label>
+          <input
+            type="number"
+            class="form-control"
+            name="foodRating"
+            id="field_foodRating"
+            data-cy="foodRating"
+            formControlName="foodRating"
+          />
+          @if (foodRatingRef.invalid && (foodRatingRef.dirty || foodRatingRef.touched)) {
+            <div>
+              @if (editForm.get('foodRating')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              @if (editForm.get('foodRating')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '5' }"
+                  >This field cannot be more than 5.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('foodRating')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let serviceRatingRef = editForm.get('serviceRating')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_serviceRating" jhiTranslate="restaurantApp.review.serviceRating">Service Rating</label>
+          <input
+            type="number"
+            class="form-control"
+            name="serviceRating"
+            id="field_serviceRating"
+            data-cy="serviceRating"
+            formControlName="serviceRating"
+          />
+          @if (serviceRatingRef.invalid && (serviceRatingRef.dirty || serviceRatingRef.touched)) {
+            <div>
+              @if (editForm.get('serviceRating')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              @if (editForm.get('serviceRating')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '5' }"
+                  >This field cannot be more than 5.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('serviceRating')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let ambienceRatingRef = editForm.get('ambienceRating')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_ambienceRating" jhiTranslate="restaurantApp.review.ambienceRating">Ambience Rating</label>
+          <input
+            type="number"
+            class="form-control"
+            name="ambienceRating"
+            id="field_ambienceRating"
+            data-cy="ambienceRating"
+            formControlName="ambienceRating"
+          />
+          @if (ambienceRatingRef.invalid && (ambienceRatingRef.dirty || ambienceRatingRef.touched)) {
+            <div>
+              @if (editForm.get('ambienceRating')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '1' }"
+                  >This field should be at least 1.</small
+                >
+              }
+              @if (editForm.get('ambienceRating')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '5' }"
+                  >This field cannot be more than 5.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('ambienceRating')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_comment" jhiTranslate="restaurantApp.review.comment">Comment</label>
+          <textarea class="form-control" name="comment" id="field_comment" data-cy="comment" formControlName="comment"></textarea>
+        </div>
+
+        @let isApprovedRef = editForm.get('isApproved')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isApproved" jhiTranslate="restaurantApp.review.isApproved">Is Approved</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isApproved"
+            id="field_isApproved"
+            data-cy="isApproved"
+            formControlName="isApproved"
+          />
+          @if (isApprovedRef.invalid && (isApprovedRef.dirty || isApprovedRef.touched)) {
+            <div>
+              @if (editForm.get('isApproved')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let isAnonymousRef = editForm.get('isAnonymous')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_isAnonymous" jhiTranslate="restaurantApp.review.isAnonymous">Is Anonymous</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="isAnonymous"
+            id="field_isAnonymous"
+            data-cy="isAnonymous"
+            formControlName="isAnonymous"
+          />
+          @if (isAnonymousRef.invalid && (isAnonymousRef.dirty || isAnonymousRef.touched)) {
+            <div>
+              @if (editForm.get('isAnonymous')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="restaurantApp.review.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.review.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            <option [ngValue]="null"></option>
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_reservation" jhiTranslate="restaurantApp.review.reservation">Reservation</label>
+          <select
+            class="form-control"
+            id="field_reservation"
+            data-cy="reservation"
+            name="reservation"
+            formControlName="reservation"
+            [compareWith]="compareReservation"
+          >
+            <option [ngValue]="null"></option>
+            @for (reservationOption of reservationsSharedCollection; track $index) {
+              <option [ngValue]="reservationOption">{{ reservationOption.reservationCode }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_client" jhiTranslate="restaurantApp.review.client">Client</label>
+          <select
+            class="form-control"
+            id="field_client"
+            data-cy="client"
+            name="client"
+            formControlName="client"
+            [compareWith]="compareUser"
+          >
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

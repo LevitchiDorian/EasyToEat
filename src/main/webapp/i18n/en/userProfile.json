@@ -1,0 +1,33 @@
+{
+  "restaurantApp": {
+    "userProfile": {
+      "home": {
+        "title": "User Profiles",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new User Profile",
+        "createOrEditLabel": "Create or edit a User Profile",
+        "notFound": "No User Profiles found"
+      },
+      "created": "A new User Profile is created with identifier {{ param }}",
+      "updated": "A User Profile is updated with identifier {{ param }}",
+      "deleted": "A User Profile is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete User Profile {{ id }}?"
+      },
+      "detail": {
+        "title": "User Profile"
+      },
+      "id": "ID",
+      "phone": "Phone",
+      "avatarUrl": "Avatar Url",
+      "role": "Role",
+      "preferredLanguage": "Preferred Language",
+      "receiveEmailNotifications": "Receive Email Notifications",
+      "receivePushNotifications": "Receive Push Notifications",
+      "loyaltyPoints": "Loyalty Points",
+      "createdAt": "Created At",
+      "user": "User",
+      "location": "Location"
+    }
+  }
+}

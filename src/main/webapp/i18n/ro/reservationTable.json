@@ -1,0 +1,27 @@
+{
+  "restaurantApp": {
+    "reservationTable": {
+      "home": {
+        "title": "Reservation Tables",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Reservation Table",
+        "createOrEditLabel": "Creeare sau editare Reservation Table",
+        "notFound": "No Reservation Tables found"
+      },
+      "created": "A fost creată o nouă entitate Reservation Table cu identificatorul {{ param }}",
+      "updated": "Reservation Table cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Reservation Table cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Reservation Table {{ id }}?"
+      },
+      "detail": {
+        "title": "Reservation Table"
+      },
+      "id": "ID",
+      "assignedAt": "Assigned At",
+      "notes": "Notes",
+      "table": "Table",
+      "reservation": "Reservation"
+    }
+  }
+}

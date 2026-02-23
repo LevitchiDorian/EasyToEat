@@ -1,0 +1,224 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-user-profile-heading"
+        data-cy="UserProfileCreateUpdateHeading"
+        jhiTranslate="restaurantApp.userProfile.home.createOrEditLabel"
+      >
+        Create or edit a User Profile
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="restaurantApp.userProfile.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let phoneRef = editForm.get('phone')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_phone" jhiTranslate="restaurantApp.userProfile.phone">Phone</label>
+          <input type="text" class="form-control" name="phone" id="field_phone" data-cy="phone" formControlName="phone" />
+          @if (phoneRef.invalid && (phoneRef.dirty || phoneRef.touched)) {
+            <div>
+              @if (editForm.get('phone')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '20' }"
+                  >This field cannot be longer than 20 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let avatarUrlRef = editForm.get('avatarUrl')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_avatarUrl" jhiTranslate="restaurantApp.userProfile.avatarUrl">Avatar Url</label>
+          <input type="text" class="form-control" name="avatarUrl" id="field_avatarUrl" data-cy="avatarUrl" formControlName="avatarUrl" />
+          @if (avatarUrlRef.invalid && (avatarUrlRef.dirty || avatarUrlRef.touched)) {
+            <div>
+              @if (editForm.get('avatarUrl')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '500' }"
+                  >This field cannot be longer than 500 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        @let roleRef = editForm.get('role')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_role" jhiTranslate="restaurantApp.userProfile.role">Role</label>
+          <select class="form-control" name="role" formControlName="role" id="field_role" data-cy="role">
+            <option [ngValue]="null">{{ 'restaurantApp.UserRole.null' | translate }}</option>
+            @for (userRole of userRoleValues; track $index) {
+              <option [value]="userRole">{{ 'restaurantApp.UserRole.' + userRole | translate }}</option>
+            }
+          </select>
+          @if (roleRef.invalid && (roleRef.dirty || roleRef.touched)) {
+            <div>
+              @if (editForm.get('role')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let preferredLanguageRef = editForm.get('preferredLanguage')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_preferredLanguage" jhiTranslate="restaurantApp.userProfile.preferredLanguage"
+            >Preferred Language</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            name="preferredLanguage"
+            id="field_preferredLanguage"
+            data-cy="preferredLanguage"
+            formControlName="preferredLanguage"
+          />
+          @if (preferredLanguageRef.invalid && (preferredLanguageRef.dirty || preferredLanguageRef.touched)) {
+            <div>
+              @if (editForm.get('preferredLanguage')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: '10' }"
+                  >This field cannot be longer than 10 characters.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_receiveEmailNotifications" jhiTranslate="restaurantApp.userProfile.receiveEmailNotifications"
+            >Receive Email Notifications</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="receiveEmailNotifications"
+            id="field_receiveEmailNotifications"
+            data-cy="receiveEmailNotifications"
+            formControlName="receiveEmailNotifications"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_receivePushNotifications" jhiTranslate="restaurantApp.userProfile.receivePushNotifications"
+            >Receive Push Notifications</label
+          >
+          <input
+            type="checkbox"
+            class="form-check"
+            name="receivePushNotifications"
+            id="field_receivePushNotifications"
+            data-cy="receivePushNotifications"
+            formControlName="receivePushNotifications"
+          />
+        </div>
+
+        @let loyaltyPointsRef = editForm.get('loyaltyPoints')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_loyaltyPoints" jhiTranslate="restaurantApp.userProfile.loyaltyPoints">Loyalty Points</label>
+          <input
+            type="number"
+            class="form-control"
+            name="loyaltyPoints"
+            id="field_loyaltyPoints"
+            data-cy="loyaltyPoints"
+            formControlName="loyaltyPoints"
+          />
+          @if (loyaltyPointsRef.invalid && (loyaltyPointsRef.dirty || loyaltyPointsRef.touched)) {
+            <div>
+              @if (editForm.get('loyaltyPoints')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >This field should be at least 0.</small
+                >
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('loyaltyPoints')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >This field should be a number.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let createdAtRef = editForm.get('createdAt')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_createdAt" jhiTranslate="restaurantApp.userProfile.createdAt">Created At</label>
+          <div class="d-flex">
+            <input
+              id="field_createdAt"
+              data-cy="createdAt"
+              type="datetime-local"
+              class="form-control"
+              name="createdAt"
+              formControlName="createdAt"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+          @if (createdAtRef.invalid && (createdAtRef.dirty || createdAtRef.touched)) {
+            <div>
+              @if (editForm.get('createdAt')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">This field is required.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('createdAt')?.errors?.datetimelocal"
+                jhiTranslate="entity.validation.datetimelocal"
+                >This field should be a date and time.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_user" jhiTranslate="restaurantApp.userProfile.user">User</label>
+          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user" [compareWith]="compareUser">
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.login }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_location" jhiTranslate="restaurantApp.userProfile.location">Location</label>
+          <select
+            class="form-control"
+            id="field_location"
+            data-cy="location"
+            name="location"
+            formControlName="location"
+            [compareWith]="compareLocation"
+          >
+            <option [ngValue]="null"></option>
+            @for (locationOption of locationsSharedCollection; track $index) {
+              <option [ngValue]="locationOption">{{ locationOption.name }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

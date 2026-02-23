@@ -1,0 +1,64 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (orderItemOptionSelection(); as orderItemOptionSelectionRef) {
+      <div>
+        <h2 data-cy="orderItemOptionSelectionDetailsHeading">
+          <span jhiTranslate="restaurantApp.orderItemOptionSelection.detail.title">Order Item Option Selection</span>
+        </h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ orderItemOptionSelectionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.orderItemOptionSelection.quantity">Quantity</span></dt>
+          <dd>
+            <span>{{ orderItemOptionSelectionRef.quantity }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.orderItemOptionSelection.unitPrice">Unit Price</span></dt>
+          <dd>
+            <span>{{ orderItemOptionSelectionRef.unitPrice }}</span>
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.orderItemOptionSelection.optionValue">Option Value</span></dt>
+          <dd>
+            @if (orderItemOptionSelection()!.optionValue) {
+              <div>
+                <a [routerLink]="['/menu-item-option-value', orderItemOptionSelection()!.optionValue?.id, 'view']">{{
+                  orderItemOptionSelectionRef.optionValue?.label
+                }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="restaurantApp.orderItemOptionSelection.orderItem">Order Item</span></dt>
+          <dd>
+            @if (orderItemOptionSelection()!.orderItem) {
+              <div>
+                <a [routerLink]="['/order-item', orderItemOptionSelection()!.orderItem?.id, 'view']">{{
+                  orderItemOptionSelectionRef.orderItem?.id
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button
+          type="button"
+          [routerLink]="['/order-item-option-selection', orderItemOptionSelectionRef.id, 'edit']"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

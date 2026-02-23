@@ -1,0 +1,137 @@
+<div>
+  <h2 id="page-heading" data-cy="OrderItemOptionSelectionHeading">
+    <span jhiTranslate="restaurantApp.orderItemOptionSelection.home.title">Order Item Option Selections</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="restaurantApp.orderItemOptionSelection.home.refreshListLabel">Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-order-item-option-selection"
+        [routerLink]="['/order-item-option-selection/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="restaurantApp.orderItemOptionSelection.home.createLabel">Create a new Order Item Option Selection</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (orderItemOptionSelections().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="restaurantApp.orderItemOptionSelection.home.notFound">No Order Item Option Selections found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="quantity">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.orderItemOptionSelection.quantity">Quantity</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="unitPrice">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.orderItemOptionSelection.unitPrice">Unit Price</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="optionValue.label">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.orderItemOptionSelection.optionValue">Option Value</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="orderItem.id">
+              <div class="d-flex">
+                <span jhiTranslate="restaurantApp.orderItemOptionSelection.orderItem">Order Item</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (orderItemOptionSelection of orderItemOptionSelections(); track trackId(orderItemOptionSelection)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/order-item-option-selection', orderItemOptionSelection.id, 'view']">{{
+                  orderItemOptionSelection.id
+                }}</a>
+              </td>
+              <td>{{ orderItemOptionSelection.quantity }}</td>
+              <td>{{ orderItemOptionSelection.unitPrice }}</td>
+              <td>
+                @if (orderItemOptionSelection.optionValue) {
+                  <div>
+                    <a [routerLink]="['/menu-item-option-value', orderItemOptionSelection.optionValue.id, 'view']">{{
+                      orderItemOptionSelection.optionValue.label
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (orderItemOptionSelection.orderItem) {
+                  <div>
+                    <a [routerLink]="['/order-item', orderItemOptionSelection.orderItem.id, 'view']">{{
+                      orderItemOptionSelection.orderItem.id
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/order-item-option-selection', orderItemOptionSelection.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/order-item-option-selection', orderItemOptionSelection.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                  </a>
+
+                  <button
+                    type="submit"
+                    (click)="delete(orderItemOptionSelection)"
+                    class="btn btn-danger btn-sm"
+                    data-cy="entityDeleteButton"
+                  >
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

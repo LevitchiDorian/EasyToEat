@@ -1,0 +1,26 @@
+{
+  "restaurantApp": {
+    "menuItemAllergen": {
+      "home": {
+        "title": "Menu Item Allergens",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Creeare o nouă entitate Menu Item Allergen",
+        "createOrEditLabel": "Creeare sau editare Menu Item Allergen",
+        "notFound": "No Menu Item Allergens found"
+      },
+      "created": "A fost creată o nouă entitate Menu Item Allergen cu identificatorul {{ param }}",
+      "updated": "Menu Item Allergen cu identificatorul {{ param }} a fost actualizată",
+      "deleted": "Menu Item Allergen cu identificatorul {{ param }} a fost ștearsă",
+      "delete": {
+        "question": "Sunteți sigur că doriți să ștergeți Menu Item Allergen {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Item Allergen"
+      },
+      "id": "ID",
+      "allergen": "Allergen",
+      "notes": "Notes",
+      "menuItem": "Menu Item"
+    }
+  }
+}

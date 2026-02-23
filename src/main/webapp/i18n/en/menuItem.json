@@ -1,0 +1,40 @@
+{
+  "restaurantApp": {
+    "menuItem": {
+      "home": {
+        "title": "Menu Items",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Menu Item",
+        "createOrEditLabel": "Create or edit a Menu Item",
+        "notFound": "No Menu Items found"
+      },
+      "created": "A new Menu Item is created with identifier {{ param }}",
+      "updated": "A Menu Item is updated with identifier {{ param }}",
+      "deleted": "A Menu Item is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Menu Item {{ id }}?"
+      },
+      "detail": {
+        "title": "Menu Item"
+      },
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "discountedPrice": "Discounted Price",
+      "preparationTimeMinutes": "Preparation Time Minutes",
+      "calories": "Calories",
+      "imageUrl": "Image Url",
+      "isAvailable": "Is Available",
+      "isFeatured": "Is Featured",
+      "isVegetarian": "Is Vegetarian",
+      "isVegan": "Is Vegan",
+      "isGlutenFree": "Is Gluten Free",
+      "spicyLevel": "Spicy Level",
+      "displayOrder": "Display Order",
+      "allergens": "Allergens",
+      "options": "Options",
+      "category": "Category"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "restaurantApp": {
+    "PaymentStatus": {
+      "null": "",
+      "PENDING": "PENDING",
+      "PAID": "PAID",
+      "FAILED": "FAILED"
+    }
+  }
+}
