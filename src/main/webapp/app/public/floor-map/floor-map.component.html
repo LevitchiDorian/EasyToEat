@@ -1,0 +1,185 @@
+<div
+  class="rv-floor-map"
+  (mousedown)="onMouseDown($event)"
+  (mousemove)="onMouseMove($event)"
+  (mouseup)="onMouseUp()"
+  (mouseleave)="onMouseUp()"
+  (wheel)="onWheel($event)"
+  (click)="selectedTable.set(null)"
+>
+  <!-- Legend -->
+  <div class="rv-floor-legend">
+    <div class="rv-legend-item">
+      <span class="rv-legend-dot rv-legend-dot--available"></span>
+      Disponibilă
+    </div>
+    <div class="rv-legend-item">
+      <span class="rv-legend-dot rv-legend-dot--reserved"></span>
+      Rezervată
+    </div>
+    <div class="rv-legend-item">
+      <span class="rv-legend-dot rv-legend-dot--occupied"></span>
+      Ocupată
+    </div>
+  </div>
+
+  <!-- Zoom controls -->
+  <div class="rv-floor-controls">
+    <button class="rv-floor-btn" (click)="zoomIn()" title="Mărire">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
+    <button class="rv-floor-btn" (click)="zoomOut()" title="Micșorare">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    </button>
+    <button class="rv-floor-btn" (click)="resetView()" title="Resetare vedere">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 0-2 2h-3" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Canvas -->
+  <div class="rv-floor-canvas-wrap">
+    <div
+      class="rv-floor-canvas"
+      [style.width.px]="floorPlan.canvasWidth"
+      [style.height.px]="floorPlan.canvasHeight"
+      [style.transform]="transform"
+    >
+      <!-- Static areas -->
+      @for (area of floorPlan.staticAreas ?? []; track area.name) {
+        <div
+          class="rv-static-area"
+          [style.left.px]="area.posX"
+          [style.top.px]="area.posY"
+          [style.width.px]="area.width"
+          [style.height.px]="area.height"
+        >
+          @if (area.icon === 'kitchen') {
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+              <line x1="6" y1="1" x2="6" y2="4" />
+              <line x1="10" y1="1" x2="10" y2="4" />
+              <line x1="14" y1="1" x2="14" y2="4" />
+            </svg>
+          }
+          @if (area.icon === 'door') {
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M13 4h3a2 2 0 0 1 2 2v14" />
+              <path d="M2 20h3" />
+              <path d="M13 20h9" />
+              <path d="M10 12v.01" />
+              <path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561z" />
+            </svg>
+          }
+          <span class="rv-static-area__label">{{ area.name }}</span>
+        </div>
+      }
+
+      <!-- Rooms -->
+      @for (room of floorPlan.rooms; track room.id) {
+        <div
+          class="rv-room"
+          [style.left.px]="room.posX"
+          [style.top.px]="room.posY"
+          [style.width.px]="room.width"
+          [style.height.px]="room.height"
+        >
+          <span class="rv-room__label">{{ room.name }}</span>
+
+          <!-- Sushi bar counter label -->
+          @if (room.name === 'Sushi Bar') {
+            <span class="rv-room__sublabel">Sushi Counter</span>
+          }
+
+          <!-- Tables -->
+          @for (table of room.tables; track table.id) {
+            <div
+              [class]="tableClass(table)"
+              [style]="tableStyle(table)"
+              (click)="selectTable(table, $event)"
+              (mouseenter)="showTooltip(table)"
+              (mouseleave)="hideTooltip()"
+            >
+              <span class="rv-table__number">{{ table.tableNumber }}</span>
+              <span class="rv-table__cap">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+                  />
+                </svg>
+                {{ table.maxCapacity }}
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Tooltip -->
+  @if (tooltipTable() && selectedTable()?.id !== tooltipTable()?.id) {
+    @let t = tooltipTable()!;
+    <div class="rv-tooltip">
+      <div class="rv-tooltip__row">
+        <strong>Masa {{ t.tableNumber }}</strong>
+        <span class="rv-tooltip__status" [attr.data-status]="t.status">{{ statusLabel(t.status) }}</span>
+      </div>
+      <div class="rv-tooltip__info">
+        <span>Capacitate: {{ t.minCapacity }}–{{ t.maxCapacity }} persoane</span>
+        @if (t.notes) {
+          <span>{{ t.notes }}</span>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Selected table info bar -->
+  @if (selectedTable()) {
+    @let sel = selectedTable()!;
+    <div class="rv-selection-bar">
+      <div class="rv-selection-bar__info">
+        <strong>Masa {{ sel.tableNumber }}</strong>
+        <span>{{ sel.minCapacity }}–{{ sel.maxCapacity }} persoane</span>
+        <span class="rv-tag rv-tag--available">{{ statusLabel(sel.status) }}</span>
+      </div>
+      <div class="rv-selection-bar__actions">
+        <button class="btn-rv-ghost rv-selection-bar__cancel" (click)="selectedTable.set(null)">Anulează</button>
+        <button class="btn-rv-primary rv-selection-bar__confirm">Rezervă masa {{ sel.tableNumber }}</button>
+      </div>
+    </div>
+  }
+</div>

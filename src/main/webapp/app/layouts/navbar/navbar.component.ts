@@ -1,65 +1,53 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, HostListener, inject, signal, computed } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { CommonModule } from '@angular/common';
 
 import { StateStorageService } from 'app/core/auth/state-storage.service';
-import SharedModule from 'app/shared/shared.module';
-import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
-import { LANGUAGES } from 'app/config/language.constants';
 import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
-import { EntityNavbarItems } from 'app/entities/entity-navbar-items';
-import { environment } from 'environments/environment';
-import ActiveMenuDirective from './active-menu.directive';
-import NavbarItem from './navbar-item.model';
+import { Authority } from 'app/config/authority.constants';
 
 @Component({
   selector: 'jhi-navbar',
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
-  imports: [RouterModule, SharedModule, HasAnyAuthorityDirective, ActiveMenuDirective],
+  imports: [RouterModule, CommonModule, NgbDropdownModule],
 })
 export default class NavbarComponent implements OnInit {
-  inProduction?: boolean;
   isNavbarCollapsed = signal(true);
-  languages = LANGUAGES;
-  openAPIEnabled?: boolean;
-  version = '';
+  scrolled = false;
   account = inject(AccountService).trackCurrentAccount();
-  entitiesNavbarItems: NavbarItem[] = [];
+  isAdmin = computed(() => this.accountService.hasAnyAuthority([Authority.ADMIN]));
 
+  private readonly accountService = inject(AccountService);
   private readonly loginService = inject(LoginService);
-  private readonly translateService = inject(TranslateService);
   private readonly stateStorageService = inject(StateStorageService);
   private readonly profileService = inject(ProfileService);
   private readonly router = inject(Router);
-
-  constructor() {
-    const { VERSION } = environment;
-    if (VERSION) {
-      this.version = VERSION.toLowerCase().startsWith('v') ? VERSION : `v${VERSION}`;
-    }
-  }
+  private readonly translateService = inject(TranslateService);
 
   ngOnInit(): void {
-    this.entitiesNavbarItems = EntityNavbarItems;
-    this.profileService.getProfileInfo().subscribe(profileInfo => {
-      this.inProduction = profileInfo.inProduction;
-      this.openAPIEnabled = profileInfo.openAPIEnabled;
-    });
+    this.profileService.getProfileInfo().subscribe();
   }
 
-  changeLanguage(languageKey: string): void {
-    this.stateStorageService.storeLocale(languageKey);
-    this.translateService.use(languageKey);
+  @HostListener('window:scroll')
+  onScroll(): void {
+    this.scrolled = window.scrollY > 10;
   }
 
   collapseNavbar(): void {
     this.isNavbarCollapsed.set(true);
   }
 
+  toggleNavbar(): void {
+    this.isNavbarCollapsed.update(v => !v);
+  }
+
   login(): void {
+    this.stateStorageService.storeUrl(this.router.routerState.snapshot.url);
     this.router.navigate(['/login']);
   }
 
@@ -67,9 +55,5 @@ export default class NavbarComponent implements OnInit {
     this.collapseNavbar();
     this.loginService.logout();
     this.router.navigate(['']);
-  }
-
-  toggleNavbar(): void {
-    this.isNavbarCollapsed.update(isNavbarCollapsed => !isNavbarCollapsed);
   }
 }

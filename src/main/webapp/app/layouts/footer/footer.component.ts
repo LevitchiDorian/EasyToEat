@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { TranslateDirective } from 'app/shared/language';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'jhi-footer',
   templateUrl: './footer.component.html',
-  imports: [TranslateDirective],
+  styleUrl: './footer.component.scss',
+  imports: [RouterModule],
 })
 export default class FooterComponent {}

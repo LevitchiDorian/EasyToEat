@@ -234,3 +234,144 @@ angular-cli removes postcss-rtl processed inline css, processed rules must be ad
   }
 }
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+/* =====================================================
+   ReservoAI Design System (tokens, glass, glow, floor map, animations)
+   ===================================================== */
+@import 'reservoai-design';
+
+/* Shared component utilities that rely on the design tokens */
+
+/* Orange CTA button */
+.btn-rv-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground)) !important;
+  border: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: var(--radius);
+  padding: 0.7rem 1.6rem;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+  text-decoration: none !important;
+
+  &:hover {
+    background-color: hsl(var(--primary-dark));
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+/* Ghost/outline button */
+.btn-rv-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--border));
+  font-weight: 500;
+  font-size: 0.95rem;
+  border-radius: var(--radius);
+  padding: 0.7rem 1.6rem;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+  cursor: pointer;
+  text-decoration: none !important;
+
+  &:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    background: hsl(var(--secondary));
+  }
+}
+
+/* Dark card */
+.rv-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: var(--radius);
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: hsl(var(--border));
+    background: hsl(var(--card-hover));
+    transform: translateY(-2px);
+  }
+}
+
+/* Section padding */
+.rv-section {
+  padding: 80px 0;
+}
+
+/* Centred, max-width container */
+.rv-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Main content area (below navbar) */
+.rv-main {
+  min-height: calc(100vh - var(--rv-navbar-height));
+}
+
+/* Legacy animation names kept for backward compatibility */
+@keyframes rv-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes rv-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes rv-pulse-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 0.7;
+  }
+}
+
+.rv-animate-in {
+  animation: rv-fadeIn 0.6s ease both;
+}
+
+/* Page ribbon */
+.ribbon {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Override default JHipster footer */
+.footer {
+  background: hsl(var(--sidebar-background));
+  border-top: 1px solid hsl(var(--border) / 0.6);
+  color: hsl(var(--muted-foreground));
+}

@@ -1,0 +1,601 @@
+/* ==========================================================================
+   ReservoAI Design System — Elegant HoReCa Platform
+   All design tokens from the mockup, converted from Tailwind to plain CSS/SCSS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. DESIGN TOKENS (CSS Custom Properties)
+   -------------------------------------------------------------------------- */
+:root {
+  /* ── Core palette — Warm amber on rich dark ─────────────────────── */
+  --background: 20 14% 4%; /* #0a0804  deepest dark */
+  --foreground: 40 20% 95%; /* #f5f0e8  warm white   */
+
+  --card: 20 14% 8%; /* #151109  dark card    */
+  --card-hover: 20 14% 11%; /* #1c1610  hover        */
+  --card-foreground: 40 20% 95%;
+
+  --popover: 20 14% 10%;
+  --popover-foreground: 40 20% 95%;
+
+  /* ── Primary — Warm amber/gold ─────────────────────────────────── */
+  --primary: 35 80% 55%; /* #e8931b orange        */
+  --primary-dark: 35 80% 46%; /* #c47c12 darker        */
+  --primary-foreground: 20 14% 4%;
+
+  /* ── Secondary — Muted warm gray ───────────────────────────────── */
+  --secondary: 25 10% 18%;
+  --secondary-foreground: 40 15% 85%;
+
+  /* ── Muted surfaces ────────────────────────────────────────────── */
+  --muted: 25 10% 12%;
+  --muted-foreground: 30 10% 55%;
+
+  /* ── Accent — Rich gold ────────────────────────────────────────── */
+  --accent: 40 90% 50%; /* #f5a520 bright gold   */
+  --accent-foreground: 20 14% 4%;
+
+  /* ── Semantic ─────────────────────────────────────────────────── */
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* ── Table status ─────────────────────────────────────────────── */
+  --available: 145 65% 42%; /* #249a50 green         */
+  --available-foreground: 145 65% 95%;
+  --reserved: 35 80% 55%; /* same as primary       */
+  --reserved-foreground: 20 14% 4%;
+  --occupied: 0 72% 51%; /* #d93535 red           */
+  --occupied-foreground: 0 0% 100%;
+
+  /* ── Feedback ─────────────────────────────────────────────────── */
+  --success: 145 65% 42%;
+  --success-foreground: 145 65% 95%;
+  --warning: 35 80% 55%;
+  --warning-foreground: 20 14% 4%;
+
+  /* ── Borders / inputs ─────────────────────────────────────────── */
+  --border: 25 15% 20%;
+  --input: 25 15% 18%;
+  --ring: 35 80% 55%;
+
+  /* ── Radius ────────────────────────────────────────────────────── */
+  --radius: 0.75rem;
+
+  /* ── Sidebar ───────────────────────────────────────────────────── */
+  --sidebar-background: 20 14% 6%;
+  --sidebar-foreground: 40 15% 85%;
+  --sidebar-primary: 35 80% 55%;
+  --sidebar-primary-foreground: 20 14% 4%;
+  --sidebar-accent: 25 10% 15%;
+  --sidebar-accent-foreground: 40 15% 90%;
+  --sidebar-border: 25 15% 18%;
+  --sidebar-ring: 35 80% 55%;
+
+  /* ── Gradients ─────────────────────────────────────────────────── */
+  --gradient-gold: linear-gradient(135deg, hsl(35 80% 55%), hsl(45 90% 60%));
+  --gradient-dark: linear-gradient(180deg, hsl(20 14% 8%), hsl(20 14% 4%));
+  --gradient-card: linear-gradient(145deg, hsl(20 14% 10%), hsl(20 14% 6%));
+
+  /* ── Shadows ───────────────────────────────────────────────────── */
+  --shadow-glow: 0 0 30px -5px hsl(35 80% 55% / 0.3);
+  --shadow-card: 0 10px 40px -10px hsl(0 0% 0% / 0.5);
+  --shadow-elevated: 0 20px 50px -15px hsl(0 0% 0% / 0.6);
+
+  /* ── Legacy rv-* aliases (keep existing components working) ─────── */
+  --rv-bg: hsl(var(--background));
+  --rv-bg-2: hsl(20 14% 6%);
+  --rv-bg-card: hsl(var(--card));
+  --rv-bg-card-hover: hsl(var(--card-hover));
+  --rv-orange: hsl(var(--accent));
+  --rv-orange-dark: hsl(var(--primary-dark));
+  --rv-white: hsl(var(--foreground));
+  --rv-gray: hsl(var(--muted-foreground));
+  --rv-gray-dark: hsl(30 10% 40%);
+  --rv-border: hsl(var(--border) / 0.6);
+  --rv-border-hover: hsl(var(--border));
+  --rv-green: hsl(var(--available));
+  --rv-red: hsl(var(--occupied));
+  --rv-amber: hsl(var(--reserved));
+  --rv-navbar-height: 64px;
+}
+
+/* --------------------------------------------------------------------------
+   2. BASE RESETS
+   -------------------------------------------------------------------------- */
+body {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+  &:hover {
+    background: hsl(var(--primary) / 0.7);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. GLASS MORPHISM
+   -------------------------------------------------------------------------- */
+.glass {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.5);
+}
+
+.glass-strong {
+  background: hsl(var(--card) / 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.75);
+}
+
+/* --------------------------------------------------------------------------
+   4. GLOW EFFECTS
+   -------------------------------------------------------------------------- */
+.glow-primary {
+  box-shadow: 0 0 30px -5px hsl(var(--primary) / 0.4);
+}
+.glow-success {
+  box-shadow: 0 0 20px -5px hsl(var(--available) / 0.5);
+}
+.glow-warning {
+  box-shadow: 0 0 20px -5px hsl(var(--reserved) / 0.5);
+}
+.glow-danger {
+  box-shadow: 0 0 20px -5px hsl(var(--occupied) / 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   5. TEXT GRADIENTS
+   -------------------------------------------------------------------------- */
+.text-gradient {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-muted-rv {
+  color: hsl(var(--muted-foreground));
+}
+.text-primary-rv {
+  color: hsl(var(--primary));
+}
+.text-accent-rv {
+  color: hsl(var(--accent));
+}
+
+/* --------------------------------------------------------------------------
+   6. TABLE STATUS CLASSES
+   -------------------------------------------------------------------------- */
+.status-available {
+  background: hsl(var(--available));
+  color: hsl(var(--available-foreground));
+  box-shadow: 0 0 16px hsl(var(--available) / 0.3);
+}
+
+.status-reserved {
+  background: hsl(var(--reserved));
+  color: hsl(var(--reserved-foreground));
+  box-shadow: 0 0 16px hsl(var(--reserved) / 0.3);
+}
+
+.status-occupied {
+  background: hsl(var(--occupied));
+  color: hsl(var(--occupied-foreground));
+  box-shadow: 0 0 16px hsl(var(--occupied) / 0.3);
+}
+
+/* Badges / pills */
+.badge-available {
+  background: hsl(var(--available) / 0.15);
+  color: hsl(var(--available));
+  border: 1px solid hsl(var(--available) / 0.3);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.badge-reserved {
+  background: hsl(var(--reserved) / 0.15);
+  color: hsl(var(--reserved));
+  border: 1px solid hsl(var(--reserved) / 0.35);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.badge-occupied {
+  background: hsl(var(--occupied) / 0.15);
+  color: hsl(var(--occupied));
+  border: 1px solid hsl(var(--occupied) / 0.3);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   7. SURFACE CARDS
+   -------------------------------------------------------------------------- */
+.surface {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: var(--radius);
+}
+
+.surface-elevated {
+  background: var(--gradient-card);
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.surface-hover {
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    background: hsl(var(--card-hover));
+    border-color: hsl(var(--border));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. FLOOR PLAN SPECIFIC
+   -------------------------------------------------------------------------- */
+.floor-plan-grid {
+  background-image:
+    linear-gradient(hsl(var(--border) / 0.35) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.table-item {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.06);
+    z-index: 10;
+    filter: brightness(1.15);
+  }
+
+  &.available {
+    background: linear-gradient(145deg, hsl(var(--available) / 0.92), hsl(var(--available) / 0.75));
+    border: 2px solid hsl(var(--available));
+    box-shadow: 0 0 16px hsl(var(--available) / 0.25);
+    color: hsl(var(--available-foreground));
+  }
+
+  &.reserved {
+    background: linear-gradient(145deg, hsl(var(--reserved) / 0.92), hsl(var(--reserved) / 0.75));
+    border: 2px solid hsl(var(--reserved));
+    box-shadow: 0 0 16px hsl(var(--reserved) / 0.25);
+    color: hsl(var(--reserved-foreground));
+  }
+
+  &.occupied {
+    background: linear-gradient(145deg, hsl(var(--occupied) / 0.92), hsl(var(--occupied) / 0.75));
+    border: 2px solid hsl(var(--occupied));
+    box-shadow: 0 0 16px hsl(var(--occupied) / 0.25);
+    color: hsl(var(--occupied-foreground));
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      filter: none;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. KEYFRAME ANIMATIONS
+   -------------------------------------------------------------------------- */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px -5px hsl(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 44px -5px hsl(var(--primary) / 0.65);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ── Animation utility classes ───────────────────────── */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+.animate-slide-up {
+  animation: slide-up 0.45s ease-out both;
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out both;
+}
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out both;
+}
+
+/* Stagger helpers */
+.animate-delay-1 {
+  animation-delay: 0.1s;
+}
+.animate-delay-2 {
+  animation-delay: 0.2s;
+}
+.animate-delay-3 {
+  animation-delay: 0.3s;
+}
+.animate-delay-4 {
+  animation-delay: 0.4s;
+}
+.animate-delay-5 {
+  animation-delay: 0.5s;
+}
+
+/* Skeleton loader shimmer */
+.skeleton {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--secondary)) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   10. COMPONENT BUILDING BLOCKS
+   -------------------------------------------------------------------------- */
+
+/* Dividers */
+.rv-divider {
+  border: none;
+  border-top: 1px solid hsl(var(--border) / 0.6);
+  margin: 0;
+}
+
+/* Input fields for dark theme */
+.rv-input-dark {
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border) / 0.8);
+  border-radius: calc(var(--radius) - 2px);
+  color: hsl(var(--foreground));
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+
+  &::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  &:focus {
+    border-color: hsl(var(--primary) / 0.6);
+    background: hsl(var(--primary) / 0.04);
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.15);
+  }
+}
+
+/* Gold gradient button */
+.btn-gradient {
+  background: var(--gradient-gold);
+  color: hsl(var(--primary-foreground));
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+/* Icon container */
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: calc(var(--radius) - 2px);
+  flex-shrink: 0;
+
+  &--sm {
+    width: 32px;
+    height: 32px;
+  }
+  &--md {
+    width: 44px;
+    height: 44px;
+  }
+  &--lg {
+    width: 56px;
+    height: 56px;
+  }
+
+  &--primary {
+    background: hsl(var(--primary) / 0.15);
+    color: hsl(var(--primary));
+  }
+  &--success {
+    background: hsl(var(--available) / 0.15);
+    color: hsl(var(--available));
+  }
+  &--warning {
+    background: hsl(var(--reserved) / 0.15);
+    color: hsl(var(--reserved));
+  }
+  &--danger {
+    background: hsl(var(--occupied) / 0.15);
+    color: hsl(var(--occupied));
+  }
+  &--blue {
+    background: hsl(220 80% 60% / 0.15);
+    color: hsl(220 80% 70%);
+  }
+  &--purple {
+    background: hsl(270 70% 65% / 0.15);
+    color: hsl(270 70% 75%);
+  }
+  &--teal {
+    background: hsl(175 70% 45% / 0.15);
+    color: hsl(175 70% 60%);
+  }
+}
+
+/* Pill / tag */
+.rv-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+
+  &--primary {
+    background: hsl(var(--primary) / 0.15);
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.3);
+  }
+
+  &--muted {
+    background: hsl(var(--muted));
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  &--success {
+    background: hsl(var(--available) / 0.15);
+    color: hsl(var(--available));
+    border: 1px solid hsl(var(--available) / 0.3);
+  }
+}
+
+/* Rating stars */
+.rv-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: hsl(var(--foreground));
+
+  svg {
+    color: hsl(var(--accent));
+  }
+}
+
+/* Section separator */
+.rv-section-header {
+  text-align: center;
+  margin-bottom: 56px;
+
+  .rv-section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.025em;
+    line-height: 1.18;
+    margin-bottom: 14px;
+  }
+
+  .rv-section-sub {
+    font-size: 1rem;
+    color: hsl(var(--muted-foreground));
+    max-width: 540px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+}

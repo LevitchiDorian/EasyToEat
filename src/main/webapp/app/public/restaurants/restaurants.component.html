@@ -1,0 +1,166 @@
+<div class="rv-restaurants">
+  <div class="rv-container">
+    <!-- Header -->
+    <div class="rv-restaurants__header">
+      <h1 class="rv-restaurants__title">Descoperă <span class="rv-text-orange">restaurante</span></h1>
+      <p class="rv-restaurants__subtitle">Explorează cele mai bune restaurante din Chișinău și rezervă masa perfectă</p>
+    </div>
+
+    <!-- Search bar -->
+    <div class="rv-search-bar">
+      <div class="rv-search-bar__input-wrap">
+        <svg
+          class="rv-search-bar__icon"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input
+          class="rv-search-bar__input"
+          type="text"
+          placeholder="Caută restaurante..."
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+        />
+      </div>
+      <div class="rv-search-bar__location">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#f5a520"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+        Chișinău, Moldova
+      </div>
+    </div>
+
+    <!-- Cuisine filters -->
+    <div class="rv-filters">
+      <div class="rv-filters__chips">
+        @for (c of cuisines; track c.key) {
+          <button class="rv-chip" [class.rv-chip--active]="selectedCuisine() === c.key" (click)="selectCuisine(c.key)">
+            {{ c.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Rating filter -->
+    <div class="rv-filters rv-filters--rating">
+      <span class="rv-filters__label">Rating minim:</span>
+      <div class="rv-filters__chips">
+        @for (r of ratingOptions; track r.value) {
+          <button class="rv-chip rv-chip--sm" [class.rv-chip--active]="selectedRating() === r.value" (click)="selectRating(r.value)">
+            @if (r.value > 0) {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            }
+            {{ r.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Results grid -->
+    @if (isLoading()) {
+      <div class="rv-loading">
+        <div class="rv-spinner"></div>
+      </div>
+    } @else if (filtered().length === 0) {
+      <div class="rv-empty">
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="rgba(255,255,255,0.3)"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <p>Niciun restaurant găsit pentru filtrele selectate.</p>
+        <button class="btn-rv-ghost" (click)="selectCuisine('toate'); selectRating(0); onSearch('')">Resetează filtrele</button>
+      </div>
+    } @else {
+      <div class="rv-grid">
+        @for (r of filtered(); track r.id) {
+          <a class="rv-rest-card" [routerLink]="['/restaurante', r.id]">
+            <div class="rv-rest-card__img-wrap">
+              <img [src]="r.imageUrl" [alt]="r.name" class="rv-rest-card__img" loading="lazy" />
+              <span class="rv-rest-card__cuisine-badge">{{ r.cuisine }}</span>
+              <span class="rv-rest-card__rating-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="#f5a520">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                </svg>
+                {{ r.rating }}
+              </span>
+            </div>
+
+            <div class="rv-rest-card__body">
+              <h3 class="rv-rest-card__name">{{ r.name }}</h3>
+              <p class="rv-rest-card__desc">{{ r.description }}</p>
+              <div class="rv-rest-card__footer">
+                <div class="rv-rest-card__info-item">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  {{ r.city }}
+                </div>
+                <div class="rv-rest-card__info-item">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <span [class.rv-rest-card__status--open]="r.isOpen" [class.rv-rest-card__status--closed]="!r.isOpen">
+                    {{ r.isOpen ? 'Deschis' : 'Închis' }}
+                  </span>
+                </div>
+                @if (r.locationsCount > 1) {
+                  <div class="rv-rest-card__locations">{{ r.locationsCount }} locații disponibile</div>
+                }
+              </div>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -9,6 +9,7 @@ import {
   withComponentInputBinding,
   withDebugTracing,
   withNavigationErrorHandler,
+  withViewTransitions,
 } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -26,6 +27,7 @@ import { AppPageTitleStrategy } from './app-page-title-strategy';
 
 const routerFeatures: RouterFeatures[] = [
   withComponentInputBinding(),
+  withViewTransitions(),
   withNavigationErrorHandler((e: NavigationError) => {
     const router = inject(Router);
     if (e.error.status === 403) {

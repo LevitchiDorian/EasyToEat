@@ -1,0 +1,355 @@
+@if (restaurant(); as r) {
+  <div class="rv-detail">
+    <!-- Cover image -->
+    <div class="rv-detail__cover">
+      <img [src]="r.imageUrl" [alt]="r.name" class="rv-detail__cover-img" />
+      <div class="rv-detail__cover-overlay"></div>
+      <div class="rv-container rv-detail__cover-content">
+        <button class="rv-back-btn" (click)="goBack()">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Toate restaurantele
+        </button>
+        <div class="rv-detail__cover-info">
+          <span class="rv-detail__cuisine-tag">{{ r.cuisine }}</span>
+          <h1 class="rv-detail__title">{{ r.name }}</h1>
+          <div class="rv-detail__meta">
+            <span class="rv-detail__rating">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#f5a520">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              {{ r.rating }} · Excelent
+            </span>
+            <span class="rv-detail__status" [class.rv-detail__status--open]="r.isOpen">
+              {{ r.isOpen ? 'Deschis acum' : 'Închis' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="rv-container rv-detail__body">
+      <!-- Left column: tabs & content -->
+      <div class="rv-detail__main">
+        <!-- Description -->
+        <p class="rv-detail__desc">{{ r.fullDescription }}</p>
+
+        <!-- Order type selector -->
+        <div class="rv-order-types">
+          <button class="rv-order-type" [class.rv-order-type--active]="orderType === 'masa'" (click)="orderType = 'masa'">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Rezervare masă
+          </button>
+          <button class="rv-order-type" [class.rv-order-type--active]="orderType === 'livrare'" (click)="orderType = 'livrare'">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="1" y="3" width="15" height="13" />
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+              <circle cx="5.5" cy="18.5" r="2.5" />
+              <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+            Livrare
+          </button>
+          <button class="rv-order-type" [class.rv-order-type--active]="orderType === 'pachet'" (click)="orderType = 'pachet'">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 0 1-8 0" />
+            </svg>
+            Ridicare pachet
+          </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="rv-tabs">
+          <button class="rv-tab" [class.rv-tab--active]="activeTab() === 'mese'" (click)="setTab('mese')">Harta sălii</button>
+          <button class="rv-tab" [class.rv-tab--active]="activeTab() === 'meniu'" (click)="setTab('meniu')">Meniu</button>
+          <button class="rv-tab" [class.rv-tab--active]="activeTab() === 'recenzii'" (click)="setTab('recenzii')">Recenzii</button>
+        </div>
+
+        <!-- Mese tab -->
+        @if (activeTab() === 'mese') {
+          <div class="rv-tab-content">
+            <app-floor-map [floorPlan]="floorPlan" (tableSelected)="onTableSelected($event)" />
+
+            @if (selectedTable()) {
+              <div class="rv-reservation-form">
+                <h3 class="rv-reservation-form__title">
+                  Rezervare Masa {{ selectedTable()!.tableNumber }}
+                  <span>{{ selectedTable()!.minCapacity }}–{{ selectedTable()!.maxCapacity }} persoane</span>
+                </h3>
+                <div class="rv-reservation-form__row">
+                  <label>
+                    Data rezervării
+                    <input type="date" class="rv-input" [(ngModel)]="reservationDate" />
+                  </label>
+                  <label>
+                    Număr persoane
+                    <input
+                      type="number"
+                      class="rv-input"
+                      [(ngModel)]="partySize"
+                      [min]="selectedTable()!.minCapacity"
+                      [max]="selectedTable()!.maxCapacity"
+                    />
+                  </label>
+                </div>
+                <div class="rv-reservation-form__actions">
+                  <button class="btn-rv-primary" (click)="confirmReservation()" [disabled]="!reservationDate">Confirmă rezervarea</button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Meniu tab -->
+        @if (activeTab() === 'meniu') {
+          <div class="rv-tab-content rv-menu-placeholder">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="rgba(255,255,255,0.2)"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z" />
+              <path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+              <path d="M9.5 14.5c0 .83-.67 1.5-1.5 1.5H3c-.83 0-1.5-.67-1.5-1.5S2.17 13 3 13h5c.83 0 1.5.67 1.5 1.5z" />
+              <path d="M9 19v-9" />
+              <path d="M6 19v-9" />
+              <path d="M12 19v-9" />
+            </svg>
+            <p>Meniul va fi disponibil în curând.</p>
+            <p class="rv-menu-placeholder__sub">Contactați restaurantul pentru informații despre meniu.</p>
+          </div>
+        }
+
+        <!-- Recenzii tab -->
+        @if (activeTab() === 'recenzii') {
+          <div class="rv-tab-content">
+            <div class="rv-reviews">
+              <div class="rv-review">
+                <div class="rv-review__header">
+                  <div class="rv-review__avatar">AM</div>
+                  <div>
+                    <strong>Alexandru M.</strong>
+                    <div class="rv-review__stars">
+                      @for (s of [1, 2, 3, 4, 5]; track s) {
+                        <svg width="13" height="13" viewBox="0 0 24 24" [attr.fill]="s <= 5 ? '#f5a520' : '#333'">
+                          <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                          />
+                        </svg>
+                      }
+                    </div>
+                  </div>
+                  <span class="rv-review__date">Ianuarie 2026</span>
+                </div>
+                <p class="rv-review__text">
+                  Experiență fantastică! Mâncarea a fost proaspătă și delicioasă, iar personalul extrem de amabil. Harta interactivă a sălii
+                  este o idee genială — am ales masa la fereastră cu vizualizarea înainte de a ajunge.
+                </p>
+              </div>
+              <div class="rv-review">
+                <div class="rv-review__header">
+                  <div class="rv-review__avatar">IP</div>
+                  <div>
+                    <strong>Ioana P.</strong>
+                    <div class="rv-review__stars">
+                      @for (s of [1, 2, 3, 4]; track s) {
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="#f5a520">
+                          <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                          />
+                        </svg>
+                      }
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="#333">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                    </div>
+                  </div>
+                  <span class="rv-review__date">Februarie 2026</span>
+                </div>
+                <p class="rv-review__text">
+                  Foarte bun! Am pre-comandat mâncarea și totul era gata când am ajuns. Economie mare de timp. Recomand cu căldură.
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Right column: location & reservation -->
+      <div class="rv-detail__sidebar">
+        <!-- Locations -->
+        @if (r.locations.length > 1) {
+          <div class="rv-sidebar-card rv-sidebar-card--locations">
+            <h4 class="rv-sidebar-card__title">Locații disponibile</h4>
+            @for (loc of r.locations; track loc.id) {
+              <button
+                class="rv-location-item"
+                [class.rv-location-item--active]="selectedLocationId() === loc.id"
+                (click)="selectLocation(loc.id)"
+              >
+                <div class="rv-location-item__info">
+                  <strong>{{ loc.name }}</strong>
+                  <span>{{ loc.address }}</span>
+                </div>
+                <span class="rv-location-item__status" [class.rv-location-item__status--open]="loc.isOpen">
+                  {{ loc.isOpen ? 'Deschis' : 'Închis' }}
+                </span>
+              </button>
+            }
+          </div>
+        }
+
+        <!-- Selected location info -->
+        @if (selectedLocation) {
+          @let loc = selectedLocation;
+          <div class="rv-sidebar-card">
+            <h4 class="rv-sidebar-card__title">Informații</h4>
+
+            <div class="rv-sidebar-info">
+              <div class="rv-sidebar-info__row">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#f5a520"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>{{ loc.address }}, {{ loc.city }}</span>
+              </div>
+              <div class="rv-sidebar-info__row">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#f5a520"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>{{ loc.hours }}</span>
+              </div>
+              <div class="rv-sidebar-info__row">
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#f5a520"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.44 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.91 8.5a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.91.36 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"
+                  />
+                </svg>
+                <a [href]="'tel:' + loc.phone" class="rv-sidebar-info__link">{{ loc.phone }}</a>
+              </div>
+            </div>
+
+            <button class="btn-rv-ghost rv-sidebar-map-btn" (click)="openGoogleMaps(loc)">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="3 11 22 2 13 21 11 13 3 11" />
+              </svg>
+              Vezi pe hartă
+            </button>
+          </div>
+        }
+
+        <!-- Banquet CTA -->
+        <div class="rv-sidebar-card rv-sidebar-card--banquet">
+          <h4>Banchet sau eveniment privat?</h4>
+          <p>Contactează-ne pentru a discuta aranjamente speciale pentru grupuri mari.</p>
+          <button class="btn-rv-primary rv-sidebar-banquet-btn">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.44 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.91 8.5a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.91.36 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"
+              />
+            </svg>
+            Contactează managerul
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="rv-loading-full">
+    <div class="rv-spinner"></div>
+  </div>
+}

@@ -1,0 +1,94 @@
+<section class="rv-rp">
+  <div class="rv-container">
+    <!-- Header row -->
+    <div class="rv-rp__header animate-fade-in">
+      <div>
+        <h2 class="rv-rp__title">Restaurante <span class="text-gradient">populare</span></h2>
+        <p class="rv-rp__subtitle">Descoperă cele mai apreciate restaurante din Chișinău</p>
+      </div>
+      <a routerLink="/restaurante" class="rv-rp__see-all">
+        Vezi toate
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Cards grid -->
+    <div class="rv-rp__grid">
+      @for (r of restaurants; track r.id) {
+        <a class="rv-rp__card glass" [routerLink]="['/restaurante', r.id]">
+          <!-- Image -->
+          <div class="rv-rp__img-wrap">
+            <img [src]="r.imageUrl" [alt]="r.name" class="rv-rp__img" loading="lazy" />
+            <div class="rv-rp__img-fade"></div>
+
+            <!-- Free tables badge -->
+            <span class="rv-rp__free-badge"> {{ r.freeSlots }} mese libere </span>
+
+            <!-- Rating badge -->
+            <div class="rv-rp__rating-badge glass">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="hsl(var(--primary))">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              {{ r.rating }}
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="rv-rp__body">
+            <div class="rv-rp__name-row">
+              <h3 class="rv-rp__name">{{ r.name }}</h3>
+              <span class="rv-rp__cuisine">{{ r.cuisine }}</span>
+            </div>
+
+            <div class="rv-rp__meta">
+              <span class="rv-rp__meta-item">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                {{ r.address }}
+              </span>
+              <span class="rv-rp__meta-item">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                {{ r.hours }}
+              </span>
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>

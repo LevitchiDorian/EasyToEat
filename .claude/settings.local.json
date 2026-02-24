@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc --noEmit --project tsconfig.app.json)",
+      "Read(//c/Users/levit/.claude/projects/c--Users-levit-Desktop-EasyToEat/memory/**)"
+    ],
+    "additionalDirectories": ["c:\\Users\\levit\\.claude\\projects\\c--Users-levit-Desktop-EasyToEat\\memory"]
+  }
+}
