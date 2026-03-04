@@ -1,132 +1,140 @@
-<div>
-  <h2>
-    <span id="user-management-page-heading" data-cy="userManagementPageHeading" jhiTranslate="userManagement.home.title">Users</span>
-
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadAll()" [disabled]="isLoading()">
-        <fa-icon icon="sync" [animation]="isLoading() ? 'spin' : undefined"></fa-icon>
-        <span jhiTranslate="userManagement.home.refreshListLabel">Refresh list</span>
-      </button>
-      <button class="btn btn-primary jh-create-entity" [routerLink]="['./new']">
-        <fa-icon icon="plus"></fa-icon> <span jhiTranslate="userManagement.home.createLabel">Create a new user</span>
-      </button>
+<div class="rv-admin-page">
+  <!-- Page header -->
+  <div class="rv-admin-page-header">
+    <div>
+      <h1 class="rv-admin-page-title" id="user-management-page-heading" data-cy="userManagementPageHeading">Utilizatori</h1>
+      <p class="rv-admin-page-sub">Gestionează conturile și rolurile utilizatorilor</p>
     </div>
-  </h2>
+    <div class="rv-admin-page-actions">
+      <button class="rv-btn rv-btn--ghost" (click)="loadAll()" [disabled]="isLoading()">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [class.rv-spin]="isLoading()"
+        >
+          <polyline points="23 4 23 10 17 10" />
+          <polyline points="1 20 1 14 7 14" />
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+        </svg>
+        Actualizează
+      </button>
+      <a class="rv-btn rv-btn--primary" [routerLink]="['./new']">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Utilizator nou
+      </a>
+    </div>
+  </div>
 
   <jhi-alert-error />
-
   <jhi-alert />
 
   @if (users()) {
-    <div class="table-responsive">
-      <table class="table table-striped" aria-describedby="user-management-page-heading">
-        <thead>
-          <tr jhiSort [(sortState)]="sortState" (sortChange)="transition($event)">
-            <th scope="col" jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
-            <th scope="col" jhiSortBy="login"><span jhiTranslate="userManagement.login">Login</span> <fa-icon icon="sort"></fa-icon></th>
-            <th scope="col" jhiSortBy="email"><span jhiTranslate="userManagement.email">Email</span> <fa-icon icon="sort"></fa-icon></th>
-            <th scope="col"></th>
-            <th scope="col" jhiSortBy="langKey">
-              <span jhiTranslate="userManagement.langKey">Language</span> <fa-icon icon="sort"></fa-icon>
-            </th>
-            <th scope="col"><span jhiTranslate="userManagement.profiles">Profiles</span></th>
-            <th scope="col" jhiSortBy="createdDate">
-              <span jhiTranslate="userManagement.createdDate">Created date</span> <fa-icon icon="sort"></fa-icon>
-            </th>
-            <th scope="col" jhiSortBy="lastModifiedBy">
-              <span jhiTranslate="userManagement.lastModifiedBy">Modified by</span> <fa-icon icon="sort"></fa-icon>
-            </th>
-            <th scope="col" jhiSortBy="lastModifiedDate">
-              <span jhiTranslate="userManagement.lastModifiedDate">Modified date</span> <fa-icon icon="sort"></fa-icon>
-            </th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (user of users(); track trackIdentity(user)) {
-            <tr>
-              <td>
-                <a [routerLink]="['./', user.login, 'view']">{{ user.id }}</a>
-              </td>
-              <td>{{ user.login }}</td>
-              <td>{{ user.email }}</td>
-              <td>
-                @if (!user.activated) {
-                  <button class="btn btn-danger btn-sm" (click)="setActive(user, true)" jhiTranslate="userManagement.deactivated">
-                    Deactivated
-                  </button>
-                } @else {
-                  <button
-                    class="btn btn-success btn-sm"
-                    (click)="setActive(user, false)"
-                    [disabled]="!currentAccount() || currentAccount()?.login === user.login"
-                    jhiTranslate="userManagement.activated"
-                  >
-                    Activated
-                  </button>
-                }
-              </td>
-              <td>{{ user.langKey }}</td>
-              <td>
-                @for (authority of user.authorities; track $index) {
-                  <div>
-                    <span class="badge bg-info">{{ authority }}</span>
-                  </div>
-                }
-              </td>
-              <td>{{ user.createdDate | date: 'dd/MM/yy HH:mm' }}</td>
-              <td>{{ user.lastModifiedBy }}</td>
-              <td>{{ user.lastModifiedDate | date: 'dd/MM/yy HH:mm' }}</td>
-              <td class="text-end">
-                <div class="btn-group">
-                  <button type="submit" [routerLink]="['./', user.login, 'view']" class="btn btn-info btn-sm">
+    <!-- Table -->
+    <div class="rv-admin-table-wrap surface">
+      <div class="rv-admin-table-scroll">
+        <table class="rv-admin-table" aria-describedby="user-management-page-heading">
+          <thead>
+            <tr jhiSort [(sortState)]="sortState" (sortChange)="transition($event)">
+              <th scope="col" jhiSortBy="id">ID <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col" jhiSortBy="login">Login <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col" jhiSortBy="email">Email <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col">Stare</th>
+              <th scope="col" jhiSortBy="langKey">Limbă <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col">Roluri</th>
+              <th scope="col" jhiSortBy="createdDate">Creat <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col" jhiSortBy="lastModifiedBy">Modificat de <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col" jhiSortBy="lastModifiedDate">Dată modificare <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track trackIdentity(user)) {
+              <tr>
+                <td>
+                  <a class="rv-admin-link" [routerLink]="['./', user.login, 'view']">{{ user.id }}</a>
+                </td>
+                <td class="rv-admin-cell-bold">{{ user.login }}</td>
+                <td class="rv-admin-cell-muted">{{ user.email }}</td>
+                <td>
+                  @if (!user.activated) {
+                    <button class="rv-status-badge rv-status-badge--danger" (click)="setActive(user, true)">Dezactivat</button>
+                  } @else {
+                    <button
+                      class="rv-status-badge rv-status-badge--success"
+                      (click)="setActive(user, false)"
+                      [disabled]="!currentAccount() || currentAccount()?.login === user.login"
+                    >
+                      Activ
+                    </button>
+                  }
+                </td>
+                <td class="rv-admin-cell-muted">{{ user.langKey }}</td>
+                <td>
+                  @for (authority of user.authorities; track $index) {
+                    <span class="rv-pill rv-pill--primary" style="margin-bottom: 2px; display: inline-flex">{{ authority }}</span>
+                  }
+                </td>
+                <td class="rv-admin-cell-muted rv-admin-cell-date">{{ user.createdDate | date: 'dd/MM/yy HH:mm' }}</td>
+                <td class="rv-admin-cell-muted">{{ user.lastModifiedBy }}</td>
+                <td class="rv-admin-cell-muted rv-admin-cell-date">{{ user.lastModifiedDate | date: 'dd/MM/yy HH:mm' }}</td>
+                <td class="rv-admin-table-actions">
+                  <a class="rv-btn rv-btn--ghost rv-btn--icon" [routerLink]="['./', user.login, 'view']" title="Vizualizare">
                     <fa-icon icon="eye"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                  </button>
-
-                  <button
-                    type="submit"
+                  </a>
+                  <a
+                    class="rv-btn rv-btn--ghost rv-btn--icon"
                     [routerLink]="['./', user.login, 'edit']"
                     queryParamsHandling="merge"
-                    class="btn btn-primary btn-sm"
+                    title="Editare"
                   >
                     <fa-icon icon="pencil-alt"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                  </button>
-
+                  </a>
                   <button
-                    type="button"
+                    class="rv-btn rv-btn--icon rv-btn--danger-ghost"
                     (click)="deleteUser(user)"
-                    class="btn btn-danger btn-sm"
                     [disabled]="!currentAccount() || currentAccount()?.login === user.login"
+                    title="Ștergere"
                   >
                     <fa-icon icon="times"></fa-icon>
-                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                   </button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div>
-      <div class="d-flex justify-content-center">
-        <jhi-item-count [params]="{ page, totalItems: totalItems(), itemsPerPage }" />
-      </div>
-
-      <div class="d-flex justify-content-center">
-        <ngb-pagination
-          [collectionSize]="totalItems()"
-          [(page)]="page"
-          [pageSize]="itemsPerPage"
-          [maxSize]="5"
-          [rotate]="true"
-          [boundaryLinks]="true"
-          (pageChange)="transition()"
-        ></ngb-pagination>
-      </div>
+    <!-- Pagination -->
+    <div class="rv-admin-pagination">
+      <jhi-item-count [params]="{ page, totalItems: totalItems(), itemsPerPage }" />
+      <ngb-pagination
+        [collectionSize]="totalItems()"
+        [(page)]="page"
+        [pageSize]="itemsPerPage"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="transition()"
+      ></ngb-pagination>
     </div>
   }
 </div>

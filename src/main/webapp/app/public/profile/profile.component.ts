@@ -10,7 +10,6 @@ import { Account } from 'app/core/auth/account.model';
   selector: 'jhi-profile',
   imports: [SharedModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss',
 })
 export default class ProfileComponent implements OnInit {
   account = signal<Account | null>(null);

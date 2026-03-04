@@ -218,6 +218,7 @@ export const DEMO_FLOOR_PLAN: FloorPlan = {
 })
 export class FloorMapComponent implements OnInit, OnDestroy {
   @Input() floorPlan: FloorPlan = DEMO_FLOOR_PLAN;
+  @Input() staffMode = false;
   @Output() tableSelected = new EventEmitter<FloorTable>();
 
   scale = signal(1);
@@ -284,7 +285,8 @@ export class FloorMapComponent implements OnInit, OnDestroy {
 
   selectTable(table: FloorTable, event: Event): void {
     event.stopPropagation();
-    if (table.status === 'OCCUPIED' || table.status === 'OUT_OF_SERVICE') return;
+    if (table.status === 'OUT_OF_SERVICE') return;
+    if (!this.staffMode && table.status === 'OCCUPIED') return;
     this.selectedTable.set(this.selectedTable()?.id === table.id ? null : table);
     this.tableSelected.emit(table);
   }

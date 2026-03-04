@@ -1,0 +1,222 @@
+<div class="rv-admin-page">
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <div class="rv-admin-page-header">
+    <div>
+      <h1 class="rv-admin-page-title">Planul sălii</h1>
+      <p class="rv-admin-page-sub">
+        @if (rawResponse()) {
+          {{ locationTitle }} · {{ locationAddress }}
+        } @else {
+          Vizualizare mese în timp real
+        }
+      </p>
+    </div>
+
+    <div class="sfp-controls">
+      <!-- Location picker (admin only) -->
+      @if (isAdmin() && locations().length > 0) {
+        <select class="rv-input sfp-select" [ngModel]="selectedLocationId()" (ngModelChange)="onLocationChange($event)">
+          @for (loc of locations(); track loc.id) {
+            <option [value]="loc.id">{{ loc.name }}</option>
+          }
+        </select>
+      }
+
+      <!-- Date picker -->
+      <input type="date" class="rv-input sfp-date" [ngModel]="selectedDate()" (ngModelChange)="onDateChange($event)" />
+    </div>
+  </div>
+
+  <!-- ── Error ────────────────────────────────────────────────────────────── -->
+  @if (error()) {
+    <div class="sfp-error glass">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="8" x2="12" y2="12" />
+        <line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      {{ error() }}
+    </div>
+  }
+
+  <!-- ── Loading ──────────────────────────────────────────────────────────── -->
+  @if (isLoading()) {
+    <div class="sfp-loading">
+      <div class="sfp-spinner"></div>
+      <span>Se încarcă planul sălii...</span>
+    </div>
+  }
+
+  <!-- ── Content ──────────────────────────────────────────────────────────── -->
+  @if (!isLoading() && floorPlan()) {
+    <div class="sfp-content" [class.sfp-content--panel-open]="panelOpen()">
+      <!-- Floor map -->
+      <div class="sfp-map-wrap glass">
+        <!-- Legend -->
+        <div class="sfp-legend">
+          <span class="sfp-legend__item sfp-legend__item--available">Disponibilă</span>
+          <span class="sfp-legend__item sfp-legend__item--reserved">Rezervată</span>
+          <span class="sfp-legend__item sfp-legend__item--occupied">Ocupată</span>
+        </div>
+        <app-floor-map [floorPlan]="floorPlan()!" [staffMode]="true" (tableSelected)="onTableSelected($event)" />
+      </div>
+
+      <!-- Side panel -->
+      <aside class="sfp-panel glass" [class.sfp-panel--open]="panelOpen()">
+        <div class="sfp-panel__header">
+          <h3 class="sfp-panel__title">
+            @if (selectedTable()) {
+              Masa {{ selectedTable()!.tableNumber }}
+            } @else {
+              Detalii masă
+            }
+          </h3>
+          <button class="rv-btn rv-btn--ghost rv-btn--icon" (click)="closePanel()" aria-label="Închide">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        @if (selectedTable(); as t) {
+          <div class="sfp-panel__body">
+            <!-- Table status -->
+            <div class="sfp-panel__section">
+              <span [class]="statusBadgeClass(t.status)">{{ statusLabel(t.status) }}</span>
+              <span class="sfp-panel__capacity">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                {{ t.minCapacity }}–{{ t.maxCapacity }} persoane
+              </span>
+            </div>
+
+            <!-- Reservation details -->
+            @if (t.reservation; as r) {
+              <div class="sfp-panel__section sfp-panel__section--divider">
+                <p class="sfp-panel__section-title">Rezervare</p>
+
+                <div class="sfp-panel__field">
+                  <span class="sfp-panel__label">Cod</span>
+                  <span class="sfp-panel__value sfp-panel__value--mono">{{ r.reservationCode }}</span>
+                </div>
+
+                <div class="sfp-panel__field">
+                  <span class="sfp-panel__label">Client</span>
+                  <span class="sfp-panel__value">
+                    @if (r.clientFirstName || r.clientLastName) {
+                      {{ r.clientFirstName }} {{ r.clientLastName }}
+                    } @else {
+                      {{ r.clientLogin ?? '—' }}
+                    }
+                  </span>
+                </div>
+
+                @if (r.clientLogin) {
+                  <div class="sfp-panel__field">
+                    <span class="sfp-panel__label">Utilizator</span>
+                    <span class="sfp-panel__value sfp-panel__value--muted">{{ r.clientLogin }}</span>
+                  </div>
+                }
+
+                <div class="sfp-panel__field">
+                  <span class="sfp-panel__label">Interval</span>
+                  <span class="sfp-panel__value">{{ r.startTime }} – {{ r.endTime }}</span>
+                </div>
+
+                <div class="sfp-panel__field">
+                  <span class="sfp-panel__label">Persoane</span>
+                  <span class="sfp-panel__value">{{ r.partySize }}</span>
+                </div>
+
+                <div class="sfp-panel__field">
+                  <span class="sfp-panel__label">Status</span>
+                  <span [class]="statusBadgeClass(r.status)">{{ statusLabel(r.status) }}</span>
+                </div>
+
+                @if (r.specialRequests) {
+                  <div class="sfp-panel__field sfp-panel__field--col">
+                    <span class="sfp-panel__label">Cerințe speciale</span>
+                    <p class="sfp-panel__requests">{{ r.specialRequests }}</p>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="sfp-panel__empty">
+                <svg
+                  width="36"
+                  height="36"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  style="opacity: 0.3"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <path d="M3 9h18M9 21V9" />
+                </svg>
+                <p>Masă liberă</p>
+                <span>Nicio rezervare pentru această dată</span>
+              </div>
+            }
+          </div>
+        }
+      </aside>
+    </div>
+  }
+
+  <!-- Empty state when no data yet -->
+  @if (!isLoading() && !floorPlan() && !error()) {
+    <div class="sfp-loading">
+      <svg
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="opacity: 0.3"
+      >
+        <rect x="3" y="3" width="7" height="7" />
+        <rect x="14" y="3" width="7" height="7" />
+        <rect x="3" y="14" width="7" height="7" />
+        <rect x="14" y="14" width="7" height="7" />
+      </svg>
+      <span>Selectați o locație pentru a vedea planul sălii</span>
+    </div>
+  }
+</div>

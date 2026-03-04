@@ -14,7 +14,6 @@ import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from 'app/config/err
   selector: 'jhi-login',
   imports: [SharedModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
 })
 export default class LoginComponent implements OnInit, AfterViewInit {
   usernameRef = viewChild<ElementRef>('usernameRef');

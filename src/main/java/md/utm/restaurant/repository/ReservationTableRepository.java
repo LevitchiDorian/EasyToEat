@@ -1,5 +1,6 @@
 package md.utm.restaurant.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import md.utm.restaurant.domain.ReservationTable;
@@ -39,4 +40,18 @@ public interface ReservationTableRepository extends JpaRepository<ReservationTab
         "select reservationTable from ReservationTable reservationTable left join fetch reservationTable.table where reservationTable.id =:id"
     )
     Optional<ReservationTable> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query(
+        """
+        SELECT rt FROM ReservationTable rt
+        JOIN FETCH rt.reservation r
+        JOIN FETCH r.client c
+        JOIN FETCH rt.table t
+        JOIN t.room rm
+        WHERE rm.location.id = :locationId
+          AND r.reservationDate = :date
+          AND r.status IN ('PENDING', 'CONFIRMED', 'COMPLETED')
+        """
+    )
+    List<ReservationTable> findActiveByLocationAndDate(@Param("locationId") Long locationId, @Param("date") LocalDate date);
 }

@@ -1,27 +1,43 @@
-<div>
-  <h2 id="tracker-page-heading" data-cy="trackerPageHeading" jhiTranslate="tracker.title">Real-time user activities</h2>
+<div class="rv-admin-page">
+  <div class="rv-admin-page-header">
+    <div>
+      <h1 class="rv-admin-page-title" id="tracker-page-heading" data-cy="trackerPageHeading">Tracker activitate</h1>
+      <p class="rv-admin-page-sub">Activitatea utilizatorilor în timp real</p>
+    </div>
+    <span class="rv-status-badge rv-status-badge--success" style="display: inline-flex; align-items: center; gap: 0.4rem">
+      <span style="width: 7px; height: 7px; border-radius: 50%; background: currentColor"></span>
+      Live
+    </span>
+  </div>
 
-  <div class="table-responsive">
-    <table class="table table-striped" aria-describedby="tracker-page-heading" data-cy="trackerTable">
-      <thead>
-        <tr>
-          <th scope="col" jhiTranslate="tracker.table.userlogin">User</th>
-          <th scope="col" jhiTranslate="tracker.table.ipaddress">IP Address</th>
-          <th scope="col" jhiTranslate="tracker.table.page">Current page</th>
-          <th scope="col" jhiTranslate="tracker.table.time">Time</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (activity of activities; track $index) {
+  <div class="rv-admin-table-wrap surface">
+    <div class="rv-admin-table-scroll">
+      <table class="rv-admin-table" aria-describedby="tracker-page-heading" data-cy="trackerTable">
+        <thead>
           <tr>
-            <td>{{ activity.userLogin }}</td>
-            <td>{{ activity.ipAddress }}</td>
-            <td>{{ activity.page }}</td>
-            <td>{{ activity.time | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+            <th scope="col">Utilizator</th>
+            <th scope="col">Adresă IP</th>
+            <th scope="col">Pagina curentă</th>
+            <th scope="col">Timp</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (activity of activities; track $index) {
+            <tr>
+              <td class="rv-admin-cell-bold">{{ activity.userLogin }}</td>
+              <td class="rv-admin-cell-muted" style="font-family: monospace; font-size: 0.82rem">{{ activity.ipAddress }}</td>
+              <td class="rv-admin-cell-muted">{{ activity.page }}</td>
+              <td class="rv-admin-cell-muted rv-admin-cell-date">{{ activity.time | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" style="text-align: center; color: hsl(var(--muted-foreground)); padding: 2.5rem">
+                Nicio activitate înregistrată momentan.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

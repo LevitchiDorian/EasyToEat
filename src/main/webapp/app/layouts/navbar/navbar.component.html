@@ -63,9 +63,18 @@
               <li>
                 <hr class="dropdown-divider" />
               </li>
+              <li class="rv-dropdown__section-label">Admin</li>
               <li>
-                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/user-management" (click)="collapseNavbar()">Administrare</a>
+                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/user-management" (click)="collapseNavbar()">Utilizatori</a>
               </li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/floor-plan" (click)="collapseNavbar()">Planul sălii</a></li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/health" (click)="collapseNavbar()">Sănătate sistem</a></li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/metrics" (click)="collapseNavbar()">Metrici</a></li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/logs" (click)="collapseNavbar()">Loguri</a></li>
+              <li>
+                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/configuration" (click)="collapseNavbar()">Configurare</a>
+              </li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/tracker" (click)="collapseNavbar()">Tracker</a></li>
             }
             <li>
               <hr class="dropdown-divider" />

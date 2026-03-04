@@ -37,4 +37,15 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
 
     @Query("select restaurantTable from RestaurantTable restaurantTable left join fetch restaurantTable.room where restaurantTable.id =:id")
     Optional<RestaurantTable> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query(
+        """
+        SELECT t FROM RestaurantTable t
+        JOIN FETCH t.room r
+        WHERE r.location.id = :locationId
+          AND t.isActive = true
+        ORDER BY r.id, t.tableNumber
+        """
+    )
+    List<RestaurantTable> findActiveByLocationId(@Param("locationId") Long locationId);
 }

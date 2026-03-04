@@ -59,12 +59,10 @@ public class Reservation implements Serializable {
     @Column(name = "status", nullable = false)
     private ReservationStatus status;
 
-    @Lob
-    @Column(name = "special_requests")
+    @Column(name = "special_requests", columnDefinition = "text")
     private String specialRequests;
 
-    @Lob
-    @Column(name = "internal_notes")
+    @Column(name = "internal_notes", columnDefinition = "text")
     private String internalNotes;
 
     @Column(name = "reminder_sent_at")

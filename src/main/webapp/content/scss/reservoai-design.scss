@@ -102,6 +102,33 @@
 /* --------------------------------------------------------------------------
    2. BASE RESETS
    -------------------------------------------------------------------------- */
+
+/* Override Bootstrap default link color for the dark theme */
+a {
+  color: hsl(var(--primary));
+  font-weight: inherit;
+}
+a:hover {
+  color: hsl(var(--accent));
+}
+
+/* Bootstrap modal dark theme overrides */
+.modal-content {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: var(--radius);
+  color: hsl(var(--foreground));
+}
+
+.modal-header,
+.modal-footer {
+  border-color: hsl(var(--border) / 0.4);
+}
+
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+}
+
 body {
   background-color: hsl(var(--background)) !important;
   color: hsl(var(--foreground)) !important;
@@ -597,5 +624,1092 @@ html {
     max-width: 540px;
     margin: 0 auto;
     line-height: 1.7;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. FORM ELEMENTS
+   Reusable dark-theme form controls used across all pages.
+   -------------------------------------------------------------------------- */
+
+/* Vertical label + control group */
+.rv-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  label {
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    margin: 0;
+  }
+}
+
+/* Dark-themed text/email/password input */
+.rv-input {
+  background: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border) / 0.8);
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.65rem 0.9rem;
+  color: hsl(var(--foreground));
+  font-size: 0.9rem;
+  width: 100%;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+
+  &::placeholder {
+    color: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  &:focus {
+    border-color: hsl(var(--primary) / 0.5);
+    background: hsl(var(--muted) / 0.7);
+  }
+}
+
+/* Wrapper for input + eye-toggle button */
+.rv-input-wrap {
+  position: relative;
+
+  .rv-input {
+    padding-right: 2.75rem;
+  }
+}
+
+/* Show/hide password toggle */
+.rv-input-eye {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: hsl(var(--muted-foreground) / 0.6);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+
+  &:hover {
+    color: hsl(var(--muted-foreground));
+  }
+}
+
+/* Checkbox + label row */
+.rv-checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  input[type='checkbox'] {
+    accent-color: hsl(var(--primary));
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  label {
+    font-size: 0.85rem;
+    color: hsl(var(--muted-foreground));
+    cursor: pointer;
+    margin: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. ALERTS
+   Feedback banners for success, error and warning states.
+   -------------------------------------------------------------------------- */
+
+.rv-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  border: 1px solid transparent;
+
+  &--success {
+    background: hsl(var(--success) / 0.1);
+    border-color: hsl(var(--success) / 0.25);
+    color: hsl(var(--success));
+  }
+
+  &--error {
+    background: hsl(var(--destructive) / 0.1);
+    border-color: hsl(var(--destructive) / 0.25);
+    color: hsl(var(--destructive));
+  }
+
+  &--warning {
+    background: hsl(var(--warning) / 0.1);
+    border-color: hsl(var(--warning) / 0.25);
+    color: hsl(var(--warning));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. BUTTON VARIANTS  (.rv-btn)
+   Small action buttons used inside cards and forms.
+   For large CTA buttons use .btn-gradient or .btn-rv-primary.
+   -------------------------------------------------------------------------- */
+
+.rv-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: calc(var(--radius) - 4px);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  padding: 0.45rem 1rem;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Gold gradient — primary action */
+  &--primary {
+    background: var(--gradient-gold);
+    border: none;
+    color: hsl(var(--primary-foreground));
+
+    &:hover:not(:disabled) {
+      opacity: 0.9;
+    }
+  }
+
+  /* Subtle dark surface */
+  &--ghost {
+    background: hsl(var(--muted) / 0.6);
+    border: 1px solid hsl(var(--border) / 0.8);
+    color: hsl(var(--foreground) / 0.7);
+
+    &:hover:not(:disabled) {
+      background: hsl(var(--muted));
+    }
+  }
+
+  /* Border only */
+  &--outline {
+    background: transparent;
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground) / 0.65);
+
+    &:hover:not(:disabled) {
+      border-color: hsl(var(--primary) / 0.5);
+      color: hsl(var(--primary));
+    }
+  }
+
+  /* Full width */
+  &--full {
+    width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   14. SPINNER & SKELETON
+   -------------------------------------------------------------------------- */
+
+/* Circular loading spinner */
+.rv-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: rv-spin 0.6s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes rv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Shimmer skeleton card */
+.rv-skeleton-card {
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--secondary)) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+
+  &--sm {
+    height: 80px;
+  }
+  &--md {
+    height: 120px;
+  }
+  &--lg {
+    height: 260px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   15. DECORATIVE BLOBS
+   Absolutely-positioned radial-blur background accents.
+   Place inside a position:relative parent that clips overflow.
+   -------------------------------------------------------------------------- */
+
+.rv-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  background: hsl(var(--primary) / 0.05);
+
+  /* Sizes */
+  &--xl {
+    width: 500px;
+    height: 500px;
+  }
+  &--lg {
+    width: 420px;
+    height: 420px;
+  }
+  &--md {
+    width: 320px;
+    height: 320px;
+  }
+  &--sm {
+    width: 220px;
+    height: 220px;
+  }
+
+  /* Named positions */
+  &--top-left {
+    top: 10%;
+    left: 5%;
+  }
+  &--top-right {
+    top: -80px;
+    right: -80px;
+  }
+  &--bottom-right {
+    bottom: 10%;
+    right: 5%;
+  }
+  &--bottom-left {
+    bottom: 40px;
+    left: -60px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   16. PAGE LAYOUT  (content pages that sit below the navbar)
+   -------------------------------------------------------------------------- */
+
+/* Full-page wrapper with top-padding for navbar clearance */
+.rv-page-content {
+  min-height: 100vh;
+  padding: 5.5rem 1rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Centered narrow container for forms/profile */
+.rv-page-container {
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ← Back navigation link */
+.rv-page-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: hsl(var(--muted-foreground) / 0.7);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+
+  &:hover {
+    color: hsl(var(--foreground));
+    text-decoration: none;
+  }
+}
+
+/* Page heading */
+.rv-page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin: 0;
+}
+
+/* Small muted description paragraph */
+.rv-desc {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0 0 1rem;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   17. AVATAR
+   -------------------------------------------------------------------------- */
+
+.rv-avatar {
+  border-radius: 50%;
+  background: hsl(var(--primary) / 0.12);
+  border: 2px solid hsl(var(--primary) / 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  /* Sizes */
+  &--sm {
+    width: 40px;
+    height: 40px;
+  }
+  &--md {
+    width: 56px;
+    height: 56px;
+  }
+  &--lg {
+    width: 72px;
+    height: 72px;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__initials {
+    font-weight: 700;
+    color: hsl(var(--primary));
+    line-height: 1;
+  }
+}
+
+/* Avatar + info side-by-side layout */
+.rv-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.rv-avatar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rv-avatar-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin: 0;
+}
+
+.rv-avatar-email {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+}
+
+/* Role badge pill */
+.rv-role-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 0.25);
+  width: fit-content;
+}
+
+/* --------------------------------------------------------------------------
+   18. CARD INTERNALS
+   Inner structure for glass/surface cards used on detail pages.
+   -------------------------------------------------------------------------- */
+
+/* Padding shell for a glass card body */
+.rv-card-content {
+  padding: 1.5rem;
+  border-radius: var(--radius);
+}
+
+/* Header row: icon + title on the left, actions on the right */
+.rv-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+/* Vertical stack of labeled read/edit fields */
+.rv-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.rv-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+    margin: 0;
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  /* Read-only value display */
+  &__value {
+    font-size: 0.9rem;
+    color: hsl(var(--foreground));
+    background: hsl(var(--muted) / 0.4);
+    border: 1px solid hsl(var(--border) / 0.5);
+    border-radius: calc(var(--radius) - 4px);
+    padding: 0.55rem 0.85rem;
+    margin: 0;
+
+    &--muted {
+      color: hsl(var(--muted-foreground));
+    }
+  }
+
+  /* Editable input (inherits .rv-input styles + override for edit mode) */
+  &__input {
+    @extend .rv-input;
+    padding: 0.55rem 0.85rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   19. AUTH PAGE
+   Layout and components specific to the /login route.
+   -------------------------------------------------------------------------- */
+
+/* Full-screen centered wrapper */
+.rv-auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Constrained card wrapper (max-width for auth forms) */
+.rv-auth-card {
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ← Back link above the auth card */
+.rv-auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: hsl(var(--muted-foreground) / 0.7);
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  transition: color 0.2s;
+
+  &:hover {
+    color: hsl(var(--foreground));
+    text-decoration: none;
+  }
+}
+
+/* Logo block (icon + brand name) */
+.rv-auth-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.75rem;
+  text-decoration: none;
+
+  &__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  &__text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+/* Auth card headings */
+.rv-auth-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  text-align: center;
+  margin: 0 0 0.4rem;
+}
+
+.rv-auth-subtitle {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  margin: 0 0 1.75rem;
+}
+
+/* Form — vertical stack of form groups */
+.rv-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Full-width submit button */
+.rv-auth-submit {
+  width: 100%;
+  padding: 0.72rem;
+  background: var(--gradient-gold);
+  border: none;
+  border-radius: calc(var(--radius) - 4px);
+  color: hsl(var(--primary-foreground));
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease;
+  margin-top: 0.2rem;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* Bottom link row (toggle mode / forgot password) */
+.rv-auth-links {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Mode toggle button (sign in ↔ register) */
+.rv-auth-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground) / 0.7);
+  transition: color 0.2s;
+  padding: 0;
+
+  &:hover {
+    color: hsl(var(--foreground));
+  }
+
+  span {
+    color: hsl(var(--primary));
+    font-weight: 600;
+  }
+}
+
+/* Forgot password link */
+.rv-auth-forgot {
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground) / 0.5);
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: hsl(var(--muted-foreground));
+    text-decoration: none;
+  }
+}
+
+/* ── Responsive adjustments ─────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .rv-page-content {
+    padding-top: 5rem;
+  }
+
+  .rv-card-content {
+    padding: 1.25rem;
+  }
+
+  .rv-avatar-row {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .rv-role-badge {
+    margin: 0 auto;
+  }
+
+  .rv-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   20. ADMIN PAGES  (shared styles for all /admin/* pages)
+   -------------------------------------------------------------------------- */
+
+/* Page wrapper */
+.rv-admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fade-in 0.25s ease-out both;
+}
+
+/* Page header: title + actions row */
+.rv-admin-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rv-admin-page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin: 0 0 0.25rem;
+  line-height: 1.2;
+}
+
+.rv-admin-page-sub {
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+}
+
+.rv-admin-page-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Section title (within a page) */
+.rv-admin-section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+/* Table wrapper */
+.rv-admin-table-wrap {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.rv-admin-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Dark admin table */
+.rv-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  thead {
+    tr {
+      border-bottom: 1px solid hsl(var(--border) / 0.6);
+    }
+
+    th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: hsl(var(--muted-foreground));
+      white-space: nowrap;
+      background: hsl(var(--muted) / 0.3);
+      cursor: default;
+
+      &[jhiSortBy] {
+        cursor: pointer;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid hsl(var(--border) / 0.3);
+      transition: background 0.15s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
+      &:hover {
+        background: hsl(var(--muted) / 0.4);
+      }
+    }
+
+    td {
+      padding: 0.7rem 1rem;
+      color: hsl(var(--foreground));
+      vertical-align: middle;
+    }
+  }
+}
+
+/* Cell helpers */
+.rv-admin-cell-bold {
+  font-weight: 500;
+}
+.rv-admin-cell-muted {
+  color: hsl(var(--muted-foreground)) !important;
+}
+.rv-admin-cell-date {
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* Action column */
+.rv-admin-table-actions {
+  text-align: right;
+  white-space: nowrap;
+
+  > * {
+    margin-left: 0.25rem;
+  }
+}
+
+/* Inline link inside table */
+.rv-admin-link {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    color: hsl(var(--accent));
+    text-decoration: underline;
+  }
+}
+
+/* Icon-only button variant */
+.rv-btn--icon {
+  padding: 0.4rem 0.5rem;
+  min-width: 32px;
+}
+
+/* Danger ghost button */
+.rv-btn--danger-ghost {
+  background: hsl(var(--destructive) / 0.1);
+  border: 1px solid hsl(var(--destructive) / 0.3);
+  color: hsl(var(--destructive));
+
+  &:hover:not(:disabled) {
+    background: hsl(var(--destructive) / 0.2);
+    border-color: hsl(var(--destructive) / 0.5);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* Danger solid */
+.rv-btn--danger {
+  background: hsl(var(--destructive));
+  border: none;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+}
+
+/* Status badge pills (toggle-button style) */
+.rv-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: default;
+  transition: opacity 0.15s;
+
+  &[type='button'] {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &--success {
+    background: hsl(var(--available) / 0.15);
+    color: hsl(var(--available));
+    border-color: hsl(var(--available) / 0.3);
+  }
+
+  &--danger {
+    background: hsl(var(--destructive) / 0.12);
+    color: hsl(var(--destructive));
+    border-color: hsl(var(--destructive) / 0.3);
+  }
+
+  &--warning {
+    background: hsl(var(--reserved) / 0.12);
+    color: hsl(var(--reserved));
+    border-color: hsl(var(--reserved) / 0.3);
+  }
+}
+
+/* Pagination bar */
+.rv-admin-pagination {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+
+  /* Override ngb-pagination styles for dark theme */
+  ::ng-deep .pagination {
+    gap: 4px;
+
+    .page-item {
+      .page-link {
+        background: hsl(var(--muted) / 0.6);
+        border: 1px solid hsl(var(--border) / 0.5);
+        color: hsl(var(--muted-foreground));
+        border-radius: calc(var(--radius) - 4px);
+        padding: 0.35rem 0.7rem;
+        font-size: 0.85rem;
+        transition:
+          background 0.15s,
+          color 0.15s;
+
+        &:hover {
+          background: hsl(var(--muted));
+          color: hsl(var(--foreground));
+        }
+      }
+
+      &.active .page-link {
+        background: hsl(var(--primary) / 0.2);
+        border-color: hsl(var(--primary) / 0.4);
+        color: hsl(var(--primary));
+      }
+
+      &.disabled .page-link {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+/* Form card inside admin pages */
+.rv-admin-form-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .rv-form-group {
+    gap: 0.45rem;
+  }
+}
+
+.rv-admin-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+  border-top: 1px solid hsl(var(--border) / 0.4);
+  margin-top: 0.5rem;
+}
+
+/* Field error text */
+.rv-field-error {
+  font-size: 0.78rem;
+  color: hsl(var(--destructive));
+  margin-top: 0.15rem;
+}
+
+/* Detail page 2-col grid */
+.rv-admin-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.rv-admin-detail-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Log level buttons */
+.rv-log-level-group {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.rv-log-btn {
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid hsl(var(--border) / 0.5);
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+
+  &:hover {
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+  }
+
+  &--success {
+    background: hsl(var(--available) / 0.2);
+    color: hsl(var(--available));
+    border-color: hsl(var(--available) / 0.4);
+  }
+  &--warning {
+    background: hsl(var(--reserved) / 0.2);
+    color: hsl(var(--reserved));
+    border-color: hsl(var(--reserved) / 0.4);
+  }
+  &--danger {
+    background: hsl(var(--destructive) / 0.2);
+    color: hsl(var(--destructive));
+    border-color: hsl(var(--destructive) / 0.4);
+  }
+  &--blue {
+    background: hsl(220 80% 60% / 0.2);
+    color: hsl(220 80% 70%);
+    border-color: hsl(220 80% 60% / 0.4);
+  }
+  &--purple {
+    background: hsl(270 70% 65% / 0.2);
+    color: hsl(270 70% 75%);
+    border-color: hsl(270 70% 65% / 0.4);
+  }
+  &--muted {
+    background: hsl(var(--muted));
+    color: hsl(var(--foreground));
+    border-color: hsl(var(--border));
+  }
+}
+
+/* Spin animation for refresh icons */
+@keyframes rv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.rv-spin {
+  animation: rv-spin 0.7s linear infinite;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .rv-admin-page-header {
+    flex-direction: column;
+  }
+
+  .rv-admin-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rv-admin-form-actions {
+    flex-direction: column-reverse;
   }
 }

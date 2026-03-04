@@ -64,8 +64,7 @@ public class RestaurantOrder implements Serializable {
     @Column(name = "total_amount", precision = 21, scale = 2, nullable = false)
     private BigDecimal totalAmount;
 
-    @Lob
-    @Column(name = "special_instructions")
+    @Column(name = "special_instructions", columnDefinition = "text")
     private String specialInstructions;
 
     @Column(name = "estimated_ready_time")
