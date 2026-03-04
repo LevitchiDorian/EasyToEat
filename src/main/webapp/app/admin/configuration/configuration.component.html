@@ -1,69 +1,108 @@
 @if (allBeans()) {
-  <div>
-    <h2 id="configuration-page-heading" data-cy="configurationPageHeading" jhiTranslate="configuration.title">Configuration</h2>
-
-    <span jhiTranslate="configuration.filter">Filter (by prefix)</span>
-    <input type="text" [ngModel]="beansFilter()" (ngModelChange)="beansFilter.set($event)" class="form-control" />
-
-    <h3 id="spring-configuration">Spring configuration</h3>
-
-    <table class="table table-striped table-bordered table-responsive d-table" aria-describedby="spring-configuration">
-      <thead>
-        <tr jhiSort [(sortState)]="sortState">
-          <th jhiSortBy="prefix" scope="col" class="w-40">
-            <span jhiTranslate="configuration.table.prefix">Prefix</span> <fa-icon icon="sort"></fa-icon>
-          </th>
-          <th scope="col" class="w-60"><span jhiTranslate="configuration.table.properties">Properties</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (bean of beans(); track $index) {
-          <tr>
-            <td>
-              <span>{{ bean.prefix }}</span>
-            </td>
-            <td>
-              @for (property of bean.properties | keyvalue; track property.key) {
-                <div class="row">
-                  <div class="col-md-4">{{ property.key }}</div>
-                  <div class="col-md-8">
-                    <span class="float-end bg-secondary break">{{ property.value | json }}</span>
-                  </div>
-                </div>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-
-    @for (propertySource of propertySources(); track i; let i = $index) {
+  <div class="rv-admin-page">
+    <div class="rv-admin-page-header">
       <div>
-        <h4 [id]="'property-source-' + i">
-          <span>{{ propertySource.name }}</span>
-        </h4>
+        <h1 class="rv-admin-page-title" id="configuration-page-heading" data-cy="configurationPageHeading">Configurare Spring</h1>
+        <p class="rv-admin-page-sub">Proprietățile și bean-urile aplicației</p>
+      </div>
+    </div>
 
-        <table
-          class="table table-sm table-striped table-bordered table-responsive d-table"
-          [attr.aria-describedby]="'property-source-' + i"
-        >
+    <!-- Filter -->
+    <div
+      class="rv-admin-table-wrap surface"
+      style="margin-bottom: 1.5rem; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        style="color: hsl(var(--muted-foreground)); flex-shrink: 0"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        type="text"
+        [ngModel]="beansFilter()"
+        (ngModelChange)="beansFilter.set($event)"
+        class="rv-input"
+        placeholder="Filtrează după prefix..."
+        style="max-width: 340px"
+      />
+    </div>
+
+    <!-- Spring beans table -->
+    <div class="rv-admin-table-wrap surface" style="margin-bottom: 2rem">
+      <div class="rv-admin-table-scroll">
+        <table class="rv-admin-table" aria-describedby="spring-configuration">
           <thead>
-            <tr>
-              <th scope="col" class="w-40">Property</th>
-              <th scope="col" class="w-60">Value</th>
+            <tr jhiSort [(sortState)]="sortState">
+              <th jhiSortBy="prefix" scope="col" style="width: 35%">Prefix <fa-icon icon="sort" class="rv-sort-icon"></fa-icon></th>
+              <th scope="col">Proprietăți</th>
             </tr>
           </thead>
           <tbody>
-            @for (property of propertySource.properties | keyvalue; track property.key) {
+            @for (bean of beans(); track $index) {
               <tr>
-                <td class="break">{{ property.key }}</td>
-                <td class="break">
-                  <span class="float-end bg-secondary break">{{ property.value.value }}</span>
+                <td class="rv-admin-cell-bold" style="font-family: monospace; font-size: 0.85rem">{{ bean.prefix }}</td>
+                <td>
+                  @for (property of bean.properties | keyvalue; track property.key) {
+                    <div style="display: flex; gap: 1rem; padding: 0.2rem 0; border-bottom: 1px solid hsl(var(--border) / 0.3)">
+                      <span
+                        style="
+                          width: 38%;
+                          font-size: 0.8rem;
+                          color: hsl(var(--muted-foreground));
+                          font-family: monospace;
+                          word-break: break-all;
+                        "
+                        >{{ property.key }}</span
+                      >
+                      <span
+                        style="flex: 1; font-size: 0.8rem; color: hsl(var(--foreground)); word-break: break-all; font-family: monospace"
+                        >{{ property.value | json }}</span
+                      >
+                    </div>
+                  }
                 </td>
               </tr>
             }
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- Property sources -->
+    @for (propertySource of propertySources(); track i; let i = $index) {
+      <div style="margin-bottom: 1.5rem">
+        <h3 [id]="'property-source-' + i" class="rv-admin-section-title">{{ propertySource.name }}</h3>
+        <div class="rv-admin-table-wrap surface">
+          <div class="rv-admin-table-scroll">
+            <table class="rv-admin-table" [attr.aria-describedby]="'property-source-' + i">
+              <thead>
+                <tr>
+                  <th scope="col" style="width: 35%">Proprietate</th>
+                  <th scope="col">Valoare</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (property of propertySource.properties | keyvalue; track property.key) {
+                  <tr>
+                    <td style="font-family: monospace; font-size: 0.8rem; color: hsl(var(--muted-foreground)); word-break: break-all">
+                      {{ property.key }}
+                    </td>
+                    <td style="font-family: monospace; font-size: 0.8rem; color: hsl(var(--foreground)); word-break: break-all">
+                      {{ property.value.value }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     }
   </div>

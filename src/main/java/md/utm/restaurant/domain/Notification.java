@@ -41,8 +41,7 @@ public class Notification implements Serializable {
     @Column(name = "subject", length = 255)
     private String subject;
 
-    @Lob
-    @Column(name = "body", nullable = false)
+    @Column(name = "body", nullable = false, columnDefinition = "text")
     private String body;
 
     @NotNull

@@ -1,24 +1,26 @@
 @if (user) {
   <form name="deleteForm" (ngSubmit)="confirmDelete(user.login!)">
-    <div class="modal-header">
-      <h4 class="modal-title" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
+    <div class="modal-header" style="background: hsl(var(--card)); border-bottom: 1px solid hsl(var(--border) / 0.5)">
+      <h5 class="modal-title" style="color: hsl(var(--foreground)); font-weight: 600">Confirmare ștergere</h5>
     </div>
 
-    <div class="modal-body">
+    <div class="modal-body" style="background: hsl(var(--card)); color: hsl(var(--foreground))">
       <jhi-alert-error />
-
-      <p jhiTranslate="userManagement.delete.question" [translateValues]="{ login: user.login }">
-        Are you sure you want to delete user {{ user.login }}?
+      <p style="color: hsl(var(--muted-foreground)); margin: 0">
+        Ești sigur că vrei să ștergi utilizatorul
+        <strong style="color: hsl(var(--foreground))">{{ user.login }}</strong
+        >? Această acțiune este ireversibilă.
       </p>
     </div>
 
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()">
-        <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+    <div class="modal-footer" style="background: hsl(var(--card)); border-top: 1px solid hsl(var(--border) / 0.5); gap: 0.5rem">
+      <button type="button" class="rv-btn rv-btn--ghost" (click)="cancel()">
+        <fa-icon icon="ban"></fa-icon>
+        Anulează
       </button>
-
-      <button type="submit" class="btn btn-danger">
-        <fa-icon icon="times"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
+      <button type="submit" class="rv-btn rv-btn--danger">
+        <fa-icon icon="times"></fa-icon>
+        Șterge
       </button>
     </div>
   </form>

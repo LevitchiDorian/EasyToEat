@@ -37,8 +37,7 @@ public class Promotion implements Serializable {
     @Column(name = "name", length = 100, nullable = false)
     private String name;
 
-    @Lob
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @NotNull

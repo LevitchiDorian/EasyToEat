@@ -46,8 +46,7 @@ public class Review implements Serializable {
     @Column(name = "ambience_rating")
     private Integer ambienceRating;
 
-    @Lob
-    @Column(name = "comment")
+    @Column(name = "comment", columnDefinition = "text")
     private String comment;
 
     @NotNull

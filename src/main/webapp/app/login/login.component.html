@@ -1,7 +1,7 @@
 <div class="rv-auth-page">
-  <!-- Background blobs -->
-  <div class="rv-auth-blob rv-auth-blob--1"></div>
-  <div class="rv-auth-blob rv-auth-blob--2"></div>
+  <!-- Decorative blobs -->
+  <div class="rv-blob rv-blob--lg rv-blob--top-left"></div>
+  <div class="rv-blob rv-blob--md rv-blob--bottom-right"></div>
 
   <div class="rv-auth-card animate-fade-in">
     <!-- Back link -->
@@ -30,8 +30,8 @@
       <span class="rv-auth-logo__text">EasyToEat</span>
     </a>
 
-    <!-- Card -->
-    <div class="glass rv-auth-inner">
+    <!-- Card body -->
+    <div class="glass rv-card-content">
       <h1 class="rv-auth-title">
         @if (isLogin()) {
           Bine ai revenit!
@@ -47,11 +47,11 @@
         }
       </p>
 
-      <!-- ── LOGIN FORM ────────────────────────────────────────── -->
+      <!-- ── LOGIN FORM ────────────────────────────────────────────── -->
       @if (isLogin()) {
         <form class="rv-auth-form" (ngSubmit)="login()" [formGroup]="loginForm">
           @if (authenticationError()) {
-            <div class="rv-auth-alert rv-auth-alert--error">Utilizator sau parolă incorectă. Încearcă din nou.</div>
+            <div class="rv-alert rv-alert--error">Utilizator sau parolă incorectă. Încearcă din nou.</div>
           }
 
           <div class="rv-form-group">
@@ -114,7 +114,7 @@
             </div>
           </div>
 
-          <div class="rv-remember">
+          <div class="rv-checkbox-group">
             <input type="checkbox" id="rememberMe" formControlName="rememberMe" />
             <label for="rememberMe">Ține-mă minte</label>
           </div>
@@ -128,23 +128,23 @@
         </div>
       }
 
-      <!-- ── REGISTER FORM ──────────────────────────────────────── -->
+      <!-- ── REGISTER FORM ─────────────────────────────────────────── -->
       @else {
         <form class="rv-auth-form" (ngSubmit)="register()" [formGroup]="registerForm">
           @if (registerSuccess()) {
-            <div class="rv-auth-alert rv-auth-alert--success">Cont creat! Redirecționare spre autentificare…</div>
+            <div class="rv-alert rv-alert--success">Cont creat! Redirecționare spre autentificare…</div>
           }
           @if (errorUserExists()) {
-            <div class="rv-auth-alert rv-auth-alert--error">Utilizatorul există deja. Alege alt nume de utilizator.</div>
+            <div class="rv-alert rv-alert--error">Utilizatorul există deja. Alege alt nume de utilizator.</div>
           }
           @if (errorEmailExists()) {
-            <div class="rv-auth-alert rv-auth-alert--error">Adresa de email este deja înregistrată.</div>
+            <div class="rv-alert rv-alert--error">Adresa de email este deja înregistrată.</div>
           }
           @if (doNotMatch()) {
-            <div class="rv-auth-alert rv-auth-alert--error">Parolele nu se potrivesc.</div>
+            <div class="rv-alert rv-alert--error">Parolele nu se potrivesc.</div>
           }
           @if (errorRegister()) {
-            <div class="rv-auth-alert rv-auth-alert--error">A apărut o eroare. Încearcă din nou.</div>
+            <div class="rv-alert rv-alert--error">A apărut o eroare. Încearcă din nou.</div>
           }
 
           <div class="rv-form-group">

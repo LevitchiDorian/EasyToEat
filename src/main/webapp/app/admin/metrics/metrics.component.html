@@ -1,31 +1,50 @@
-<div>
-  <h2>
-    <span id="metrics-page-heading" data-cy="metricsPageHeading" jhiTranslate="metrics.title">Application Metrics</span>
-
-    <button class="btn btn-primary float-end" (click)="refresh()">
-      <fa-icon icon="sync"></fa-icon> <span jhiTranslate="metrics.refresh.button">Refresh</span>
-    </button>
-  </h2>
-
-  <h3 jhiTranslate="metrics.jvm.title">JVM Metrics</h3>
+<div class="rv-admin-page">
+  <div class="rv-admin-page-header">
+    <div>
+      <h1 class="rv-admin-page-title" id="metrics-page-heading" data-cy="metricsPageHeading">Metrici aplicație</h1>
+      <p class="rv-admin-page-sub">Performanța și utilizarea resurselor sistemului</p>
+    </div>
+    <div class="rv-admin-page-actions">
+      <button class="rv-btn rv-btn--ghost" (click)="refresh()">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="23 4 23 10 17 10" />
+          <polyline points="1 20 1 14 7 14" />
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+        </svg>
+        Actualizează
+      </button>
+    </div>
+  </div>
 
   @let metricsRef = metrics();
+
+  @if (updatingMetrics()) {
+    <div style="display: flex; align-items: center; gap: 0.75rem; color: hsl(var(--muted-foreground)); padding: 1rem 0">
+      <span class="rv-spinner" style="width: 18px; height: 18px"></span>
+      Se actualizează metricile...
+    </div>
+  }
+
   @if (metricsRef && !updatingMetrics()) {
-    <div class="row">
+    <h3 class="rv-admin-section-title">JVM Metrics</h3>
+    <div class="row g-3" style="margin-bottom: 2rem">
       <jhi-jvm-memory class="col-md-4" [updating]="updatingMetrics()" [jvmMemoryMetrics]="metricsRef.jvm" />
-
       <jhi-jvm-threads class="col-md-4" [threads]="threads()" />
-
       <jhi-metrics-system class="col-md-4" [updating]="updatingMetrics()" [systemMetrics]="metricsRef.processMetrics" />
     </div>
   }
 
   @if (metricsRef?.garbageCollector; as metricsRefGarbageCollector) {
     <jhi-metrics-garbagecollector [updating]="updatingMetrics()" [garbageCollectorMetrics]="metricsRefGarbageCollector" />
-  }
-
-  @if (updatingMetrics()) {
-    <div class="well well-lg" jhiTranslate="metrics.updating">Updating...</div>
   }
 
   @if (metricsRef?.['http.server.requests']; as metricsRefHttpServerRequests) {

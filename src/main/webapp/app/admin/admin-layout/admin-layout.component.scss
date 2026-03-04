@@ -1,0 +1,273 @@
+/* ==========================================================================
+   Admin Layout — ReservoAI Design
+   ========================================================================== */
+
+$sidebar-width: 240px;
+$topbar-height: 56px;
+
+/* ── Layout shell ──────────────────────────────────────────────────────── */
+.rv-admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: hsl(var(--background));
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+.rv-admin-sidebar {
+  width: $sidebar-width;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--rv-navbar-height));
+  position: sticky;
+  top: var(--rv-navbar-height);
+  overflow-y: auto;
+  border-right: 1px solid hsl(var(--border) / 0.5);
+  border-bottom: none;
+  border-top: none;
+  border-left: none;
+  border-radius: 0;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 200;
+}
+
+/* Brand block */
+.rv-admin-sidebar__brand {
+  padding: 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rv-admin-sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.rv-admin-sidebar__brand-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rv-admin-sidebar__badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 0.3);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+}
+
+.rv-admin-sidebar__divider {
+  height: 1px;
+  background: hsl(var(--border) / 0.5);
+  margin: 0 1rem;
+}
+
+/* Navigation */
+.rv-admin-sidebar__nav {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow-y: auto;
+}
+
+/* Footer */
+.rv-admin-sidebar__footer {
+  padding: 0.75rem 0.5rem;
+}
+
+/* ── Nav items ──────────────────────────────────────────────────────────── */
+.rv-admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: calc(var(--radius) - 4px);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+
+  svg {
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+  }
+
+  &:hover {
+    background: hsl(var(--muted) / 0.7);
+    color: hsl(var(--foreground));
+    text-decoration: none;
+  }
+
+  &--active {
+    background: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
+
+    svg {
+      color: hsl(var(--primary));
+    }
+
+    &:hover {
+      background: hsl(var(--primary) / 0.18);
+      color: hsl(var(--primary));
+    }
+  }
+
+  &--back {
+    color: hsl(var(--muted-foreground) / 0.7);
+    font-size: 0.8rem;
+
+    &:hover {
+      color: hsl(var(--foreground));
+      background: hsl(var(--muted) / 0.5);
+    }
+  }
+}
+
+/* ── Body (content area) ────────────────────────────────────────────────── */
+.rv-admin-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Mobile topbar (hidden on desktop) ─────────────────────────────────── */
+.rv-admin-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  height: $topbar-height;
+  position: sticky;
+  top: var(--rv-navbar-height);
+  z-index: 100;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.rv-admin-topbar__center {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.rv-admin-topbar__home {
+  display: flex;
+  align-items: center;
+  color: hsl(var(--muted-foreground));
+  transition: color 0.15s ease;
+  text-decoration: none;
+
+  &:hover {
+    color: hsl(var(--foreground));
+  }
+}
+
+/* Hamburger */
+.rv-admin-hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: hsl(var(--foreground));
+    border-radius: 2px;
+    transition:
+      transform 0.25s ease,
+      opacity 0.25s ease;
+  }
+}
+
+/* ── Content area ───────────────────────────────────────────────────────── */
+.rv-admin-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-x: hidden;
+}
+
+/* ── Mobile overlay ─────────────────────────────────────────────────────── */
+.rv-admin-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: hsl(0 0% 0% / 0.5);
+  z-index: 150;
+  backdrop-filter: blur(2px);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .rv-admin-layout {
+    display: block;
+  }
+
+  .rv-admin-sidebar {
+    position: fixed;
+    left: -$sidebar-width;
+    top: var(--rv-navbar-height);
+    height: calc(100vh - var(--rv-navbar-height));
+    transition: left 0.28s ease;
+    z-index: 200;
+  }
+
+  .rv-admin-layout--open {
+    .rv-admin-sidebar {
+      left: 0;
+    }
+
+    .rv-admin-overlay {
+      display: block;
+    }
+  }
+
+  .rv-admin-topbar {
+    display: flex;
+  }
+
+  .rv-admin-body {
+    padding-top: 0;
+  }
+
+  .rv-admin-content {
+    padding: 1.25rem 1rem;
+  }
+}

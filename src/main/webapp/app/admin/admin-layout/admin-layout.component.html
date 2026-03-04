@@ -1,0 +1,229 @@
+<div class="rv-admin-layout" [class.rv-admin-layout--open]="sidebarOpen()">
+  <!-- Mobile overlay -->
+  <div class="rv-admin-overlay" (click)="closeSidebar()"></div>
+
+  <!-- ── Sidebar ──────────────────────────────────────────────────────────── -->
+  <aside class="rv-admin-sidebar glass-strong">
+    <!-- Brand -->
+    <div class="rv-admin-sidebar__brand">
+      <a routerLink="/" class="rv-admin-sidebar__logo" (click)="closeSidebar()">
+        <svg width="26" height="26" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="14" fill="#f5a520" />
+          <path d="M10 8v12M14 8v5a3 3 0 0 0 3 3v4" stroke="#000" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span class="rv-admin-sidebar__brand-name">EasyToEat</span>
+      </a>
+      <span class="rv-admin-sidebar__badge">Admin</span>
+    </div>
+
+    <div class="rv-admin-sidebar__divider"></div>
+
+    <!-- Navigation -->
+    <nav class="rv-admin-sidebar__nav">
+      <a
+        class="rv-admin-nav-item"
+        routerLink="/admin/user-management"
+        routerLinkActive="rv-admin-nav-item--active"
+        (click)="closeSidebar()"
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        <span>Utilizatori</span>
+      </a>
+
+      <a class="rv-admin-nav-item" routerLink="/admin/floor-plan" routerLinkActive="rv-admin-nav-item--active" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="3" width="7" height="7" />
+          <rect x="14" y="3" width="7" height="7" />
+          <rect x="3" y="14" width="7" height="7" />
+          <rect x="14" y="14" width="7" height="7" />
+        </svg>
+        <span>Planul sălii</span>
+      </a>
+
+      <a class="rv-admin-nav-item" routerLink="/admin/health" routerLinkActive="rv-admin-nav-item--active" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        <span>Sănătate sistem</span>
+      </a>
+
+      <a class="rv-admin-nav-item" routerLink="/admin/metrics" routerLinkActive="rv-admin-nav-item--active" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+        <span>Metrici</span>
+      </a>
+
+      <a class="rv-admin-nav-item" routerLink="/admin/configuration" routerLinkActive="rv-admin-nav-item--active" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.07 4.93a10 10 0 0 0-14.14 0M4.93 19.07a10 10 0 0 0 14.14 0M12 2v2M12 20v2M2 12H0M24 12h-2" />
+        </svg>
+        <span>Configurare</span>
+      </a>
+
+      <a class="rv-admin-nav-item" routerLink="/admin/logs" routerLinkActive="rv-admin-nav-item--active" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+        <span>Loguri</span>
+      </a>
+
+      <a class="rv-admin-nav-item" routerLink="/admin/tracker" routerLinkActive="rv-admin-nav-item--active" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 8v4l3 3" />
+        </svg>
+        <span>Tracker</span>
+      </a>
+
+      <a class="rv-admin-nav-item" routerLink="/admin/docs" routerLinkActive="rv-admin-nav-item--active" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+        <span>API Docs</span>
+      </a>
+    </nav>
+
+    <!-- Footer -->
+    <div class="rv-admin-sidebar__divider"></div>
+    <div class="rv-admin-sidebar__footer">
+      <a routerLink="/" class="rv-admin-nav-item rv-admin-nav-item--back" (click)="closeSidebar()">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+        <span>Înapoi la site</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ── Main content ──────────────────────────────────────────────────────── -->
+  <div class="rv-admin-body">
+    <!-- Mobile topbar -->
+    <header class="rv-admin-topbar glass-strong">
+      <button class="rv-admin-hamburger" (click)="toggleSidebar()" [attr.aria-expanded]="sidebarOpen()">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="rv-admin-topbar__center">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#f5a520" />
+          <path d="M10 8v12M14 8v5a3 3 0 0 0 3 3v4" stroke="#000" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span>Panou Admin</span>
+      </div>
+      <a routerLink="/" class="rv-admin-topbar__home">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+      </a>
+    </header>
+
+    <!-- Page content -->
+    <main class="rv-admin-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

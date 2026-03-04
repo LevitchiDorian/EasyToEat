@@ -39,4 +39,14 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long>,
         "select userProfile from UserProfile userProfile left join fetch userProfile.user left join fetch userProfile.location where userProfile.id =:id"
     )
     Optional<UserProfile> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query(
+        """
+        SELECT up FROM UserProfile up
+        LEFT JOIN FETCH up.location l
+        LEFT JOIN FETCH up.user u
+        WHERE u.login = :login
+        """
+    )
+    Optional<UserProfile> findByUserLogin(@Param("login") String login);
 }
