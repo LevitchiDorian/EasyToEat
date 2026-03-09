@@ -1,0 +1,348 @@
+// Manager floor plan page styles
+
+.mgr-fp-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mgr-select,
+.mgr-date-input {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    border-color: var(--rv-orange, #f5a520);
+  }
+
+  option {
+    background: #1a1a1a;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1) opacity(0.5);
+    cursor: pointer;
+  }
+}
+
+.mgr-btn-refresh {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(245, 165, 32, 0.1);
+  border: 1px solid rgba(245, 165, 32, 0.25);
+  border-radius: 8px;
+  color: var(--rv-orange, #f5a520);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(245, 165, 32, 0.2);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.mgr-btn-icon {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  line-height: 0;
+  &:hover {
+    color: #fff;
+  }
+}
+
+.mgr-last-refresh {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+@keyframes mgr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mgr-spin {
+  animation: mgr-spin 1s linear infinite;
+}
+
+// Stats row
+.mgr-stats-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.mgr-stat-card {
+  flex: 1;
+  min-width: 90px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 12px 16px;
+  text-align: center;
+
+  &__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &--green {
+    border-color: rgba(34, 197, 94, 0.2);
+    .mgr-stat-card__value {
+      color: #22c55e;
+    }
+  }
+  &--amber {
+    border-color: rgba(245, 158, 11, 0.2);
+    .mgr-stat-card__value {
+      color: #f59e0b;
+    }
+  }
+  &--blue {
+    border-color: rgba(59, 130, 246, 0.2);
+    .mgr-stat-card__value {
+      color: #60a5fa;
+    }
+  }
+}
+
+// Floor plan layout
+.mgr-fp-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.mgr-map-wrap {
+  overflow: auto;
+  max-height: calc(100vh - 280px);
+  border-radius: 12px;
+  min-height: 400px;
+}
+
+.mgr-loader,
+.mgr-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+}
+
+@keyframes mgr-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.mgr-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--rv-orange, #f5a520);
+  border-radius: 50%;
+  animation: mgr-spinner 0.9s linear infinite;
+}
+
+// Side panel
+.mgr-fp-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mgr-info-card {
+  padding: 16px;
+  border-radius: 12px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  &__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+.mgr-detail-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 7px;
+  font-size: 0.82rem;
+  &--wrap {
+    align-items: flex-start;
+  }
+}
+
+.mgr-detail-label {
+  color: rgba(255, 255, 255, 0.4);
+  min-width: 76px;
+  flex-shrink: 0;
+}
+
+.mgr-detail-value {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.mgr-mono {
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: var(--rv-orange, #f5a520);
+}
+
+.mgr-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  &--green {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+  &--amber {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+  }
+  &--blue {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+  }
+  &--red {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+}
+
+.mgr-res-box {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+
+  &__title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--rv-orange, #f5a520);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+}
+
+.mgr-no-res {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 4px 0 0;
+}
+
+.mgr-empty {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.mgr-res-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.mgr-res-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 7px;
+  font-size: 0.78rem;
+
+  &__time {
+    font-weight: 600;
+    color: var(--rv-orange, #f5a520);
+    min-width: 40px;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    font-weight: 500;
+  }
+
+  &__meta {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 2px;
+  }
+
+  &__code {
+    flex-shrink: 0;
+    font-size: 0.68rem;
+  }
+}
+
+// Responsive
+@media (max-width: 1100px) {
+  .mgr-fp-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mgr-map-wrap {
+    max-height: 500px;
+  }
+
+  .mgr-fp-side {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .mgr-fp-side {
+    grid-template-columns: 1fr;
+  }
+}

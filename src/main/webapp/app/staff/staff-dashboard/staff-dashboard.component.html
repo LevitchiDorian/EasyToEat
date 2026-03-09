@@ -1,0 +1,224 @@
+<div class="sd-shell">
+  <!-- ── Header ─────────────────────────────────────────────────────────────── -->
+  <header class="sd-header glass-strong">
+    <div class="sd-header__left">
+      <div class="sd-header__logo">
+        <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="14" fill="#f5a520" />
+          <path d="M10 8v12M14 8v5a3 3 0 0 0 3 3v4" stroke="#000" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </div>
+      <div>
+        <div class="sd-header__title">{{ locationName }}</div>
+        <div class="sd-header__subtitle">{{ locationAddress }}</div>
+      </div>
+    </div>
+
+    <div class="sd-header__center">
+      <!-- Stat chips -->
+      <div class="sd-stat sd-stat--green">
+        <span class="sd-stat__dot"></span>
+        <span>{{ availableTables() }} libere</span>
+      </div>
+      <div class="sd-stat sd-stat--amber">
+        <span class="sd-stat__dot"></span>
+        <span>{{ reservedTables() }} rezervate</span>
+      </div>
+      <div class="sd-stat sd-stat--blue">
+        <span class="sd-stat__dot"></span>
+        <span>{{ occupiedTables() }} ocupate</span>
+      </div>
+      <div class="sd-stat sd-stat--muted">
+        <span>{{ totalTables() }} total</span>
+      </div>
+    </div>
+
+    <div class="sd-header__right">
+      <input type="date" class="sd-date-input" [value]="selectedDate()" (change)="onDateChange($any($event.target).value)" />
+      <button class="sd-btn-refresh" (click)="manualRefresh()" [disabled]="isLoading()">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [class.sd-spin]="isLoading()"
+        >
+          <path d="M23 4v6h-6" />
+          <path d="M1 20v-6h6" />
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+        </svg>
+        @if (!isLoading()) {
+          <span>{{ refreshCountdown() }}s</span>
+        } @else {
+          <span>...</span>
+        }
+      </button>
+      @if (lastRefreshed()) {
+        <span class="sd-last-refresh">Actualizat {{ lastRefreshed() }}</span>
+      }
+      <a routerLink="/" class="sd-btn-back">
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        Site
+      </a>
+    </div>
+  </header>
+
+  <!-- ── Body ───────────────────────────────────────────────────────────────── -->
+  <div class="sd-body">
+    <!-- Map area -->
+    <div class="sd-map-area">
+      @if (isLoading() && !floorPlan()) {
+        <div class="sd-loader">
+          <div class="sd-spinner"></div>
+          <span>Se încarcă harta...</span>
+        </div>
+      } @else if (error()) {
+        <div class="sd-error">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <p>{{ error() }}</p>
+          <button class="sd-btn-refresh" (click)="manualRefresh()">Reîncearcă</button>
+        </div>
+      } @else if (floorPlan()) {
+        <app-floor-map [floorPlan]="floorPlan()!" (tableSelected)="onTableSelected($event)" />
+      }
+    </div>
+
+    <!-- Right panel -->
+    <aside class="sd-panel glass">
+      <!-- Selected table -->
+      @if (selectedTable(); as table) {
+        <div class="sd-panel__section">
+          <div class="sd-panel__section-header">
+            <h3 class="sd-panel__section-title">Masa {{ table.tableNumber }}</h3>
+            <button class="sd-btn-icon" (click)="clearSelection()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div class="sd-table-details">
+            <div class="sd-detail-row">
+              <span class="sd-detail-label">Stare</span>
+              <span [class]="statusClass(table.status)">{{ statusLabel(table.status) }}</span>
+            </div>
+            <div class="sd-detail-row">
+              <span class="sd-detail-label">Capacitate</span>
+              <span class="sd-detail-value">{{ table.minCapacity }}–{{ table.maxCapacity }} pers.</span>
+            </div>
+            <div class="sd-detail-row">
+              <span class="sd-detail-label">Formă</span>
+              <span class="sd-detail-value">{{
+                table.shape === 'ROUND' ? 'Rotundă' : table.shape === 'SQUARE' ? 'Pătrată' : 'Dreptunghiulară'
+              }}</span>
+            </div>
+            @if (table.notes) {
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Notițe</span>
+                <span class="sd-detail-value">{{ table.notes }}</span>
+              </div>
+            }
+          </div>
+
+          @if (table.reservation; as res) {
+            <div class="sd-reservation-card">
+              <div class="sd-reservation-card__header">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                  <line x1="16" y1="2" x2="16" y2="6" />
+                  <line x1="8" y1="2" x2="8" y2="6" />
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>
+                Rezervare
+              </div>
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Cod</span>
+                <span class="sd-detail-value sd-mono">{{ res.reservationCode }}</span>
+              </div>
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Oră</span>
+                <span class="sd-detail-value">{{ res.startTime }} – {{ res.endTime }}</span>
+              </div>
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Persoane</span>
+                <span class="sd-detail-value">{{ res.partySize }}</span>
+              </div>
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Client</span>
+                <span class="sd-detail-value">{{ res.clientFirstName }} {{ res.clientLastName }}</span>
+              </div>
+              @if (res.specialRequests) {
+                <div class="sd-detail-row sd-detail-row--wrap">
+                  <span class="sd-detail-label">Solicitări</span>
+                  <span class="sd-detail-value">{{ res.specialRequests }}</span>
+                </div>
+              }
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Stare</span>
+                <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+              </div>
+            </div>
+          } @else {
+            <p class="sd-no-reservation">Nicio rezervare activă</p>
+          }
+        </div>
+      } @else {
+        <div class="sd-panel__hint">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+          </svg>
+          <p>Selectează o masă de pe hartă pentru a vedea detalii</p>
+        </div>
+      }
+
+      <!-- Divider -->
+      <div class="sd-panel__divider"></div>
+
+      <!-- Today's reservations list -->
+      <div class="sd-panel__section">
+        <h3 class="sd-panel__section-title">Rezervări azi ({{ todayReservations().length }})</h3>
+        @if (todayReservations().length === 0) {
+          <p class="sd-empty-list">Nicio rezervare pentru data selectată.</p>
+        } @else {
+          <ul class="sd-res-list">
+            @for (res of todayReservations(); track res.id) {
+              <li class="sd-res-item">
+                <div class="sd-res-item__time">{{ res.startTime }}</div>
+                <div class="sd-res-item__info">
+                  <div class="sd-res-item__name">{{ res.clientFirstName }} {{ res.clientLastName }}</div>
+                  <div class="sd-res-item__meta">
+                    {{ res.partySize }} pers. · <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+                  </div>
+                </div>
+                <div class="sd-res-item__code sd-mono">{{ res.reservationCode }}</div>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </aside>
+  </div>
+</div>

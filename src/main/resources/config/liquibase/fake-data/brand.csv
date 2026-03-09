@@ -1,11 +1,6 @@
 id;name;description;logo_url;cover_image_url;primary_color;secondary_color;website;contact_email;contact_phone;default_reservation_duration;max_advance_booking_days;cancellation_deadline_hours;is_active;created_at
-1;gah lovingly who;../fake-data/blob/hipster.txt;besides sweetly;inasmuch yak bitterly;loyalty;qua mix;finally tough;given hierarchy an;ick towards which;188;32;45;false;2026-02-22T22:54:53
-2;concerning;../fake-data/blob/hipster.txt;frenetically now;futon;yowza;grim wo;than role gym;sizzling aw huzzah;unnaturally uselessl;219;256;11;true;2026-02-22T15:31:38
-3;for captain;../fake-data/blob/hipster.txt;toward around;aw;catalys;through;bah than;tangible;duh topsail now;139;171;14;false;2026-02-23T04:34:50
-4;vainly longingly;../fake-data/blob/hipster.txt;plagiarise;whose respray incidentally;unaccou;accept ;packaging even;gosh and;geez barring ouch;480;21;42;false;2026-02-22T18:34:52
-5;true toward why;../fake-data/blob/hipster.txt;or banish address;kettledrum doubtfully;usually;keel;bah lively begonia;restfully woefully taut;before;479;292;15;true;2026-02-22T17:57:02
-6;edible;../fake-data/blob/hipster.txt;how;pastel priesthood;yum as;circa u;up;miserably keenly aw;well-to-do whoa tric;294;207;30;false;2026-02-22T20:47:28
-7;flickering;../fake-data/blob/hipster.txt;beep gosh;sure-footed rationalise forenenst;inscrib;silentl;reorient;mallard zowie;compete ugh likewise;271;37;12;true;2026-02-23T00:57:36
-8;provided fondly;../fake-data/blob/hipster.txt;cannibalise;swat government;well-gr;vengefu;sunbathe;while supplier butter;yowza whoa;339;5;43;true;2026-02-23T14:11:51
-9;anti quaintly;../fake-data/blob/hipster.txt;faithfully;shyly silently which;charmin;each co;blah ew;after speedily;taro;372;294;51;true;2026-02-22T19:45:05
-10;halt brr adventurously;../fake-data/blob/hipster.txt;unlike ha;uh-huh cutlet;adventu;miserab;where yieldingly;than till begonia;readmit bowed regard;232;365;11;true;2026-02-22T19:44:33
+1;La Plăcinte;Lanț de restaurante tradiționale moldovenești, renumit pentru plăcinte, mâncăruri de casă și atmosferă caldă, autentică.;;;#e8472a;#fff8f0;https://laplacinte.md;contact@laplacinte.md;+37322000001;90;30;24;true;2024-01-15T10:00:00
+2;Andy's Pizza;Cel mai popular lanț de pizzerii din Moldova, cu rețete italiene adaptate gustului local și ingrediente proaspete.;;;#c8102e;#ffffff;https://andyspizza.md;contact@andyspizza.md;+37322000002;90;30;24;true;2024-01-20T10:00:00
+3;Sushi House;Restaurant japonez premium cu sushi proaspăt, ramen autentic și specialități asiatice în inima Chișinăului.;;;#1a1a1a;#f5f5f5;https://sushihouse.md;contact@sushihouse.md;+37322000003;90;30;24;true;2024-03-01T10:00:00
+4;Vatra Neamului;Restaurant tradițional moldovenesc cu specific național, muzică live în weekend și bucătărie autentică.;;;#8b4513;#fdf5e6;https://vatraneamului.md;contact@vatraneamului.md;+37322000004;120;30;24;true;2023-06-15T10:00:00
+5;Green Hills;Café și restaurant sănătos cu mâncare bio, sucuri naturale presate la rece și o atmosferă relaxantă.;;;#2d8a4e;#f0faf4;https://greenhills.md;contact@greenhills.md;+37322000005;60;30;24;true;2024-02-01T10:00:00

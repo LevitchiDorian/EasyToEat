@@ -8,6 +8,7 @@ import { StateStorageService } from 'app/core/auth/state-storage.service';
 import { AccountService } from 'app/core/auth/account.service';
 import { LoginService } from 'app/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
+import { AccountRoleService } from 'app/core/profile/account-role.service';
 import { Authority } from 'app/config/authority.constants';
 
 @Component({
@@ -21,6 +22,9 @@ export default class NavbarComponent implements OnInit {
   scrolled = false;
   account = inject(AccountService).trackCurrentAccount();
   isAdmin = computed(() => this.accountService.hasAnyAuthority([Authority.ADMIN]));
+  isManager = computed(() => this.accountService.hasAnyAuthority([Authority.MANAGER]));
+  isStaff = computed(() => this.accountService.hasAnyAuthority([Authority.STAFF]));
+  readonly accountRoleService = inject(AccountRoleService);
 
   private readonly accountService = inject(AccountService);
   private readonly loginService = inject(LoginService);
@@ -31,6 +35,10 @@ export default class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileService.getProfileInfo().subscribe();
+    // Load role profile when user is authenticated
+    if (this.accountService.isAuthenticated()) {
+      this.accountRoleService.load();
+    }
   }
 
   @HostListener('window:scroll')
@@ -54,6 +62,7 @@ export default class NavbarComponent implements OnInit {
   logout(): void {
     this.collapseNavbar();
     this.loginService.logout();
+    this.accountRoleService.reset();
     this.router.navigate(['']);
   }
 }

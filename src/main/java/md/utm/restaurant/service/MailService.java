@@ -117,4 +117,60 @@ public class MailService {
         LOG.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplateSync(user, "mail/passwordResetEmail", "email.reset.title");
     }
+
+    @Async
+    public void sendReservationConfirmationEmail(
+        String toEmail,
+        String clientName,
+        String reservationCode,
+        String restaurantName,
+        String locationAddress,
+        String reservationDate,
+        String startTime,
+        String endTime,
+        int partySize,
+        String tableNumber,
+        String roomName
+    ) {
+        LOG.debug("Sending reservation confirmation email to '{}'", toEmail);
+        Context context = new Context(Locale.forLanguageTag("ro"));
+        context.setVariable("clientName", clientName);
+        context.setVariable("reservationCode", reservationCode);
+        context.setVariable("restaurantName", restaurantName);
+        context.setVariable("locationAddress", locationAddress);
+        context.setVariable("reservationDate", reservationDate);
+        context.setVariable("startTime", startTime);
+        context.setVariable("endTime", endTime);
+        context.setVariable("partySize", partySize);
+        context.setVariable("tableNumber", tableNumber != null ? tableNumber : "");
+        context.setVariable("roomName", roomName != null ? roomName : "");
+        String content = templateEngine.process("mail/reservationConfirmEmail", context);
+        sendEmailSync(toEmail, "Rezervarea ta la " + restaurantName + " a fost confirmată!", content, false, true);
+    }
+
+    @Async
+    public void sendOrderConfirmationEmail(
+        String toEmail,
+        String clientName,
+        String orderCode,
+        String restaurantName,
+        String locationAddress,
+        String orderType,
+        String scheduledFor,
+        String itemsSummary,
+        java.math.BigDecimal totalAmount
+    ) {
+        LOG.debug("Sending order confirmation email to '{}'", toEmail);
+        Context context = new Context(Locale.forLanguageTag("ro"));
+        context.setVariable("clientName", clientName);
+        context.setVariable("orderCode", orderCode);
+        context.setVariable("restaurantName", restaurantName);
+        context.setVariable("locationAddress", locationAddress);
+        context.setVariable("orderType", orderType);
+        context.setVariable("scheduledFor", scheduledFor);
+        context.setVariable("itemsSummary", itemsSummary);
+        context.setVariable("totalAmount", totalAmount != null ? totalAmount.toPlainString() : "0");
+        String content = templateEngine.process("mail/orderConfirmEmail", context);
+        sendEmailSync(toEmail, "Comanda ta de la " + restaurantName + " a fost confirmată!", content, false, true);
+    }
 }

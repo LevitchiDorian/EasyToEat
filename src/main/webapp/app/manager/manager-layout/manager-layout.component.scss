@@ -1,0 +1,222 @@
+// Manager Layout — mirrors admin-layout with manager branding
+
+$sidebar-width: 220px;
+$topbar-height: 56px;
+
+.rv-mgr-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--rv-bg, #0f0f0f);
+  color: #fff;
+  padding-top: var(--rv-navbar-height, 64px);
+}
+
+// ── Overlay (mobile) ──────────────────────────────────────────────────────────
+.rv-mgr-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 140;
+}
+
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+.rv-mgr-sidebar {
+  width: $sidebar-width;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: var(--rv-navbar-height, 64px);
+  height: calc(100vh - var(--rv-navbar-height, 64px));
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 150;
+  flex-shrink: 0;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 12px;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  &__brand-name {
+    font-weight: 700;
+  }
+
+  &__badge {
+    background: linear-gradient(135deg, #f5a520, #d97706);
+    color: #000;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  &__user {
+    padding: 8px 16px 12px;
+  }
+
+  &__user-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  &__user-login {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &__divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+    margin: 0 12px;
+  }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 8px;
+    gap: 2px;
+    flex: 1;
+  }
+
+  &__footer {
+    padding: 10px 8px 16px;
+  }
+}
+
+// Nav items
+.rv-mgr-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+  }
+
+  &--active {
+    background: rgba(245, 165, 32, 0.12);
+    color: var(--rv-orange, #f5a520) !important;
+  }
+
+  &--back {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.82rem;
+  }
+}
+
+// ── Body ──────────────────────────────────────────────────────────────────────
+.rv-mgr-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.rv-mgr-topbar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: $topbar-height;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  position: sticky;
+  top: var(--rv-navbar-height, 64px);
+  z-index: 100;
+
+  &__center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  &__home {
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 0;
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.rv-mgr-hamburger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    transition: transform 0.2s;
+  }
+}
+
+.rv-mgr-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+@media (max-width: 900px) {
+  .rv-mgr-layout {
+    padding-top: var(--rv-navbar-height, 64px);
+  }
+
+  .rv-mgr-topbar {
+    display: flex;
+  }
+
+  .rv-mgr-sidebar {
+    position: fixed;
+    top: 0;
+    left: -$sidebar-width;
+    height: 100vh;
+    transition: left 0.25s ease;
+    box-shadow: none;
+  }
+
+  .rv-mgr-layout--open {
+    .rv-mgr-sidebar {
+      left: 0;
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
+    }
+    .rv-mgr-overlay {
+      display: block;
+    }
+  }
+}

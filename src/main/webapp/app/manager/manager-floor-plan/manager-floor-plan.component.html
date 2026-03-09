@@ -1,0 +1,182 @@
+<div class="rv-admin-page">
+  <!-- Header -->
+  <div class="rv-admin-page-header">
+    <div>
+      <h1 class="rv-admin-page-title">{{ locationTitle }}</h1>
+      @if (locationAddress) {
+        <p class="rv-admin-page-subtitle">{{ locationAddress }}</p>
+      }
+    </div>
+    <div class="mgr-fp-controls">
+      @if (isAdmin() && locations().length > 0) {
+        <select class="mgr-select" (change)="onLocationChange(+$any($event.target).value)">
+          @for (loc of locations(); track loc.id) {
+            <option [value]="loc.id">{{ loc.name }}</option>
+          }
+        </select>
+      }
+      <input type="date" class="mgr-date-input" [value]="selectedDate()" (change)="onDateChange($any($event.target).value)" />
+      <button class="mgr-btn-refresh" (click)="manualRefresh()" [disabled]="isLoading()">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [class.mgr-spin]="isLoading()"
+        >
+          <path d="M23 4v6h-6" />
+          <path d="M1 20v-6h6" />
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+        </svg>
+        {{ isLoading() ? '...' : refreshCountdown() + 's' }}
+      </button>
+      @if (lastRefreshed()) {
+        <span class="mgr-last-refresh">{{ lastRefreshed() }}</span>
+      }
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="mgr-stats-row">
+    <div class="mgr-stat-card mgr-stat-card--green">
+      <div class="mgr-stat-card__value">{{ availableTables() }}</div>
+      <div class="mgr-stat-card__label">Disponibile</div>
+    </div>
+    <div class="mgr-stat-card mgr-stat-card--amber">
+      <div class="mgr-stat-card__value">{{ reservedTables() }}</div>
+      <div class="mgr-stat-card__label">Rezervate</div>
+    </div>
+    <div class="mgr-stat-card mgr-stat-card--blue">
+      <div class="mgr-stat-card__value">{{ occupiedTables() }}</div>
+      <div class="mgr-stat-card__label">Ocupate</div>
+    </div>
+    <div class="mgr-stat-card">
+      <div class="mgr-stat-card__value">{{ totalTables() }}</div>
+      <div class="mgr-stat-card__label">Total mese</div>
+    </div>
+    <div class="mgr-stat-card">
+      <div class="mgr-stat-card__value">{{ todayReservations().length }}</div>
+      <div class="mgr-stat-card__label">Rezervări azi</div>
+    </div>
+  </div>
+
+  <!-- Map + panel -->
+  <div class="mgr-fp-layout">
+    <!-- Floor map -->
+    <div class="mgr-map-wrap glass">
+      @if (isLoading() && !floorPlan()) {
+        <div class="mgr-loader">
+          <div class="mgr-spinner"></div>
+          <span>Se încarcă harta...</span>
+        </div>
+      } @else if (error()) {
+        <div class="mgr-error">
+          <p>{{ error() }}</p>
+          <button class="mgr-btn-refresh" (click)="manualRefresh()">Reîncearcă</button>
+        </div>
+      } @else if (floorPlan()) {
+        <app-floor-map [floorPlan]="floorPlan()!" (tableSelected)="onTableSelected($event)" />
+      }
+    </div>
+
+    <!-- Right info panel -->
+    <div class="mgr-fp-side">
+      <!-- Selected table card -->
+      @if (selectedTable(); as t) {
+        <div class="glass mgr-info-card">
+          <div class="mgr-info-card__header">
+            <span class="mgr-info-card__title">Masa {{ t.tableNumber }}</span>
+            <button class="mgr-btn-icon" (click)="clearSelection()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+          <div class="mgr-detail-row">
+            <span class="mgr-detail-label">Stare</span>
+            <span [class]="statusClass(t.status)">{{ statusLabel(t.status) }}</span>
+          </div>
+          <div class="mgr-detail-row">
+            <span class="mgr-detail-label">Capacitate</span>
+            <span class="mgr-detail-value">{{ t.minCapacity }}–{{ t.maxCapacity }} pers.</span>
+          </div>
+          <div class="mgr-detail-row">
+            <span class="mgr-detail-label">Formă</span>
+            <span class="mgr-detail-value">{{
+              t.shape === 'ROUND' ? 'Rotundă' : t.shape === 'SQUARE' ? 'Pătrată' : 'Dreptunghiulară'
+            }}</span>
+          </div>
+          @if (t.notes) {
+            <div class="mgr-detail-row">
+              <span class="mgr-detail-label">Notițe</span>
+              <span class="mgr-detail-value">{{ t.notes }}</span>
+            </div>
+          }
+          @if (t.reservation; as res) {
+            <div class="mgr-res-box">
+              <div class="mgr-res-box__title">Rezervare activă</div>
+              <div class="mgr-detail-row">
+                <span class="mgr-detail-label">Cod</span>
+                <span class="mgr-detail-value mgr-mono">{{ res.reservationCode }}</span>
+              </div>
+              <div class="mgr-detail-row">
+                <span class="mgr-detail-label">Oră</span>
+                <span class="mgr-detail-value">{{ res.startTime }} – {{ res.endTime }}</span>
+              </div>
+              <div class="mgr-detail-row">
+                <span class="mgr-detail-label">Persoane</span>
+                <span class="mgr-detail-value">{{ res.partySize }}</span>
+              </div>
+              <div class="mgr-detail-row">
+                <span class="mgr-detail-label">Client</span>
+                <span class="mgr-detail-value">{{ res.clientFirstName }} {{ res.clientLastName }}</span>
+              </div>
+              <div class="mgr-detail-row">
+                <span class="mgr-detail-label">Stare</span>
+                <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+              </div>
+              @if (res.specialRequests) {
+                <div class="mgr-detail-row mgr-detail-row--wrap">
+                  <span class="mgr-detail-label">Solicitări</span>
+                  <span class="mgr-detail-value">{{ res.specialRequests }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="mgr-no-res">Nicio rezervare activă</p>
+          }
+        </div>
+      }
+
+      <!-- Reservations list -->
+      <div class="glass mgr-info-card">
+        <div class="mgr-info-card__header">
+          <span class="mgr-info-card__title">Rezervări azi ({{ todayReservations().length }})</span>
+        </div>
+        @if (todayReservations().length === 0) {
+          <p class="mgr-empty">Nicio rezervare pentru data selectată.</p>
+        } @else {
+          <ul class="mgr-res-list">
+            @for (res of todayReservations(); track $index) {
+              <li class="mgr-res-item">
+                <span class="mgr-res-item__time">{{ res?.startTime }}</span>
+                <div class="mgr-res-item__info">
+                  <div>{{ res?.clientFirstName }} {{ res?.clientLastName }}</div>
+                  <div class="mgr-res-item__meta">
+                    {{ res?.partySize }} pers. · <span [class]="statusClass(res?.status ?? '')">{{ statusLabel(res?.status ?? '') }}</span>
+                  </div>
+                </div>
+                <span class="mgr-mono mgr-res-item__code">{{ res?.reservationCode }}</span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+</div>

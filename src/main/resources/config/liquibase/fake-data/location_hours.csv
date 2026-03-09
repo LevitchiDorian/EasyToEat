@@ -1,11 +1,57 @@
 id;day_of_week;open_time;close_time;is_closed;special_note;location_id
-1;MONDAY;altho;vestm;false;notwithstanding which quirkily;1
-2;WEDNESDAY;inasm;even;false;desecrate that;2
-3;THURSDAY;avala;reckl;false;as;3
-4;SATURDAY;offic;past ;true;ha frightfully until;4
-5;FRIDAY;barri;witho;false;victoriously better against;5
-6;MONDAY;yahoo;fess ;true;programme lively angrily;6
-7;FRIDAY;ecsta;creak;true;pick fess;7
-8;WEDNESDAY;impas;readj;true;apricot;8
-9;SUNDAY;qua m;hype;true;wherever except;9
-10;TUESDAY;kindh;mid;false;surprisingly oh sociable;10
+1;MONDAY;10:00;23:00;false;;1
+2;TUESDAY;10:00;23:00;false;;1
+3;WEDNESDAY;10:00;23:00;false;;1
+4;THURSDAY;10:00;23:00;false;;1
+5;FRIDAY;10:00;00:00;false;;1
+6;SATURDAY;10:00;00:00;false;;1
+7;SUNDAY;11:00;22:00;false;;1
+8;MONDAY;10:00;23:00;false;;2
+9;TUESDAY;10:00;23:00;false;;2
+10;WEDNESDAY;10:00;23:00;false;;2
+11;THURSDAY;10:00;23:00;false;;2
+12;FRIDAY;10:00;00:00;false;;2
+13;SATURDAY;10:00;00:00;false;;2
+14;SUNDAY;11:00;22:00;false;;2
+15;MONDAY;10:00;23:00;false;;3
+16;TUESDAY;10:00;23:00;false;;3
+17;WEDNESDAY;10:00;23:00;false;;3
+18;THURSDAY;10:00;23:00;false;;3
+19;FRIDAY;10:00;00:00;false;;3
+20;SATURDAY;10:00;00:00;false;;3
+21;SUNDAY;11:00;22:00;false;;3
+22;MONDAY;10:00;23:00;false;;4
+23;TUESDAY;10:00;23:00;false;;4
+24;WEDNESDAY;10:00;23:00;false;;4
+25;THURSDAY;10:00;23:00;false;;4
+26;FRIDAY;10:00;00:00;false;;4
+27;SATURDAY;10:00;00:00;false;;4
+28;SUNDAY;11:00;22:00;false;;4
+29;MONDAY;10:00;23:00;false;;5
+30;TUESDAY;10:00;23:00;false;;5
+31;WEDNESDAY;10:00;23:00;false;;5
+32;THURSDAY;10:00;23:00;false;;5
+33;FRIDAY;10:00;00:00;false;;5
+34;SATURDAY;10:00;00:00;false;;5
+35;SUNDAY;11:00;22:00;false;;5
+36;MONDAY;10:00;23:00;false;;6
+37;TUESDAY;10:00;23:00;false;;6
+38;WEDNESDAY;10:00;23:00;false;;6
+39;THURSDAY;10:00;23:00;false;;6
+40;FRIDAY;10:00;00:00;false;;6
+41;SATURDAY;10:00;00:00;false;;6
+42;SUNDAY;11:00;22:00;false;;6
+43;MONDAY;10:00;23:00;false;;7
+44;TUESDAY;10:00;23:00;false;;7
+45;WEDNESDAY;10:00;23:00;false;;7
+46;THURSDAY;10:00;23:00;false;;7
+47;FRIDAY;10:00;00:00;false;;7
+48;SATURDAY;10:00;00:00;false;;7
+49;SUNDAY;11:00;22:00;false;;7
+50;MONDAY;10:00;23:00;false;;8
+51;TUESDAY;10:00;23:00;false;;8
+52;WEDNESDAY;10:00;23:00;false;;8
+53;THURSDAY;10:00;23:00;false;;8
+54;FRIDAY;10:00;00:00;false;;8
+55;SATURDAY;10:00;00:00;false;;8
+56;SUNDAY;11:00;22:00;false;;8

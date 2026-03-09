@@ -115,10 +115,13 @@
       }
 
       <div class="rv-form-group">
-        <label for="field_authority">Roluri (multi-selecție)</label>
-        <select class="rv-input" id="field_authority" multiple name="authority" formControlName="authorities" style="height: 110px">
+        <label for="field_authority">Rol</label>
+        <select class="rv-input" id="field_authority" [value]="selectedAuthority" (change)="selectAuthority($event)">
+          <option value="">-- Selectează rol --</option>
           @for (authority of authorities(); track $index) {
-            <option [value]="authority">{{ authority }}</option>
+            <option [value]="authority">
+              {{ authority === 'ROLE_ADMIN' ? 'Administrator' : authority === 'ROLE_USER' ? 'Utilizator standard' : authority }}
+            </option>
           }
         </select>
       </div>

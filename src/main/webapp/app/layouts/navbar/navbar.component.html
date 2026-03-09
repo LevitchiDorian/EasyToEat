@@ -58,23 +58,43 @@
           <ul class="dropdown-menu dropdown-menu-end rv-dropdown" ngbDropdownMenu>
             <li class="rv-dropdown__header">{{ accountRef.login }}</li>
             <li><a class="dropdown-item rv-dropdown__item" routerLink="/profil" (click)="collapseNavbar()">Profilul meu</a></li>
+            <li><a class="dropdown-item rv-dropdown__item" routerLink="/istoricul-meu" (click)="collapseNavbar()">Istoricul meu</a></li>
             <li><a class="dropdown-item rv-dropdown__item" routerLink="/account/password" (click)="collapseNavbar()">Schimbă parola</a></li>
             @if (isAdmin()) {
+              <!-- Super Admin links -->
+              <li><hr class="dropdown-divider" /></li>
+              <li class="rv-dropdown__section-label">Super Admin</li>
               <li>
-                <hr class="dropdown-divider" />
+                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/user-management" (click)="collapseNavbar()"
+                  >Utilizatori & Roluri</a
+                >
               </li>
-              <li class="rv-dropdown__section-label">Admin</li>
               <li>
-                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/user-management" (click)="collapseNavbar()">Utilizatori</a>
+                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/floor-plan" (click)="collapseNavbar()"
+                  >Planul sălii (toate)</a
+                >
               </li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/floor-plan" (click)="collapseNavbar()">Planul sălii</a></li>
               <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/health" (click)="collapseNavbar()">Sănătate sistem</a></li>
               <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/metrics" (click)="collapseNavbar()">Metrici</a></li>
               <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/logs" (click)="collapseNavbar()">Loguri</a></li>
               <li>
                 <a class="dropdown-item rv-dropdown__item" routerLink="/admin/configuration" (click)="collapseNavbar()">Configurare</a>
               </li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/tracker" (click)="collapseNavbar()">Tracker</a></li>
+            } @else if (isManager()) {
+              <!-- Manager links -->
+              <li><hr class="dropdown-divider" /></li>
+              <li class="rv-dropdown__section-label">Manager</li>
+              <li>
+                <a class="dropdown-item rv-dropdown__item" routerLink="/manager/floor-plan" (click)="collapseNavbar()">Harta sălii</a>
+              </li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/rezervari" (click)="collapseNavbar()">Rezervări</a></li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/personal" (click)="collapseNavbar()">Personal</a></li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/meniu" (click)="collapseNavbar()">Meniu</a></li>
+            } @else if (isStaff()) {
+              <!-- Staff links -->
+              <li><hr class="dropdown-divider" /></li>
+              <li class="rv-dropdown__section-label">Staff</li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/staff" (click)="collapseNavbar()">Panou Staff</a></li>
             }
             <li>
               <hr class="dropdown-divider" />

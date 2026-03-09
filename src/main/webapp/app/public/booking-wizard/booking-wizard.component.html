@@ -1,0 +1,565 @@
+<div class="rv-wiz-overlay" (click)="$event.target === $event.currentTarget && close()">
+  <div class="rv-wiz">
+    <!-- Header -->
+    <div class="rv-wiz__header">
+      <div class="rv-wiz__header-left">
+        @if (step() !== 'CHOICE' && step() !== 'SUCCESS') {
+          <button class="rv-wiz__back" (click)="back()">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+          </button>
+        }
+        <div>
+          <h2 class="rv-wiz__title">{{ restaurant.name }}</h2>
+          <p class="rv-wiz__subtitle">{{ locationName }}</p>
+        </div>
+      </div>
+      <button class="rv-wiz__close" (click)="close()">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Progress bar -->
+    @if (step() !== 'SUCCESS') {
+      <div class="rv-wiz__progress">
+        <div class="rv-wiz__progress-bar" [style.width]="progressWidth()"></div>
+      </div>
+    }
+
+    <!-- Body -->
+    <div class="rv-wiz__body">
+      <!-- ═══ STEP: CHOICE ════════════════════════════════════════ -->
+      @if (step() === 'CHOICE') {
+        <div class="rv-wiz__step rv-wiz__step--choice">
+          <h3 class="rv-wiz__step-title">Ce dorești să faci?</h3>
+          <div class="rv-wiz__choice-grid">
+            <button class="rv-wiz__choice-card" (click)="chooseBookingType('RESERVATION')">
+              <div class="rv-wiz__choice-icon">🍽️</div>
+              <h4>Rezervare masă</h4>
+              <p>Rezervă o masă la restaurant, cu sau fără pre-comandă</p>
+              <span class="rv-wiz__choice-arrow">→</span>
+            </button>
+
+            <button class="rv-wiz__choice-card" (click)="chooseBookingType('DELIVERY')">
+              <div class="rv-wiz__choice-icon">🛵</div>
+              <h4>Livrare la domiciliu</h4>
+              <p>Comandă și primești mâncarea acasă</p>
+              <span class="rv-wiz__choice-arrow">→</span>
+            </button>
+
+            <button class="rv-wiz__choice-card" (click)="chooseBookingType('TAKEAWAY')">
+              <div class="rv-wiz__choice-icon">📦</div>
+              <h4>Ridicare la pachet</h4>
+              <p>Comandă online și ridici gata pregătit</p>
+              <span class="rv-wiz__choice-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ═══ STEP: RESERVATION TYPE ══════════════════════════════ -->
+      @if (step() === 'RESERVATION_TYPE') {
+        <div class="rv-wiz__step rv-wiz__step--choice">
+          <h3 class="rv-wiz__step-title">Ce tip de rezervare dorești?</h3>
+          <div class="rv-wiz__choice-grid">
+            <button class="rv-wiz__choice-card" (click)="chooseReservationType('TABLE')">
+              <div class="rv-wiz__choice-icon">🪑</div>
+              <h4>Doar masă</h4>
+              <p>Rezervă o masă fără a comanda mâncarea din timp</p>
+              <span class="rv-wiz__choice-arrow">→</span>
+            </button>
+
+            <button class="rv-wiz__choice-card" (click)="chooseReservationType('TABLE_MENU')">
+              <div class="rv-wiz__choice-icon">🥘</div>
+              <h4>Masă + comandă meniu</h4>
+              <p>Rezervă masa și pre-comandă mâncarea — gata la sosire</p>
+              <span class="rv-wiz__choice-arrow">→</span>
+            </button>
+
+            <button class="rv-wiz__choice-card" (click)="chooseReservationType('BANQUET')">
+              <div class="rv-wiz__choice-icon">🎉</div>
+              <h4>Banchet / Eveniment</h4>
+              <p>Eveniment special pentru grupuri mari, aniversări, corporate</p>
+              <span class="rv-wiz__choice-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- ═══ STEP: FLOOR MAP ══════════════════════════════════════ -->
+      @if (step() === 'FLOOR_MAP') {
+        <div class="rv-wiz__step rv-wiz__step--map">
+          <div class="rv-wiz__map-header">
+            <div>
+              <h3 class="rv-wiz__step-title">Alege masa ta</h3>
+              <p class="rv-wiz__map-hint">Click pe o masă verde pentru a o selecta</p>
+            </div>
+            <label class="rv-wiz__date-pick">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              <input
+                type="date"
+                class="rv-input"
+                [(ngModel)]="reservationDate"
+                [min]="today"
+                (ngModelChange)="reloadFloorPlan()"
+                style="color-scheme: dark"
+              />
+            </label>
+          </div>
+
+          @if (selectedTable(); as t) {
+            <div class="rv-wiz__table-badge">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#22c55e"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Masa {{ t.tableNumber }} selectată — {{ t.minCapacity }}–{{ t.maxCapacity }} persoane
+            </div>
+          }
+
+          @if (isLoadingFloorPlan()) {
+            <div class="rv-wiz__loading">
+              <div class="rv-spinner"></div>
+              <span>Se încarcă harta sălii...</span>
+            </div>
+          } @else if (floorPlan()) {
+            <app-floor-map [floorPlan]="floorPlan()!" [showSelectionBar]="false" (tableSelected)="onTableSelected($event)" />
+          } @else {
+            <div class="rv-wiz__empty">Nu s-a putut încărca harta sălii.</div>
+          }
+        </div>
+      }
+
+      <!-- ═══ STEP: FORM ════════════════════════════════════════════ -->
+      @if (step() === 'FORM') {
+        <div class="rv-wiz__step rv-wiz__step--form">
+          <h3 class="rv-wiz__step-title">
+            @if (reservationType() === 'BANQUET') {
+              Detalii eveniment
+            } @else if (bookingType() === 'DELIVERY') {
+              Detalii livrare
+            } @else if (bookingType() === 'TAKEAWAY') {
+              Detalii ridicare
+            } @else {
+              Detalii rezervare
+            }
+          </h3>
+
+          <div class="rv-wiz__form-grid">
+            <!-- Personal info -->
+            <label class="rv-wiz__field">
+              <span>Prenume <span class="rv-wiz__req">*</span></span>
+              <input type="text" class="rv-input" [(ngModel)]="firstName" placeholder="Ion" required />
+            </label>
+            <label class="rv-wiz__field">
+              <span>Nume <span class="rv-wiz__req">*</span></span>
+              <input type="text" class="rv-input" [(ngModel)]="lastName" placeholder="Popescu" required />
+            </label>
+            <label class="rv-wiz__field">
+              <span>Email <span class="rv-wiz__req">*</span></span>
+              <input type="email" class="rv-input" [(ngModel)]="email" placeholder="email@exemplu.com" required />
+            </label>
+            <label class="rv-wiz__field">
+              <span>Telefon <span class="rv-wiz__req">*</span></span>
+              <input type="tel" class="rv-input" [(ngModel)]="phone" placeholder="+373 60 000 000" required />
+            </label>
+
+            <!-- Reservation / Banquet specific -->
+            @if (bookingType() === 'RESERVATION') {
+              <label class="rv-wiz__field">
+                <span>Data <span class="rv-wiz__req">*</span></span>
+                <input type="date" class="rv-input" [(ngModel)]="reservationDate" [min]="today" style="color-scheme: dark" required />
+              </label>
+              @if (reservationType() !== 'BANQUET') {
+                <label class="rv-wiz__field">
+                  <span>Ora sosirii</span>
+                  <input type="time" class="rv-input" [(ngModel)]="startTime" />
+                </label>
+              } @else {
+                <label class="rv-wiz__field">
+                  <span>Ora evenimentului</span>
+                  <input type="time" class="rv-input" [(ngModel)]="startTime" />
+                </label>
+                <label class="rv-wiz__field">
+                  <span>Tip eveniment</span>
+                  <select class="rv-input" [(ngModel)]="eventType">
+                    <option value="aniversare">Aniversare</option>
+                    <option value="nunta">Nuntă</option>
+                    <option value="corporate">Eveniment corporate</option>
+                    <option value="petrecere">Petrecere privată</option>
+                    <option value="altele">Altele</option>
+                  </select>
+                </label>
+              }
+              <label class="rv-wiz__field">
+                <span>Număr persoane</span>
+                <input
+                  type="number"
+                  class="rv-input"
+                  [(ngModel)]="partySize"
+                  [min]="1"
+                  [max]="reservationType() === 'BANQUET' ? 500 : 20"
+                />
+              </label>
+            }
+
+            <!-- Delivery / Takeaway specific -->
+            @if (bookingType() === 'DELIVERY' || bookingType() === 'TAKEAWAY') {
+              <label class="rv-wiz__field">
+                <span>Data {{ bookingType() === 'DELIVERY' ? 'livrării' : 'ridicării' }} <span class="rv-wiz__req">*</span></span>
+                <input type="date" class="rv-input" [(ngModel)]="scheduledDate" [min]="today" style="color-scheme: dark" required />
+              </label>
+              <label class="rv-wiz__field">
+                <span>Ora {{ bookingType() === 'DELIVERY' ? 'livrării' : 'ridicării' }}</span>
+                <input type="time" class="rv-input" [(ngModel)]="scheduledTime" />
+              </label>
+              @if (bookingType() === 'DELIVERY') {
+                <label class="rv-wiz__field rv-wiz__field--full">
+                  <span>Adresa de livrare <span class="rv-wiz__req">*</span></span>
+                  <input type="text" class="rv-input" [(ngModel)]="address" placeholder="Str. Exemplu 1, ap. 5, Chișinău" required />
+                </label>
+              }
+            }
+
+            <!-- Special requests (all types) -->
+            <label class="rv-wiz__field rv-wiz__field--full">
+              <span>Cereri speciale (opțional)</span>
+              <textarea
+                class="rv-input rv-wiz__textarea"
+                [(ngModel)]="specialRequests"
+                placeholder="Alergie la gluten, masă la fereastră, tort aniversar..."
+              ></textarea>
+            </label>
+          </div>
+        </div>
+      }
+
+      <!-- ═══ STEP: MENU ════════════════════════════════════════════ -->
+      @if (step() === 'MENU') {
+        <div class="rv-wiz__step rv-wiz__step--menu">
+          <div class="rv-wiz__menu-layout">
+            <!-- Menu column -->
+            <div class="rv-wiz__menu-col">
+              <div class="rv-wiz__menu-header">
+                <h3 class="rv-wiz__step-title">Alege din meniu</h3>
+                <div class="rv-wiz__menu-search">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  <input type="text" class="rv-input" [(ngModel)]="menuSearch" placeholder="Caută..." />
+                </div>
+              </div>
+
+              @if (isLoadingMenu()) {
+                <div class="rv-wiz__loading">
+                  <div class="rv-spinner"></div>
+                  <span>Se încarcă meniul...</span>
+                </div>
+              } @else if (menuCategories().length === 0) {
+                <div class="rv-wiz__empty">Meniul nu este disponibil momentan.</div>
+              } @else {
+                <div class="rv-wiz__menu-cats">
+                  @for (cat of menuCategories(); track cat.id) {
+                    @let catItems = itemsForCategory(cat.id);
+                    @if (catItems.length > 0) {
+                      <div class="rv-wiz__cat" [class.rv-wiz__cat--open]="expandedCategoryId() === cat.id">
+                        <button class="rv-wiz__cat-header" (click)="toggleCategory(cat.id)">
+                          <img [src]="getCategoryImage(cat.name)" [alt]="cat.name" class="rv-wiz__cat-img" />
+                          <span class="rv-wiz__cat-name">{{ cat.name }}</span>
+                          <span class="rv-wiz__cat-count">{{ catItems.length }}</span>
+                          <svg
+                            class="rv-wiz__cat-chevron"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+                        @if (expandedCategoryId() === cat.id) {
+                          <div class="rv-wiz__cat-items">
+                            @for (item of catItems; track item.id) {
+                              <div class="rv-wiz__menu-item">
+                                <div class="rv-wiz__menu-item-info">
+                                  <span class="rv-wiz__menu-item-name">{{ item.name }}</span>
+                                  @if (item.description) {
+                                    <span class="rv-wiz__menu-item-desc">{{ item.description }}</span>
+                                  }
+                                  <span class="rv-wiz__menu-item-price">{{ formatPrice(item.price) }}</span>
+                                </div>
+                                <div class="rv-wiz__qty-ctrl">
+                                  @if (getQuantity(item.id) > 0) {
+                                    <button class="rv-wiz__qty-btn rv-wiz__qty-btn--minus" (click)="removeFromCart(item)">−</button>
+                                    <span class="rv-wiz__qty-val">{{ getQuantity(item.id) }}</span>
+                                  }
+                                  <button class="rv-wiz__qty-btn rv-wiz__qty-btn--plus" (click)="addToCart(item)">+</button>
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Cart sidebar -->
+            <div class="rv-wiz__cart">
+              <h4 class="rv-wiz__cart-title">
+                Coșul tău
+                @if (cartItemCount() > 0) {
+                  <span class="rv-wiz__cart-count">{{ cartItemCount() }}</span>
+                }
+              </h4>
+              @if (cart().length === 0) {
+                <p class="rv-wiz__cart-empty">Niciun produs adăugat</p>
+              } @else {
+                <div class="rv-wiz__cart-items">
+                  @for (ci of cart(); track ci.item.id) {
+                    <div class="rv-wiz__cart-item">
+                      <span class="rv-wiz__cart-item-qty">{{ ci.quantity }}×</span>
+                      <span class="rv-wiz__cart-item-name">{{ ci.item.name }}</span>
+                      <span class="rv-wiz__cart-item-price">{{ formatPrice(ci.item.price * ci.quantity) }}</span>
+                    </div>
+                  }
+                </div>
+                <div class="rv-wiz__cart-total">
+                  <span>Total</span>
+                  <strong>{{ formatPrice(cartTotal()) }}</strong>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ═══ STEP: SUMMARY ═════════════════════════════════════════ -->
+      @if (step() === 'SUMMARY') {
+        <div class="rv-wiz__step rv-wiz__step--summary">
+          <h3 class="rv-wiz__step-title">Confirmare</h3>
+
+          <div class="rv-wiz__summary-card glass">
+            <div class="rv-wiz__summary-row rv-wiz__summary-row--type">
+              <span class="rv-wiz__summary-label">Tip</span>
+              <strong>{{ bookingTypeLabel }}</strong>
+            </div>
+
+            <div class="rv-wiz__summary-row">
+              <span class="rv-wiz__summary-label">Restaurant</span>
+              <span>{{ restaurant.name }} · {{ locationName }}</span>
+            </div>
+            <div class="rv-wiz__summary-row">
+              <span class="rv-wiz__summary-label">Adresă</span>
+              <span>{{ locationAddress }}</span>
+            </div>
+
+            @if (selectedTable()) {
+              <div class="rv-wiz__summary-row">
+                <span class="rv-wiz__summary-label">Masă</span>
+                <span>Masa {{ selectedTable()!.tableNumber }} · {{ selectedRoomName() }}</span>
+              </div>
+            }
+
+            @if (bookingType() === 'RESERVATION') {
+              <div class="rv-wiz__summary-row">
+                <span class="rv-wiz__summary-label">Data</span>
+                <span>{{ reservationDate }}</span>
+              </div>
+              <div class="rv-wiz__summary-row">
+                <span class="rv-wiz__summary-label">Ora sosirii</span>
+                <span>{{ startTime }}</span>
+              </div>
+              <div class="rv-wiz__summary-row">
+                <span class="rv-wiz__summary-label">Persoane</span>
+                <span>{{ partySize }}</span>
+              </div>
+              @if (reservationType() === 'BANQUET') {
+                <div class="rv-wiz__summary-row">
+                  <span class="rv-wiz__summary-label">Eveniment</span>
+                  <span>{{ eventType }}</span>
+                </div>
+              }
+            } @else {
+              <div class="rv-wiz__summary-row">
+                <span class="rv-wiz__summary-label">Data</span>
+                <span>{{ scheduledDate }} · {{ scheduledTime }}</span>
+              </div>
+              @if (bookingType() === 'DELIVERY') {
+                <div class="rv-wiz__summary-row">
+                  <span class="rv-wiz__summary-label">Adresă livrare</span>
+                  <span>{{ address }}</span>
+                </div>
+              }
+            }
+
+            <div class="rv-wiz__summary-row">
+              <span class="rv-wiz__summary-label">Persoană de contact</span>
+              <span>{{ firstName }} {{ lastName }} · {{ phone }}</span>
+            </div>
+            <div class="rv-wiz__summary-row">
+              <span class="rv-wiz__summary-label">Email confirmare</span>
+              <span>{{ email }}</span>
+            </div>
+
+            @if (cart().length > 0) {
+              <div class="rv-wiz__summary-divider"></div>
+              <div class="rv-wiz__summary-label" style="margin-bottom: 0.5rem">Produse comandate</div>
+              @for (ci of cart(); track ci.item.id) {
+                <div class="rv-wiz__summary-row">
+                  <span>{{ ci.quantity }}× {{ ci.item.name }}</span>
+                  <span>{{ formatPrice(ci.item.price * ci.quantity) }}</span>
+                </div>
+              }
+              <div class="rv-wiz__summary-row rv-wiz__summary-row--total">
+                <strong>Total</strong>
+                <strong class="text-gradient">{{ formatPrice(cartTotal()) }}</strong>
+              </div>
+            }
+          </div>
+
+          @if (error()) {
+            <div class="rv-wiz__error">{{ error() }}</div>
+          }
+        </div>
+      }
+
+      <!-- ═══ STEP: SUCCESS ═════════════════════════════════════════ -->
+      @if (step() === 'SUCCESS') {
+        <div class="rv-wiz__step rv-wiz__step--success">
+          <div class="rv-wiz__success-icon">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#22c55e"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <h3 class="rv-wiz__success-title">
+            @if (bookingType() === 'RESERVATION') {
+              Rezervarea a fost înregistrată!
+            } @else {
+              Comanda a fost plasată!
+            }
+          </h3>
+          @if (confirmationCode()) {
+            <div class="rv-wiz__success-code">
+              Cod: <strong>{{ confirmationCode() }}</strong>
+            </div>
+          }
+          <p class="rv-wiz__success-email">
+            Un email de confirmare a fost trimis la <strong>{{ email }}</strong>
+          </p>
+          <p class="rv-wiz__success-restaurant">{{ restaurant.name }} · {{ locationName }} · {{ locationAddress }}</p>
+          <button class="btn-gradient rv-wiz__success-btn" (click)="close()">Înapoi la restaurant</button>
+        </div>
+      }
+    </div>
+
+    <!-- Footer with navigation buttons -->
+    @if (step() !== 'CHOICE' && step() !== 'RESERVATION_TYPE' && step() !== 'SUCCESS') {
+      <div class="rv-wiz__footer">
+        @if (step() === 'FLOOR_MAP') {
+          <button class="btn-rv-ghost" (click)="back()">Înapoi</button>
+          <button class="btn-gradient" (click)="next()" [disabled]="!isFloorMapNextEnabled">Continuă</button>
+        } @else if (step() === 'FORM') {
+          <button class="btn-rv-ghost" (click)="back()">Înapoi</button>
+          <button class="btn-gradient" (click)="next()" [disabled]="!isFormValid">
+            @if (reservationType() === 'TABLE_MENU') {
+              Alege meniu
+            } @else {
+              Revizuiește
+            }
+          </button>
+        } @else if (step() === 'MENU') {
+          <button class="btn-rv-ghost" (click)="back()">Înapoi</button>
+          <div class="rv-wiz__footer-cart">
+            @if (cartItemCount() > 0) {
+              <span class="rv-wiz__footer-total">{{ formatPrice(cartTotal()) }}</span>
+            }
+            <button class="btn-gradient" (click)="next()" [disabled]="cart().length === 0">
+              Revizuiește comanda ({{ cartItemCount() }})
+            </button>
+          </div>
+        } @else if (step() === 'SUMMARY') {
+          <button class="btn-rv-ghost" (click)="back()">Înapoi</button>
+          <button class="btn-gradient" (click)="next()" [disabled]="isSubmitting()">
+            @if (isSubmitting()) {
+              Se procesează...
+            } @else {
+              Confirmă
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

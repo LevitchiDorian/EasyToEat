@@ -217,14 +217,15 @@ export default class StaffFloorPlanComponent implements OnInit {
 
   private mapToFloorPlan(res: StaffFloorPlanResponse): FloorPlan {
     let canvasWidth = 800;
-    let canvasHeight = 600;
+    let currentY = 20;
+    const GAP = 24;
 
-    const rooms = res.rooms.map((room, idx) => {
+    const rooms = res.rooms.map(room => {
       const w = room.widthPx ?? 700;
       const h = room.heightPx ?? 400;
-      const posY = idx === 0 ? 20 : canvasHeight / 2;
-      canvasWidth = Math.max(canvasWidth, w + 40);
-      canvasHeight = Math.max(canvasHeight, posY + h + 40);
+      const posY = currentY;
+      currentY += h + GAP;
+      canvasWidth = Math.max(canvasWidth, 20 + w + 20);
       return {
         id: room.id,
         name: room.name,
@@ -250,6 +251,7 @@ export default class StaffFloorPlanComponent implements OnInit {
       };
     });
 
+    const canvasHeight = Math.max(600, currentY + 20);
     return { canvasWidth, canvasHeight, rooms };
   }
 }

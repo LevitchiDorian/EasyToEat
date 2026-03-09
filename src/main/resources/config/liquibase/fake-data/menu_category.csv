@@ -1,11 +1,28 @@
 id;name;description;image_url;display_order;is_active;brand_id
-1;masquerade ah;mid obvious;clinch deeply;8209;true;1
-2;aw internal but;scarcely;safely countess;24215;true;2
-3;incidentally than beyond;upward;opposite nectarine;7045;true;3
-4;pike singing;sensitize positively smoothly;raw huzzah cuckoo;213;false;4
-5;but though pish;unlike;handsome;28649;false;5
-6;abaft;underpants outside;honestly deed insistent;31238;false;6
-7;nimble;dishearten duh until;mozzarella;29115;true;7
-8;ick;wise;editor afore psst;25055;false;8
-9;sans;regularly;nearly;6393;true;9
-10;solder gee queasily;unlike indeed;carpool than;15408;true;10
+1;Plăcinte și Aperitive;Plăcinte tradiționale moldovenești și gustări;;1;true;1
+2;Supe și Ciorbe;Supe tradiționale și ciorbe de casă;;2;true;1
+3;Feluri Principale;Preparate principale din bucătăria moldovenească;;3;true;1
+4;Salate;Salate proaspete de sezon;;4;true;1
+5;Deserturi;Prăjituri, plăcinte dulci și deserturi tradiționale;;5;true;1
+6;Băuturi;Băuturi răcoritoare, sucuri și ceaiuri;;6;true;1
+7;Pizza Clasică;Pizze clasice italiene cu blat subțire sau gros;;1;true;2
+8;Pizza Specială;Pizze cu rețete speciale Andy's;;2;true;2
+9;Paste și Risotto;Paste proaspete și risotto;;3;true;2
+10;Salate Andy's;Salate proaspete și apetisante;;4;true;2
+11;Deserturi Andy's;Tiramisu, panna cotta și deserturi italiene;;5;true;2
+12;Băuturi Andy's;Băuturi răcoritoare, sucuri naturale, bere;;6;true;2
+13;Sushi Rolls;Rulouri de sushi cu ingrediente premium;;1;true;3
+14;Sashimi;Felii fine de pește proaspăt;;2;true;3
+15;Ramen & Udon;Supe japoneze tradiționale;;3;true;3
+16;Gyoza & Edamame;Aperitive japoneze;;4;true;3
+17;Băuturi Sushi;Sake, ceai verde, limonade;;5;true;3
+18;Mâncăruri Tradiționale;Preparate moldovenești după rețete vechi;;1;true;4
+19;Grătar;Carne la grătar și mici moldovenești;;2;true;4
+20;Sarmale și Mămăligă;Sarmale tradiționale și mămăligă;;3;true;4
+21;Salate Tradiționale;Salate de casă și murături;;4;true;4
+22;Vinuri și Băuturi;Vinuri moldovenești și băuturi tradiționale;;5;true;4
+23;Mic Dejun;Mic dejun sănătos și energizant;;1;true;5
+24;Boluri și Salate;Boluri nutritive și salate verde;;2;true;5
+25;Sandvișuri;Sandvișuri cu ingrediente bio;;3;true;5
+26;Smoothie & Sucuri;Smoothie-uri și sucuri naturale presate;;4;true;5
+27;Cafea & Ceai;Cafea specialty și ceaiuri premium;;5;true;5

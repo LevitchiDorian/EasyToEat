@@ -219,6 +219,8 @@ export const DEMO_FLOOR_PLAN: FloorPlan = {
 export class FloorMapComponent implements OnInit, OnDestroy {
   @Input() floorPlan: FloorPlan = DEMO_FLOOR_PLAN;
   @Input() staffMode = false;
+  @Input() showSelectionBar = true;
+  @Input() readonly = false;
   @Output() tableSelected = new EventEmitter<FloorTable>();
 
   scale = signal(1);
@@ -258,12 +260,14 @@ export class FloorMapComponent implements OnInit, OnDestroy {
   }
 
   onWheel(event: WheelEvent): void {
+    if (this.readonly) return;
     event.preventDefault();
     const delta = event.deltaY > 0 ? -0.1 : 0.1;
     this.scale.update(s => Math.min(Math.max(s + delta, this.MIN_SCALE), this.MAX_SCALE));
   }
 
   onMouseDown(event: MouseEvent): void {
+    if (this.readonly) return;
     if ((event.target as HTMLElement).closest('.rv-table')) return;
     this.isDragging = true;
     this.dragStartX = event.clientX;
@@ -284,6 +288,7 @@ export class FloorMapComponent implements OnInit, OnDestroy {
   }
 
   selectTable(table: FloorTable, event: Event): void {
+    if (this.readonly) return;
     event.stopPropagation();
     if (table.status === 'OUT_OF_SERVICE') return;
     if (!this.staffMode && table.status === 'OCCUPIED') return;

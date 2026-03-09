@@ -1,23 +1,137 @@
-/* Floor Map Component — uses design tokens from reservoai-design.scss */
+/* ── Floor Map Component ─────────────────────────────────────────── */
 
 .rv-floor-map {
-  position: relative;
+  display: flex;
+  flex-direction: column;
   background: hsl(var(--sidebar-background));
   border: 1px solid hsl(var(--border) / 0.6);
   border-radius: var(--radius);
   overflow: hidden;
-  height: 560px;
   user-select: none;
-  cursor: grab;
   box-shadow: var(--shadow-card);
+}
+
+/* ── Header: legend + zoom controls ─────────────────────────────── */
+.rv-floor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  background: hsl(var(--card) / 0.6);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.rv-floor-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rv-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  color: hsl(var(--foreground) / 0.75);
+  white-space: nowrap;
+}
+
+.rv-legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &--available {
+    background: hsl(var(--available));
+    box-shadow: 0 0 6px hsl(var(--available) / 0.5);
+  }
+  &--reserved {
+    background: hsl(var(--reserved));
+    box-shadow: 0 0 6px hsl(var(--reserved) / 0.5);
+  }
+  &--occupied {
+    background: hsl(var(--occupied));
+    box-shadow: 0 0 6px hsl(var(--occupied) / 0.5);
+  }
+}
+
+/* ── Zoom controls (inside header) ──────────────────────────────── */
+.rv-floor-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.rv-floor-btn {
+  width: 32px;
+  height: 32px;
+  background: hsl(var(--foreground) / 0.06);
+  border: 1px solid hsl(var(--border) / 0.7);
+  border-radius: 8px;
+  color: hsl(var(--muted-foreground));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    background: hsl(var(--secondary));
+    color: hsl(var(--foreground));
+  }
+}
+
+/* ── Canvas body ─────────────────────────────────────────────────── */
+.rv-floor-body {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+
+  @media (min-width: 480px) {
+    min-height: 340px;
+  }
+  @media (min-width: 768px) {
+    min-height: 420px;
+  }
+  @media (min-width: 1024px) {
+    min-height: 480px;
+  }
+}
+
+/* Interactive mode: grab cursor */
+.rv-floor-map--interactive .rv-floor-body {
+  cursor: grab;
+  overflow: hidden; // pan is handled via transform
 
   &:active {
     cursor: grabbing;
   }
 }
 
-/* ── Canvas wrapper — enables pan ──────────────────────────────── */
-.rv-floor-canvas-wrap {
+/* Readonly mode: body scrolls so user can see full map without height limit */
+.rv-floor-map--readonly .rv-floor-body {
+  cursor: default;
+  overflow: auto;
+  min-height: unset; // let it grow to show all content
+  max-height: 540px; // cap on desktop to avoid page being too long
+
+  @media (max-width: 767px) {
+    max-height: 380px; // scrollable on mobile
+  }
+}
+
+/* ── Canvas wrapper ─────────────────────────────────────────────── */
+
+/* Interactive: absolute fill, overflow hidden (pan via transform) */
+.rv-floor-map--interactive .rv-floor-canvas-wrap {
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -26,19 +140,29 @@
   justify-content: center;
 }
 
-/* ── Canvas — actual drawing surface with grid ─────────────────── */
+/* Readonly: static, lets the body scroll naturally */
+.rv-floor-map--readonly .rv-floor-canvas-wrap {
+  display: block;
+  padding: 12px;
+  min-width: min-content;
+}
+
+/* ── Canvas — actual drawing surface ───────────────────────────── */
 .rv-floor-canvas {
   position: relative;
   flex-shrink: 0;
   transform-origin: center center;
-  /* use design-system floor-plan-grid class values inline */
   background-image:
-    linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
+    linear-gradient(hsl(var(--border) / 0.25) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / 0.25) 1px, transparent 1px);
   background-size: 24px 24px;
   transition: transform 0.05s linear;
+
+  .rv-floor-map--readonly & {
+    transform: none !important;
+  }
 }
 
-/* ── Room zones ────────────────────────────────────────────────── */
+/* ── Room zones ─────────────────────────────────────────────────── */
 .rv-room {
   position: absolute;
   border: 1px dashed hsl(var(--border));
@@ -58,17 +182,7 @@
   pointer-events: none;
 }
 
-.rv-room__sublabel {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.68rem;
-  color: hsl(var(--muted-foreground) / 0.6);
-  pointer-events: none;
-}
-
-/* ── Static areas (kitchen, entrance) ─────────────────────────── */
+/* ── Static areas ───────────────────────────────────────────────── */
 .rv-static-area {
   position: absolute;
   border: 1px dashed hsl(var(--border) / 0.5);
@@ -91,7 +205,7 @@
   font-weight: 500;
 }
 
-/* ── Tables ────────────────────────────────────────────────────── */
+/* ── Tables ─────────────────────────────────────────────────────── */
 .rv-table {
   position: absolute;
   display: flex;
@@ -121,47 +235,49 @@
     border-radius: 8px;
   }
 
-  /* ── Status — using design-system tokens ── */
   &--available {
     background: linear-gradient(145deg, hsl(var(--available) / 0.95), hsl(var(--available) / 0.75));
     border-color: hsl(var(--available));
-    box-shadow: 0 0 18px hsl(var(--available) / 0.3);
+    box-shadow: 0 0 16px hsl(var(--available) / 0.3);
     color: hsl(var(--available-foreground));
   }
-
   &--reserved {
     background: linear-gradient(145deg, hsl(var(--reserved) / 0.95), hsl(var(--reserved) / 0.75));
     border-color: hsl(var(--reserved));
-    box-shadow: 0 0 18px hsl(var(--reserved) / 0.3);
+    box-shadow: 0 0 16px hsl(var(--reserved) / 0.3);
     color: hsl(var(--reserved-foreground));
   }
-
   &--occupied {
     background: linear-gradient(145deg, hsl(var(--occupied) / 0.92), hsl(var(--occupied) / 0.72));
     border-color: hsl(var(--occupied));
-    box-shadow: 0 0 18px hsl(var(--occupied) / 0.28);
+    box-shadow: 0 0 16px hsl(var(--occupied) / 0.28);
     color: hsl(var(--occupied-foreground));
     cursor: not-allowed;
-
     &:hover {
       transform: none;
       filter: none;
-      box-shadow: 0 0 18px hsl(var(--occupied) / 0.28);
     }
   }
-
   &--inactive {
     background: hsl(var(--muted));
     border-color: hsl(var(--border));
     color: hsl(var(--muted-foreground) / 0.5);
     cursor: not-allowed;
   }
-
   &--selected {
     outline: 3px solid hsl(var(--foreground));
     outline-offset: 3px;
     transform: scale(1.09) !important;
     filter: brightness(1.2);
+  }
+}
+
+/* In readonly mode, disable hover effects on tables */
+.rv-floor-map--readonly .rv-table {
+  cursor: default;
+  &:hover {
+    transform: none;
+    filter: none;
   }
 }
 
@@ -180,97 +296,14 @@
   line-height: 1;
 }
 
-/* ── Legend ────────────────────────────────────────────────────── */
-.rv-floor-legend {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 10;
-  background: hsl(var(--popover) / 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid hsl(var(--border) / 0.7);
-  border-radius: 10px;
-  padding: 10px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  pointer-events: none;
-  box-shadow: var(--shadow-card);
-}
-
-.rv-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.78rem;
-  color: hsl(var(--foreground) / 0.8);
-}
-
-.rv-legend-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-
-  &--available {
-    background: hsl(var(--available));
-    box-shadow: 0 0 8px hsl(var(--available) / 0.5);
-  }
-  &--reserved {
-    background: hsl(var(--reserved));
-    box-shadow: 0 0 8px hsl(var(--reserved) / 0.5);
-  }
-  &--occupied {
-    background: hsl(var(--occupied));
-    box-shadow: 0 0 8px hsl(var(--occupied) / 0.5);
-  }
-}
-
-/* ── Zoom controls ─────────────────────────────────────────────── */
-.rv-floor-controls {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.rv-floor-btn {
-  width: 36px;
-  height: 36px;
-  background: hsl(var(--popover) / 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid hsl(var(--border) / 0.7);
-  border-radius: 8px;
-  color: hsl(var(--muted-foreground));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
-
-  &:hover {
-    background: hsl(var(--secondary));
-    color: hsl(var(--foreground));
-    border-color: hsl(var(--border));
-  }
-}
-
-/* ── Tooltip ───────────────────────────────────────────────────── */
+/* ── Tooltip ────────────────────────────────────────────────────── */
 .rv-tooltip {
   position: absolute;
-  bottom: 16px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   background: hsl(var(--popover) / 0.97);
   backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border: 1px solid hsl(var(--border) / 0.8);
   border-radius: 10px;
   padding: 10px 16px;
@@ -318,7 +351,7 @@
   color: hsl(var(--muted-foreground));
 }
 
-/* ── Selection bar ─────────────────────────────────────────────── */
+/* ── Selection bar ──────────────────────────────────────────────── */
 .rv-selection-bar {
   position: absolute;
   bottom: 0;
@@ -326,23 +359,24 @@
   right: 0;
   background: hsl(var(--popover) / 0.97);
   backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid hsl(var(--border) / 0.7);
-  padding: 14px 20px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   z-index: 20;
   animation: slide-up 0.25s ease both;
+  flex-wrap: wrap;
 }
 
 .rv-selection-bar__info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-size: 0.9rem;
   color: hsl(var(--foreground));
+  flex-wrap: wrap;
 
   span {
     color: hsl(var(--muted-foreground));
@@ -353,7 +387,7 @@
 .rv-selection-bar__actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
@@ -366,7 +400,7 @@
   padding: 0.5rem 1.2rem;
 }
 
-/* ── Status tags ───────────────────────────────────────────────── */
+/* ── Status tags ────────────────────────────────────────────────── */
 .rv-tag {
   font-size: 0.72rem;
   font-weight: 600;
@@ -382,5 +416,23 @@
     background: hsl(var(--reserved) / 0.15);
     color: hsl(var(--reserved));
     border: 1px solid hsl(var(--reserved) / 0.3);
+  }
+}
+
+/* ── Responsive tweaks ──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .rv-floor-legend {
+    gap: 10px;
+  }
+  .rv-legend-item {
+    font-size: 0.72rem;
+  }
+  .rv-selection-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .rv-selection-bar__actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

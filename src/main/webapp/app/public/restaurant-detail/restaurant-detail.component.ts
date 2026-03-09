@@ -2,9 +2,35 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
-import { FloorMapComponent, DEMO_FLOOR_PLAN, FloorTable } from '../floor-map/floor-map.component';
+import { FloorMapComponent, FloorPlan, FloorTable, DEMO_FLOOR_PLAN } from '../floor-map/floor-map.component';
+import { BookingWizardComponent } from '../booking-wizard/booking-wizard.component';
 import { RestaurantCard } from '../restaurants/restaurants.component';
+import { ApplicationConfigService } from 'app/core/config/application-config.service';
+import { AccountService } from 'app/core/auth/account.service';
+
+interface MenuCategory {
+  id: number;
+  name: string;
+  displayOrder?: number;
+  isActive?: boolean;
+  brand?: { id: number };
+}
+
+interface MenuItem {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  prepTimeMinutes?: number;
+  isVegetarian?: boolean;
+  isVegan?: boolean;
+  isGlutenFree?: boolean;
+  spicyLevel?: number;
+  isAvailable?: boolean;
+  category?: { id: number };
+}
 
 interface LocationCard {
   id: number;
@@ -14,148 +40,191 @@ interface LocationCard {
   phone: string;
   hours: string;
   isOpen: boolean;
-  latitude?: number;
-  longitude?: number;
 }
 
-const MOCK_DETAILS: Record<number, RestaurantCard & { locations: LocationCard[]; fullDescription: string }> = {
+interface FloorPlanResponse {
+  locationId: number;
+  locationName: string;
+  locationAddress: string;
+  date: string;
+  rooms: {
+    id: number;
+    name: string;
+    floor?: number;
+    widthPx: number;
+    heightPx: number;
+    tables: {
+      id: number;
+      tableNumber: string;
+      shape: string;
+      minCapacity: number;
+      maxCapacity: number;
+      positionX: number;
+      positionY: number;
+      widthPx: number;
+      heightPx: number;
+      rotation: number;
+      status: string;
+      isActive: boolean;
+      notes?: string;
+    }[];
+  }[];
+}
+
+const RESTAURANT_DATA: Record<number, RestaurantCard & { locations: LocationCard[]; fullDescription: string }> = {
   1: {
     id: 1,
-    name: 'Sushi Master',
-    cuisine: 'Japoneză',
-    cuisineKey: 'japoneza',
-    description: 'Cel mai fresh sushi din Chișinău.',
-    fullDescription:
-      'Sushi Master este destinația perfectă pentru iubitorii de bucătărie japoneză autentică. Bucătarii noștri cu experiență internațională pregătesc zilnic ingrediente proaspete importate direct din Japonia. Atmosfera modernă și serviciul impecabil fac fiecare vizită memorabilă.',
-    imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=1200&q=80',
-    rating: 4.9,
-    address: 'Str. Columna 45',
-    city: 'Chișinău',
-    isOpen: true,
-    locationsCount: 1,
-    locations: [
-      {
-        id: 1,
-        name: 'Sushi Master — Centru',
-        address: 'Str. Columna 45',
-        city: 'Chișinău',
-        phone: '+373 22 123 456',
-        hours: '12:00 – 22:00',
-        isOpen: true,
-        latitude: 47.0245,
-        longitude: 28.8324,
-      },
-    ],
-  },
-  2: {
-    id: 2,
     name: 'La Plăcinte',
     cuisine: 'Moldovenească',
     cuisineKey: 'moldoveneasca',
-    description: 'Bucătărie tradițională moldovenească.',
+    description: 'Lanț de restaurante tradiționale moldovenești.',
     fullDescription:
-      'La Plăcinte este un lanț de restaurante moldovenești autentic, cu o tradiție de peste 20 de ani. Rețetele transmise din generație în generație, ingredientele locale și ospitalitatea caldă îți garantează o experiență culinară de neuitat.',
+      'La Plăcinte este un lanț de restaurante moldovenești autentic, cu o tradiție de peste 20 de ani. Rețetele transmise din generație în generație, ingredientele locale și ospitalitatea caldă îți garantează o experiență culinară de neuitat. Vino să savurezi cele mai bune plăcinte, zeamă de pui și mâncăruri tradiționale moldovenești.',
     imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&q=80',
     rating: 4.8,
-    address: 'Str. București 67',
+    address: 'Bd. Ștefan cel Mare 6',
     city: 'Chișinău',
     isOpen: true,
     locationsCount: 2,
     locations: [
       {
-        id: 2,
-        name: 'La Plăcinte — București',
-        address: 'Str. București 67',
+        id: 1,
+        name: 'La Plăcinte — Centru',
+        address: 'Bd. Ștefan cel Mare 6',
         city: 'Chișinău',
-        phone: '+373 22 234 567',
-        hours: '08:00 – 23:00',
+        phone: '+373 22 001 001',
+        hours: '10:00 – 23:00',
         isOpen: true,
       },
       {
-        id: 3,
+        id: 2,
         name: 'La Plăcinte — Botanica',
-        address: 'Str. Sarmizegetusa 12',
+        address: 'Str. Titulescu 1/1',
         city: 'Chișinău',
-        phone: '+373 22 345 678',
-        hours: '08:00 – 23:00',
+        phone: '+373 22 001 002',
+        hours: '10:00 – 23:00',
+        isOpen: true,
+      },
+    ],
+  },
+  2: {
+    id: 2,
+    name: "Andy's Pizza",
+    cuisine: 'Italiană',
+    cuisineKey: 'italiana',
+    description: 'Cel mai popular lanț de pizzerii din Moldova.',
+    fullDescription:
+      "Andy's Pizza este destinația nr. 1 pentru iubitorii de pizza în Moldova. Cu rețete italiene adaptate gustului local, ingrediente proaspete și un serviciu rapid, fiecare vizită este o plăcere. Încercați pizza Andy Special sau clasica Margherita — ambele sunt spectaculoase!",
+    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',
+    rating: 4.7,
+    address: 'Str. Ismail 90',
+    city: 'Chișinău',
+    isOpen: true,
+    locationsCount: 2,
+    locations: [
+      {
+        id: 3,
+        name: "Andy's Pizza — Centru",
+        address: 'Str. Ismail 90',
+        city: 'Chișinău',
+        phone: '+373 22 002 001',
+        hours: '10:00 – 23:00',
+        isOpen: true,
+      },
+      {
+        id: 4,
+        name: "Andy's Pizza — Rîșcani",
+        address: 'Bd. Moscova 14',
+        city: 'Chișinău',
+        phone: '+373 22 002 002',
+        hours: '10:00 – 23:00',
         isOpen: true,
       },
     ],
   },
   3: {
     id: 3,
-    name: 'Steakhouse Premium',
-    cuisine: 'Americană',
-    cuisineKey: 'americana',
-    description: 'Specialități din carne de vită maturată.',
+    name: 'Sushi House',
+    cuisine: 'Japoneză',
+    cuisineKey: 'japoneza',
+    description: 'Restaurant japonez premium cu sushi proaspăt.',
     fullDescription:
-      'Steakhouse Premium oferă cea mai bună carne de vită maturată din Moldova. Cu un interior elegant și un serviciu de top, restaurantul nostru este locul ideal pentru ocazii speciale și business dinners.',
-    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=1200&q=80',
-    rating: 4.7,
-    address: 'Bd. Dacia 12',
-    city: 'Chișinău',
-    isOpen: false,
-    locationsCount: 1,
-    locations: [
-      {
-        id: 4,
-        name: 'Steakhouse Premium — Centru',
-        address: 'Bd. Dacia 12',
-        city: 'Chișinău',
-        phone: '+373 22 456 789',
-        hours: '13:00 – 24:00',
-        isOpen: false,
-      },
-    ],
-  },
-  4: {
-    id: 4,
-    name: 'Ristorante Bella Italia',
-    cuisine: 'Italiană',
-    cuisineKey: 'italiana',
-    description: 'Autentica bucătărie italiană.',
-    fullDescription:
-      'Ristorante Bella Italia aduce un strop de Italia în Chișinău. Paste proaspete, pizza pe vatră de lemn și un vin selectat cu grijă din cele mai renumite podgorii italiene. Chef-ul nostru, cu 15 ani de experiență în Italia, garantează autenticitatea fiecărui fel.',
-    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',
-    rating: 4.6,
-    address: 'Bd. Ștefan cel Mare 123',
+      'Sushi House este destinația perfectă pentru iubitorii de bucătărie japoneză autentică. Bucătarii noștri cu experiență internațională pregătesc zilnic ingrediente proaspete. Rolls-urile noastre sunt preparate la comandă, cu pește importat direct de la furnizori certificați. Atmosfera modernă și serviciul impecabil fac fiecare vizită memorabilă.',
+    imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=1200&q=80',
+    rating: 4.9,
+    address: 'Str. Columna 170',
     city: 'Chișinău',
     isOpen: true,
     locationsCount: 1,
     locations: [
       {
         id: 5,
-        name: 'Ristorante Bella Italia — Centru',
-        address: 'Bd. Ștefan cel Mare 123',
+        name: 'Sushi House — Centru',
+        address: 'Str. Columna 170',
         city: 'Chișinău',
-        phone: '+373 22 567 890',
-        hours: '11:00 – 23:00',
+        phone: '+373 22 003 001',
+        hours: '12:00 – 23:00',
         isOpen: true,
       },
     ],
   },
-  5: {
-    id: 5,
-    name: 'Garden Bistro',
-    cuisine: 'Vegetariană',
-    cuisineKey: 'vegetariana',
-    description: 'Meniu vegetarian și vegan cu ingrediente bio.',
+  4: {
+    id: 4,
+    name: 'Vatra Neamului',
+    cuisine: 'Moldovenească',
+    cuisineKey: 'moldoveneasca',
+    description: 'Restaurant tradițional moldovenesc cu specific național.',
     fullDescription:
-      'Garden Bistro este paradisul iubitorilor de mâncare sănătoasă. Ingrediente bio locale, rețete creative și o terasă verde în inima orașului. Alegem sustenabilitatea în fiecare detaliu — de la ambalaje la aprovizionare.',
-    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&q=80',
-    rating: 4.5,
-    address: 'Str. Puskin 24',
+      'Vatra Neamului este restaurantul care celebrează tradițiile și bucătăria autentică moldovenească. Cu muzică live în fiecare vineri și sâmbătă, sarmale tradiționale, mici la grătar și vinuri moldovenești selecte, restaurantul nostru este locul ideal pentru ocazii speciale și evenimente de familie.',
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=1200&q=80',
+    rating: 4.8,
+    address: 'Str. Vasile Alecsandri 108',
     city: 'Chișinău',
     isOpen: true,
     locationsCount: 1,
     locations: [
       {
         id: 6,
-        name: 'Garden Bistro — Centru',
-        address: 'Str. Puskin 24',
+        name: 'Vatra Neamului — Centru',
+        address: 'Str. Vasile Alecsandri 108',
         city: 'Chișinău',
-        phone: '+373 22 678 901',
-        hours: '09:00 – 21:00',
+        phone: '+373 22 004 001',
+        hours: '11:00 – 24:00',
+        isOpen: true,
+      },
+    ],
+  },
+  5: {
+    id: 5,
+    name: 'Green Hills',
+    cuisine: 'Vegetariană',
+    cuisineKey: 'vegetariana',
+    description: 'Café și restaurant sănătos cu mâncare bio.',
+    fullDescription:
+      'Green Hills este paradisul iubitorilor de mâncare sănătoasă din Chișinău. Ingrediente bio locale, rețete creative și sucuri naturale presate la rece fac din Green Hills alegerea perfectă pentru un stil de viață echilibrat. Buddha bowls, smoothie-uri energizante și mic dejun delicios vă așteaptă în fiecare zi.',
+    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&q=80',
+    rating: 4.6,
+    address: 'Str. București 67',
+    city: 'Chișinău',
+    isOpen: true,
+    locationsCount: 2,
+    locations: [
+      {
+        id: 7,
+        name: 'Green Hills — Centru',
+        address: 'Str. București 67',
+        city: 'Chișinău',
+        phone: '+373 22 005 001',
+        hours: '08:00 – 22:00',
+        isOpen: true,
+      },
+      {
+        id: 8,
+        name: 'Green Hills — Telecentru',
+        address: 'Bd. Dacia 23',
+        city: 'Chișinău',
+        phone: '+373 22 005 002',
+        hours: '08:00 – 22:00',
         isOpen: true,
       },
     ],
@@ -168,7 +237,7 @@ type DetailTab = 'mese' | 'meniu' | 'recenzii';
   selector: 'app-restaurant-detail',
   templateUrl: './restaurant-detail.component.html',
   styleUrl: './restaurant-detail.component.scss',
-  imports: [RouterModule, CommonModule, FormsModule, FloorMapComponent],
+  imports: [RouterModule, CommonModule, FormsModule, FloorMapComponent, BookingWizardComponent],
 })
 export default class RestaurantDetailComponent implements OnInit {
   restaurant = signal<(RestaurantCard & { locations: LocationCard[]; fullDescription: string }) | null>(null);
@@ -176,43 +245,175 @@ export default class RestaurantDetailComponent implements OnInit {
   activeTab = signal<DetailTab>('mese');
   selectedTable = signal<FloorTable | null>(null);
 
-  reservationDate = '';
-  partySize = 2;
-  orderType: 'masa' | 'livrare' | 'pachet' = 'masa';
+  isLoadingFloorPlan = signal(false);
+  floorPlan = signal<FloorPlan | null>(null);
+  rawFloorPlan = signal<FloorPlanResponse | null>(null);
 
-  floorPlan = DEMO_FLOOR_PLAN;
+  menuCategories = signal<MenuCategory[]>([]);
+  menuItems = signal<MenuItem[]>([]);
+  isLoadingMenu = signal(false);
+  menuLoaded = signal(false);
+  expandedCategoryId = signal<number | null>(null);
+  menuSearch = '';
+  menuSort: 'name' | 'price_asc' | 'price_desc' = 'name';
+
+  showWizard = signal(false);
+
+  today = new Date().toISOString().substring(0, 10);
+  reservationDate = new Date().toISOString().substring(0, 10);
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly http = inject(HttpClient);
+  private readonly configService = inject(ApplicationConfigService);
+  private readonly accountService = inject(AccountService);
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    const data = MOCK_DETAILS[id] ?? MOCK_DETAILS[1];
+    const data = RESTAURANT_DATA[id] ?? RESTAURANT_DATA[1];
     this.restaurant.set(data);
     if (data.locations.length > 0) {
       this.selectedLocationId.set(data.locations[0].id);
+      this.loadFloorPlan(data.locations[0].id);
     }
+  }
+
+  openBookingWizard(): void {
+    if (!this.accountService.isAuthenticated()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+    this.showWizard.set(true);
   }
 
   selectLocation(id: number): void {
     this.selectedLocationId.set(id);
     this.selectedTable.set(null);
+    this.loadFloorPlan(id);
+  }
+
+  loadFloorPlan(locationId: number): void {
+    this.isLoadingFloorPlan.set(true);
+    this.floorPlan.set(null);
+    const url = this.configService.getEndpointFor(`api/public/floor-plan/${locationId}?date=${this.reservationDate}`);
+    this.http.get<FloorPlanResponse>(url).subscribe({
+      next: res => {
+        this.rawFloorPlan.set(res);
+        const mapped = this.mapToFloorPlan(res);
+        this.floorPlan.set(mapped.rooms.length > 0 ? mapped : DEMO_FLOOR_PLAN);
+        this.isLoadingFloorPlan.set(false);
+      },
+      error: () => {
+        this.floorPlan.set(DEMO_FLOOR_PLAN);
+        this.isLoadingFloorPlan.set(false);
+      },
+    });
+  }
+
+  onDateChange(): void {
+    const locId = this.selectedLocationId();
+    if (locId) this.loadFloorPlan(locId);
   }
 
   setTab(tab: DetailTab): void {
     this.activeTab.set(tab);
+    if (tab === 'meniu' && !this.menuLoaded()) {
+      const brandId = this.restaurant()?.id;
+      if (brandId) this.loadMenu(brandId);
+    }
+  }
+
+  loadMenu(brandId: number): void {
+    this.isLoadingMenu.set(true);
+    const catUrl = this.configService.getEndpointFor('api/menu-categories?size=200');
+    const itemUrl = this.configService.getEndpointFor('api/menu-items?size=500');
+    this.http.get<MenuCategory[]>(catUrl).subscribe({
+      next: cats => {
+        const filtered = cats.filter(c => c.brand?.id === brandId && c.isActive !== false);
+        filtered.sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+        this.menuCategories.set(filtered);
+        if (filtered.length > 0) this.expandedCategoryId.set(filtered[0].id);
+
+        this.http.get<MenuItem[]>(itemUrl).subscribe({
+          next: items => {
+            const catIds = new Set(filtered.map(c => c.id));
+            this.menuItems.set(items.filter(i => i.category?.id !== undefined && catIds.has(i.category.id) && i.isAvailable !== false));
+            this.isLoadingMenu.set(false);
+            this.menuLoaded.set(true);
+          },
+          error: () => {
+            this.isLoadingMenu.set(false);
+            this.menuLoaded.set(true);
+          },
+        });
+      },
+      error: () => {
+        this.isLoadingMenu.set(false);
+        this.menuLoaded.set(true);
+      },
+    });
+  }
+
+  itemsForCategory(categoryId: number): MenuItem[] {
+    const q = this.menuSearch.toLowerCase().trim();
+    let items = this.menuItems().filter(i => i.category?.id === categoryId);
+    if (q) items = items.filter(i => i.name.toLowerCase().includes(q) || (i.description ?? '').toLowerCase().includes(q));
+    if (this.menuSort === 'price_asc') items = [...items].sort((a, b) => a.price - b.price);
+    else if (this.menuSort === 'price_desc') items = [...items].sort((a, b) => b.price - a.price);
+    else items = [...items].sort((a, b) => a.name.localeCompare(b.name));
+    return items;
+  }
+
+  visibleCategories(): MenuCategory[] {
+    const q = this.menuSearch.toLowerCase().trim();
+    if (!q) return this.menuCategories();
+    return this.menuCategories().filter(c => this.itemsForCategory(c.id).length > 0 || c.name.toLowerCase().includes(q));
+  }
+
+  getCategoryImage(categoryName: string): string {
+    const name = categoryName.toLowerCase();
+    const MAP: [string, string][] = [
+      ['plăcinte', 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=600&q=80'],
+      ['supe', 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80'],
+      ['pizza', 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80'],
+      ['paste', 'https://images.unsplash.com/photo-1598866594240-2d2b7a40db02?w=600&q=80'],
+      ['sushi', 'https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=600&q=80'],
+      ['ramen', 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&q=80'],
+      ['salat', 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80'],
+      ['desert', 'https://images.unsplash.com/photo-1559181567-c3190438e2f8?w=600&q=80'],
+      ['smoothie', 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=600&q=80'],
+      ['cafea', 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=80'],
+      ['grătar', 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80'],
+      ['carne', 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80'],
+      ['asiatic', 'https://images.unsplash.com/photo-1555993539-1732b0258235?w=600&q=80'],
+      ['băuturi', 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=600&q=80'],
+    ];
+    for (const [key, url] of MAP) {
+      if (name.includes(key)) return url;
+    }
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80';
+  }
+
+  formatPrice(price: number): string {
+    return `${price.toFixed(0)} MDL`;
+  }
+
+  toggleCategory(id: number): void {
+    this.expandedCategoryId.set(this.expandedCategoryId() === id ? null : id);
   }
 
   onTableSelected(table: FloorTable): void {
+    if (table.status === 'RESERVED' || table.status === 'OCCUPIED') return;
     this.selectedTable.set(table);
   }
 
-  confirmReservation(): void {
-    const r = this.restaurant();
-    if (!r || !this.selectedTable()) return;
-    alert(
-      `Rezervare confirmată!\nRestaurant: ${r.name}\nMasa: ${this.selectedTable()!.tableNumber}\nData: ${this.reservationDate}\nPersoane: ${this.partySize}`,
-    );
+  onWizardClosed(): void {
+    this.showWizard.set(false);
+  }
+
+  onWizardDone(): void {
+    const locId = this.selectedLocationId();
+    if (locId) this.loadFloorPlan(locId);
   }
 
   goBack(): void {
@@ -230,5 +431,46 @@ export default class RestaurantDetailComponent implements OnInit {
   openGoogleMaps(loc: LocationCard): void {
     const query = encodeURIComponent(`${loc.address}, ${loc.city}`);
     window.open(`https://www.google.com/maps/search/${query}`, '_blank');
+  }
+
+  private mapToFloorPlan(res: FloorPlanResponse): FloorPlan {
+    let canvasWidth = 800;
+    let currentY = 20;
+    const GAP = 24;
+
+    const rooms = res.rooms.map(room => {
+      const w = room.widthPx ?? 700;
+      const h = room.heightPx ?? 400;
+      const posX = 20;
+      const posY = currentY;
+      currentY += h + GAP;
+      canvasWidth = Math.max(canvasWidth, posX + w + 20);
+      return {
+        id: room.id,
+        name: room.name,
+        posX,
+        posY,
+        width: w,
+        height: h,
+        tables: room.tables.map(t => ({
+          id: t.id,
+          tableNumber: t.tableNumber,
+          shape: (t.shape as 'ROUND' | 'SQUARE' | 'RECTANGLE') ?? 'RECTANGLE',
+          minCapacity: t.minCapacity ?? 1,
+          maxCapacity: t.maxCapacity ?? 4,
+          positionX: t.positionX ?? 30,
+          positionY: t.positionY ?? 30,
+          widthPx: t.widthPx ?? 80,
+          heightPx: t.heightPx ?? 80,
+          rotation: t.rotation ?? 0,
+          status: (t.status as 'AVAILABLE' | 'RESERVED' | 'OCCUPIED' | 'OUT_OF_SERVICE') ?? 'AVAILABLE',
+          isActive: t.isActive ?? true,
+          notes: t.notes,
+        })),
+      };
+    });
+
+    const canvasHeight = Math.max(600, currentY + 20);
+    return { canvasWidth, canvasHeight, rooms };
   }
 }

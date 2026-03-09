@@ -3,7 +3,9 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
+
+import { BrandService } from 'app/entities/brand/service/brand.service';
 
 export interface RestaurantCard {
   id: number;
@@ -19,81 +21,62 @@ export interface RestaurantCard {
   locationsCount: number;
 }
 
-const MOCK_RESTAURANTS: RestaurantCard[] = [
-  {
-    id: 1,
-    name: 'Sushi Master',
-    cuisine: 'Japoneză',
-    cuisineKey: 'japoneza',
-    description: 'Cel mai fresh sushi din Chișinău. Bucătari japonezi, ingrediente premium și o experiență culinară de neuitat.',
-    imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=700&q=80',
-    rating: 4.9,
-    address: 'Str. Columna 45',
-    city: 'Chișinău',
-    isOpen: true,
-    locationsCount: 1,
-  },
-  {
-    id: 2,
-    name: 'La Plăcinte',
+const BRAND_META: Record<
+  string,
+  { cuisine: string; cuisineKey: string; description: string; imageUrl: string; rating: number; address: string; locationsCount: number }
+> = {
+  'La Plăcinte': {
     cuisine: 'Moldovenească',
     cuisineKey: 'moldoveneasca',
-    description:
-      'Bucătărie tradițională moldovenească cu rețete autentice transmise din generație în generație. Savurați cele mai bune plăcinte.',
+    description: 'Lanț de restaurante tradiționale moldovenești, renumit pentru plăcinte, mâncăruri de casă și atmosferă caldă, autentică.',
     imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=80',
     rating: 4.8,
-    address: 'Str. București 67',
-    city: 'Chișinău',
-    isOpen: true,
+    address: 'Bd. Ștefan cel Mare 6',
     locationsCount: 2,
   },
-  {
-    id: 3,
-    name: 'Steakhouse Premium',
-    cuisine: 'Americană',
-    cuisineKey: 'americana',
-    description: 'Specialități din carne de vită maturată, preparată la grătar. Atmosferă elegantă și servicii impecabile.',
-    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=700&q=80',
-    rating: 4.7,
-    address: 'Bd. Dacia 12',
-    city: 'Chișinău',
-    isOpen: false,
-    locationsCount: 1,
-  },
-  {
-    id: 4,
-    name: 'Ristorante Bella Italia',
+  "Andy's Pizza": {
     cuisine: 'Italiană',
     cuisineKey: 'italiana',
-    description: 'Autentica bucătărie italiană preparată de bucătari experimentați. Paste proaspete, pizza pe vatră și vinuri selecte.',
+    description: 'Cel mai popular lanț de pizzerii din Moldova, cu rețete italiene adaptate gustului local și ingrediente proaspete.',
     imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=80',
-    rating: 4.6,
-    address: 'Bd. Ștefan cel Mare 123',
-    city: 'Chișinău',
-    isOpen: true,
+    rating: 4.7,
+    address: 'Str. Ismail 90',
+    locationsCount: 2,
+  },
+  'Sushi House': {
+    cuisine: 'Japoneză',
+    cuisineKey: 'japoneza',
+    description: 'Restaurant japonez premium cu sushi proaspăt, ramen autentic și specialități asiatice în inima Chișinăului.',
+    imageUrl: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=700&q=80',
+    rating: 4.9,
+    address: 'Str. Columna 170',
     locationsCount: 1,
   },
-  {
-    id: 5,
-    name: 'Garden Bistro',
+  'Vatra Neamului': {
+    cuisine: 'Moldovenească',
+    cuisineKey: 'moldoveneasca',
+    description: 'Restaurant tradițional moldovenesc cu specific național, muzică live în weekend și bucătărie autentică.',
+    imageUrl: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=700&q=80',
+    rating: 4.8,
+    address: 'Str. Vasile Alecsandri 108',
+    locationsCount: 1,
+  },
+  'Green Hills': {
     cuisine: 'Vegetariană',
     cuisineKey: 'vegetariana',
-    description: 'Meniu vegetarian și vegan cu ingrediente bio locale. Terasă verde în centrul orașului.',
+    description: 'Café și restaurant sănătos cu mâncare bio, sucuri naturale presate la rece și o atmosferă relaxantă.',
     imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=700&q=80',
-    rating: 4.5,
-    address: 'Str. Puskin 24',
-    city: 'Chișinău',
-    isOpen: true,
-    locationsCount: 1,
+    rating: 4.6,
+    address: 'Str. București 67',
+    locationsCount: 2,
   },
-];
+};
 
 const CUISINES = [
   { key: 'toate', label: 'Toate' },
-  { key: 'japoneza', label: 'Japoneză' },
   { key: 'moldoveneasca', label: 'Moldovenească' },
-  { key: 'americana', label: 'Americană' },
   { key: 'italiana', label: 'Italiană' },
+  { key: 'japoneza', label: 'Japoneză' },
   { key: 'vegetariana', label: 'Vegetariană' },
 ];
 
@@ -119,8 +102,8 @@ export default class RestaurantsComponent implements OnInit, OnDestroy {
   selectedRating = signal(0);
   searchQuery = signal('');
 
-  allRestaurants = signal<RestaurantCard[]>(MOCK_RESTAURANTS);
-  isLoading = signal(false);
+  allRestaurants = signal<RestaurantCard[]>([]);
+  isLoading = signal(true);
 
   filtered = computed(() => {
     const q = this.searchQuery().toLowerCase();
@@ -136,8 +119,43 @@ export default class RestaurantsComponent implements OnInit, OnDestroy {
   });
 
   private readonly destroy$ = new Subject<void>();
+  private readonly brandService = inject(BrandService);
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.brandService
+      .query({ size: 20, sort: ['id,asc'] })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: res => {
+          if (res.body && res.body.length > 0) {
+            const cards: RestaurantCard[] = res.body.map(b => {
+              const meta = BRAND_META[b.name ?? ''];
+              return {
+                id: b.id ?? 0,
+                name: b.name ?? 'Restaurant',
+                cuisine: meta?.cuisine ?? 'Locală',
+                cuisineKey: meta?.cuisineKey ?? 'locale',
+                description: b.description ?? meta?.description ?? '',
+                imageUrl:
+                  (b.coverImageUrl?.startsWith('http') ? b.coverImageUrl : null) ??
+                  meta?.imageUrl ??
+                  'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=80',
+                rating: meta?.rating ?? 4.5,
+                address: meta?.address ?? 'Chișinău',
+                city: 'Chișinău',
+                isOpen: true,
+                locationsCount: meta?.locationsCount ?? 1,
+              };
+            });
+            this.allRestaurants.set(cards);
+          }
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        },
+      });
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

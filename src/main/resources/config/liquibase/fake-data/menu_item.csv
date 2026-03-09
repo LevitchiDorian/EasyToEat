@@ -1,11 +1,75 @@
 id;name;description;price;discounted_price;preparation_time_minutes;calories;image_url;is_available;is_featured;is_vegetarian;is_vegan;is_gluten_free;spicy_level;display_order;category_id
-1;quizzically considering unruly;../fake-data/blob/hipster.txt;3633.1;4385.06;0;9541;ick ugh under;false;false;false;true;true;1;1343;1
-2;than versus reproachfully;../fake-data/blob/hipster.txt;2787.77;32589.32;85;18120;tune-up and gah;true;false;true;true;false;3;2639;2
-3;unlike;../fake-data/blob/hipster.txt;28102.97;1020.3;175;17922;oof less if;false;true;false;false;true;1;13527;3
-4;haversack;../fake-data/blob/hipster.txt;16549.42;13458.44;47;18922;before madly;true;false;true;false;true;2;13571;4
-5;when outside abaft;../fake-data/blob/hipster.txt;7555.7;5854.3;170;13230;yawn who;false;true;true;false;true;0;5826;5
-6;enthusiastically;../fake-data/blob/hipster.txt;16005.78;2340.86;134;9939;showboat keenly doorpost;false;true;true;false;false;0;14032;6
-7;remark;../fake-data/blob/hipster.txt;26293.77;7215.8;26;11673;since finally;false;false;true;true;true;3;5733;7
-8;wombat fort;../fake-data/blob/hipster.txt;19944.89;19762.96;5;9547;creative;false;true;true;true;true;2;25265;8
-9;solicit unless;../fake-data/blob/hipster.txt;21668.41;24384.53;172;2012;justly;false;true;false;true;false;3;12945;9
-10;goat safely;../fake-data/blob/hipster.txt;17963.39;15387.89;113;10373;hm;false;true;false;false;true;1;3334;10
+1;Plăcintă cu brânză;Plăcintă tradițională cu brânză de vaci și mentă, coaptă în cuptor;35.00;;15;320;;true;true;true;false;false;0;1;1
+2;Plăcintă cu cartofi;Plăcintă caldă cu cartofi piure și ceapă prăjită;30.00;;15;290;;true;false;true;true;false;0;2;1
+3;Plăcintă cu carne;Plăcintă suculentă cu carne tocată de porc și vită;45.00;;20;420;;true;true;false;false;false;0;3;1
+4;Plăcintă cu mere;Plăcintă dulce cu mere și scorțișoară;32.00;;15;310;;true;false;true;false;false;0;4;1
+5;Platou aperitiv;Brânzeturi locale, murături, slănină și pâine de casă;89.00;;10;650;;true;false;false;false;false;0;5;1
+6;Zeamă de pui;Supă tradițională moldovenească de pui cu tăiței de casă;42.00;;30;280;;true;true;false;false;false;0;1;2
+7;Borș de vită;Borș acru tradițional cu carne de vită și sfeclă;48.00;;35;320;;true;false;false;false;false;0;2;2
+8;Ciorbă de fasole;Ciorbă de fasole cu afumătură și smântână;38.00;;30;350;;true;false;false;false;false;0;3;2
+9;Mămăligă cu brânză și smântână;Mămăligă aurie cu brânză de oi și smântână proaspătă;55.00;;20;480;;true;true;true;false;true;0;1;3
+10;Tocăniță de porc;Tocăniță tradițională de porc cu ciuperci și mămăligă;75.00;;35;620;;true;true;false;false;false;0;2;3
+11;Drob de miel;Drob tradițional de miel cu ierburi aromate (sezonier);85.00;;40;520;;false;false;false;false;false;0;3;3
+12;Rasol de vită;Rasol fiert cu legume și hrean;78.00;;50;480;;true;false;false;false;true;0;4;3
+13;Salată de vinete;Salată de vinete coapte cu ardei și roșii;32.00;;10;180;;true;false;true;true;false;0;1;4
+14;Salată Olivier;Salată Olivier tradițională moldovenească;38.00;;10;380;;true;true;false;false;false;0;2;4
+15;Salată de sezon;Legume proaspete cu dressing de miere și muștar;28.00;;5;120;;true;false;true;true;true;0;3;4
+16;Papanași;Gogoși de brânză prăjite cu dulceață de vișine și smântână;42.00;;15;480;;true;true;true;false;false;0;1;5
+17;Plăcintă dulce cu vișine;Plăcintă caldă cu vișine și zahăr pudră;35.00;;15;350;;true;false;true;false;false;0;2;5
+18;Compot de fructe;Compot rece de cireșe sau vișine;18.00;;5;120;;true;false;true;true;false;0;1;6
+19;Limonadă de casă;Limonadă proaspătă cu lămâie și mentă;22.00;;5;80;;true;false;true;true;true;0;2;6
+20;Suc natural de mere;Suc proaspăt stors din mere moldovenești;25.00;;5;110;;true;false;true;true;true;0;3;6
+21;Pizza Margherita;Pizza clasică cu sos de roșii, mozzarella și busuioc;79.00;;20;680;;true;true;true;false;false;0;1;7
+22;Pizza Pepperoni;Pizza cu salam picant pepperoni și mozzarella;95.00;;20;780;;true;true;false;false;false;1;2;7
+23;Pizza Quattro Formaggi;Pizza cu patru sortimente de brânzeturi selectate;99.00;;20;820;;true;false;true;false;false;0;3;7
+24;Pizza Vegetariană;Pizza cu legume de sezon și sos pesto;89.00;;20;620;;true;false;true;true;false;0;4;7
+25;Pizza Andy Special;Pizza cu pui, ciuperci, ardei și sos BBQ;105.00;;25;880;;true;true;false;false;false;0;1;8
+26;Pizza Capricciosa;Pizza cu șuncă, ciuperci, anghinare și măsline;99.00;;25;820;;true;false;false;false;false;0;2;8
+27;Spaghetti Carbonara;Spaghetti cu pancetta, ou, parmezan și piper negru;88.00;;20;750;;true;true;false;false;false;0;1;9
+28;Penne Arrabiata;Penne cu sos picant de roșii și usturoi;78.00;;15;620;;true;false;true;true;false;2;2;9
+29;Risotto cu ciuperci;Risotto cremos cu ciuperci porcini și parmezan;95.00;;30;680;;true;false;true;false;true;0;3;9
+30;Salată Caesar;Salată Caesar cu pui la grătar, crutoane și sos Caesar;72.00;;10;480;;true;true;false;false;false;0;1;10
+31;Salată Caprese;Mozzarella cu roșii cherry și busuioc proaspăt;65.00;;5;320;;true;false;true;false;true;0;2;10
+32;Tiramisu;Tiramisu clasic italian cu mascarpone și cafea;52.00;;10;480;;true;true;true;false;false;0;1;11
+33;Panna Cotta;Panna cotta cu coulis de fructe de pădure;48.00;;10;380;;true;false;true;false;true;0;2;11
+34;Cola/Fanta/Sprite;Băuturi răcoritoare la doze (330ml);22.00;;2;140;;true;false;true;true;true;0;1;12
+35;Suc natural de portocale;Suc proaspăt stors din portocale;28.00;;5;110;;true;false;true;true;true;0;2;12
+36;Bere Efes 0.5L;Bere blondă Efes la doze;35.00;;2;180;;true;false;true;true;true;0;3;12
+37;California Roll (8 buc);Roll cu crab, avocado și castraveți;85.00;;20;380;;true;true;false;false;true;0;1;13
+38;Spicy Tuna Roll (8 buc);Roll cu ton picant și castraveți;95.00;;20;420;;true;true;false;false;true;1;2;13
+39;Dragon Roll (8 buc);Roll cu eel, avocado și sos teriyaki;110.00;;25;480;;true;true;false;false;false;0;3;13
+40;Rainbow Roll (8 buc);Roll cu diferite sortimente de pește;125.00;;25;520;;true;false;false;false;false;0;4;13
+41;Sashimi Somon (5 buc);Sashimi din somon atlantic proaspăt;95.00;;10;280;;true;true;false;false;true;0;1;14
+42;Sashimi Ton (5 buc);Sashimi din ton bluefin;110.00;;10;260;;true;false;false;false;true;0;2;14
+43;Ramen de Pui;Ramen cu bulion de pui, tăiței, ou și legume;89.00;;25;520;;true;true;false;false;false;0;1;15
+44;Ramen Miso;Ramen cu bulion miso, tofu și ciuperci shiitake;85.00;;25;480;;true;false;true;false;false;0;2;15
+45;Gyoza (6 buc);Gyoza prăjite cu porc și varză;65.00;;15;380;;true;true;false;false;false;0;1;16
+46;Edamame;Boabe de soia fierte cu sare de mare;35.00;;10;180;;true;false;true;true;true;0;2;16
+47;Ceai Verde Matcha;Ceai matcha japonez premium;32.00;;5;20;;true;false;true;true;true;0;1;17
+48;Sake Cald;Sake tradițional japonez (100ml);45.00;;5;120;;true;false;true;true;true;0;2;17
+49;Sarmale în foi de viță;Sarmale tradiționale în foi de viță cu mujdei;68.00;;45;580;;true;true;false;false;true;0;1;18
+50;Plăcintă vârtej;Plăcintă răsucită cu brânză de vaci, tradițională;38.00;;20;380;;true;true;true;false;false;0;2;18
+51;Mici moldovenești (6 buc);Mici tradiționali din carne tocată cu condimente;72.00;;25;620;;true;true;false;false;false;0;1;19
+52;Frigărui de pui;Frigărui de pui marinat cu legume la grătar;78.00;;30;480;;true;false;false;false;true;0;2;19
+53;Coastă de porc la grătar;Coastă de porc marinată la grătar cu mujdei;105.00;;40;780;;true;true;false;false;true;0;3;19
+54;Sarmale cu mămăligă;Sarmale de vită și porc cu mămăligă și smântână;75.00;;35;680;;true;true;false;false;false;0;1;20
+55;Mămăligă cu brânză;Mămăligă cu brânză de oi și smântână de vaci;48.00;;20;480;;true;false;true;false;true;0;2;20
+56;Salată de rădăcinoase;Salată cu morcov, sfeclă și hrean;28.00;;10;150;;true;false;true;true;true;0;1;21
+57;Murături asortate;Murături tradiționale moldovenești (castraveți, gogonele, ardei);32.00;;5;80;;true;false;true;true;true;0;2;21
+58;Vin roșu Fetească Neagră;Fetească Neagră, roșu sec, 150ml;45.00;;2;120;;true;true;true;true;true;0;1;22
+59;Vin alb Fetească Regală;Fetească Regală, alb sec, 150ml;42.00;;2;110;;true;false;true;true;true;0;2;22
+60;Horincă de Vișine;Horincă artizanală de vișine, 50ml;38.00;;2;90;;true;false;true;true;true;0;3;22
+61;Smoothie Bowl;Bol cu smoothie de fructe de pădure, granola și semințe;58.00;;10;380;;true;true;true;true;true;0;1;23
+62;Ouă Benedict;Ouă poșate cu șuncă bio și sos hollandaise;65.00;;15;520;;true;true;false;false;false;0;2;23
+63;Terci de ovăz;Terci cu lapte de migdale, fructe proaspete și miere;45.00;;10;380;;true;false;true;true;true;0;3;23
+64;Buddha Bowl;Bol cu quinoa, legume coapte, avocado și tahini;75.00;;15;480;;true;true;true;true;true;0;1;24
+65;Salată de spanac;Salată de spanac cu căpșune, nuci și dressing de balsamico;58.00;;10;280;;true;false;true;true;true;0;2;24
+66;Salată Niçoise;Salată cu ton, fasole verde, ouă și măsline;68.00;;10;380;;true;false;false;false;true;0;3;24
+67;Sandviș cu avocado;Pâine integrală cu avocado, roșie și rucola;55.00;;10;380;;true;true;true;true;false;0;1;25
+68;Wrap cu pui;Wrap integral cu piept de pui, legume și hummus;65.00;;15;480;;true;false;false;false;false;0;2;25
+69;Smoothie Verde;Spanac, măr, ghimbir și lime;45.00;;5;180;;true;false;true;true;true;0;1;26
+70;Smoothie de Fructe;Căpșune, banană, lapte de cocos și miere;48.00;;5;280;;true;true;true;true;true;0;2;26
+71;Suc de Morcov-Ghimbir;Suc proaspăt de morcov cu ghimbir și lămâie;38.00;;5;120;;true;false;true;true;true;0;3;26
+72;Cappuccino;Cappuccino din cafea specialty single origin;32.00;;5;80;;true;true;true;false;true;0;1;27
+73;Latte de Scorțișoară;Latte cu scorțișoară și lapte de ovăz;35.00;;5;180;;true;false;true;false;true;0;2;27
+74;Ceai de Plante;Infuzie de plante medicinale moldovenești;22.00;;5;15;;true;false;true;true;true;0;3;27

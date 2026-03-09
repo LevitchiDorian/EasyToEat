@@ -6,5 +6,6 @@ package md.utm.restaurant.domain.enumeration;
 public enum UserRole {
     SUPER_ADMIN,
     MANAGER,
+    STAFF,
     CLIENT,
 }

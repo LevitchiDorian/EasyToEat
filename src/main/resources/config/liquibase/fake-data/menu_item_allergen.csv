@@ -1,11 +1,25 @@
 id;allergen;notes;menu_item_id
-1;GLUTEN;once before;1
-2;DAIRY;an alive yowza;2
-3;PEANUTS;convection delightfully farm;3
-4;SESAME;helpfully jumbo scarily;4
-5;SESAME;dull before;5
-6;GLUTEN;bouncy vice;6
-7;GLUTEN;teeming swat;7
-8;EGGS;flash limping colossal;8
-9;PEANUTS;famously;9
-10;GLUTEN;jubilant perfectly;10
+1;GLUTEN;Conține grâu;1
+2;DAIRY;Conține lapte și ouă;1
+3;GLUTEN;Conține gluten din tăiței;6
+4;EGGS;Conține ouă;6
+5;GLUTEN;Blat pizza conține gluten;21
+6;DAIRY;Mozzarella conține lactoză;21
+7;GLUTEN;Blat pizza conține gluten;22
+8;DAIRY;Conține mozzarella;22
+9;GLUTEN;Pasta conține gluten;27
+10;EGGS;Oul este ingredient principal;27
+11;DAIRY;Conține parmezan;27
+12;FISH;Conține pește crud;37
+13;FISH;Conține ton;38
+14;FISH;Conține mai multe tipuri de pește;40
+15;FISH;Conține somon;41
+16;FISH;Conține ton;42
+17;GLUTEN;Tăiței conțin gluten;43
+18;EGGS;Conține ou fiert;43
+19;GLUTEN;Înveliș gyoza conține gluten;45
+20;EGGS;Conține ouă poșate;62
+21;DAIRY;Conține sos hollandaise cu unt;62
+22;GLUTEN;Pâine integrală;67
+23;GLUTEN;Wrap conține gluten;68
+24;DAIRY;Conține lapte de vaci;72

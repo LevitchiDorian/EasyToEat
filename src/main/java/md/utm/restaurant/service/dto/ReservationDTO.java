@@ -33,7 +33,7 @@ public class ReservationDTO implements Serializable {
 
     @NotNull
     @Min(value = 1)
-    @Max(value = 50)
+    @Max(value = 500)
     private Integer partySize;
 
     @NotNull

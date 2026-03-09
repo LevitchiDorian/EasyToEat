@@ -1,5 +1,5 @@
 .rv-detail {
-  padding-top: 64px;
+  padding-top: var(--rv-navbar-height, 64px);
   min-height: 100vh;
   background: hsl(var(--background));
   animation: rv-fadeIn 0.5s ease both;
@@ -265,9 +265,154 @@
   }
 }
 
+.rv-reservation-form__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.rv-reservation-form__capacity {
+  font-weight: 400;
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+  margin-left: 8px;
+}
+
+.rv-reservation-form__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: hsl(var(--muted-foreground));
+  padding: 0 4px;
+  line-height: 1;
+
+  &:hover {
+    color: hsl(var(--foreground));
+  }
+}
+
+.rv-reservation-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.rv-reservation-form__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 0;
+}
+
 .rv-reservation-form__actions {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Floor controls */
+.rv-floor-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.rv-floor-date-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.82rem;
+}
+
+.rv-floor-date-input {
+  width: 160px;
+}
+
+.rv-floor-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rv-floor-legend__item {
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: hsl(var(--muted-foreground));
+
+  &::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  &--available::before {
+    background: var(--rv-green, #22c55e);
+  }
+  &--reserved::before {
+    background: var(--rv-amber, #f59e0b);
+  }
+  &--occupied::before {
+    background: var(--rv-red, #ef4444);
+  }
+}
+
+.rv-floor-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 60px 20px;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+}
+
+/* Booking feedback */
+.rv-booking-success {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: hsl(142 76% 36% / 0.12);
+  border: 1px solid hsl(142 76% 36% / 0.3);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-top: 16px;
+  color: #22c55e;
+  font-size: 0.9rem;
+
+  &__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #22c55e;
+    font-size: 1.2rem;
+    margin-left: auto;
+    padding: 0;
+    line-height: 1;
+  }
+}
+
+.rv-booking-error {
+  background: hsl(0 72% 51% / 0.12);
+  border: 1px solid hsl(0 72% 51% / 0.3);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  color: hsl(0 72% 65%);
+  font-size: 0.85rem;
 }
 
 /* Menu placeholder */
@@ -530,4 +675,316 @@
   .rv-detail__cover {
     height: 280px;
   }
+}
+
+/* ── Menu ── */
+.rv-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rv-menu-category {
+  border: 1px solid var(--rv-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rv-menu-category__header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--rv-bg-card);
+  border: none;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.rv-menu-category__name {
+  font-weight: 600;
+  font-size: 1rem;
+  flex: 1;
+}
+
+.rv-menu-category__count {
+  font-size: 0.78rem;
+  color: hsl(var(--foreground) / 0.5);
+}
+
+.rv-menu-category__chevron {
+  opacity: 0.5;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.rv-menu-category--open .rv-menu-category__chevron {
+  transform: rotate(180deg);
+}
+
+.rv-menu-items {
+  border-top: 1px solid var(--rv-border);
+}
+
+.rv-menu-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--rv-border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+.rv-menu-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.rv-menu-item__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rv-menu-item__name {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.rv-menu-item__badges {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.rv-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 5px;
+  letter-spacing: 0.03em;
+
+  &--veg {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+  &--vegan {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    font-size: 0.75rem;
+  }
+  &--gf {
+    background: rgba(245, 165, 32, 0.15);
+    color: var(--rv-orange);
+    border: 1px solid rgba(245, 165, 32, 0.3);
+  }
+  &--spicy {
+    font-size: 0.75rem;
+  }
+}
+
+.rv-menu-item__desc {
+  font-size: 0.82rem;
+  color: hsl(var(--foreground) / 0.55);
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+
+.rv-menu-item__prep {
+  font-size: 0.75rem;
+  color: hsl(var(--foreground) / 0.4);
+  display: block;
+  margin-top: 4px;
+}
+
+.rv-menu-item__price {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--rv-orange);
+  white-space: nowrap;
+  padding-top: 2px;
+}
+
+/* ── Menu controls ── */
+.rv-menu-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.rv-menu-search {
+  flex: 1;
+  position: relative;
+  svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.rv-menu-search__input {
+  width: 100%;
+  padding-left: 34px !important;
+}
+
+.rv-menu-sort {
+  min-width: 120px;
+  background: var(--rv-bg-card);
+  color: hsl(var(--foreground));
+  option {
+    background: var(--rv-bg-card);
+  }
+}
+
+/* ── Menu category with image ── */
+.rv-menu-category__img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.rv-menu-category__header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ── Menu grid (cards) ── */
+.rv-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  padding: 14px;
+  border-top: 1px solid var(--rv-border);
+}
+
+.rv-menu-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--rv-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+
+  &:hover {
+    border-color: rgba(245, 165, 32, 0.3);
+    background: rgba(245, 165, 32, 0.04);
+  }
+}
+
+.rv-menu-card__body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+}
+
+.rv-menu-card__top {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.rv-menu-card__name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.rv-menu-card__desc {
+  font-size: 0.8rem;
+  color: hsl(var(--foreground) / 0.55);
+  line-height: 1.4;
+  margin: 0;
+  flex: 1;
+}
+
+.rv-menu-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.rv-menu-card__prep {
+  font-size: 0.75rem;
+  color: hsl(var(--foreground) / 0.4);
+}
+
+.rv-menu-card__price {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--rv-orange);
+}
+
+/* ── Hero book button ── */
+.rv-detail__book-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* ── Floor map book CTA ── */
+.rv-floor-book-cta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* ── Sidebar book card ── */
+.rv-sidebar-card--book {
+  background: linear-gradient(135deg, hsl(var(--accent) / 0.1) 0%, hsl(var(--accent) / 0.04) 100%);
+  border-color: hsl(var(--accent) / 0.35);
+  text-align: center;
+}
+
+.rv-sidebar-book-btn {
+  width: 100%;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.rv-sidebar-book-note {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground) / 0.7);
+  margin: 0;
+  line-height: 1.5;
 }

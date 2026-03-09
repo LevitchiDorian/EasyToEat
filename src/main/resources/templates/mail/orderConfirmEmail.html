@@ -1,0 +1,220 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ro">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Confirmare comandă — ReservoAI</title>
+  </head>
+  <body style="margin: 0; padding: 0; background: #0f0f0f; font-family: 'Segoe UI', Arial, sans-serif; color: #f1f1f1">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: #0f0f0f; padding: 32px 0">
+      <tr>
+        <td align="center">
+          <table
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            style="
+              max-width: 600px;
+              width: 100%;
+              background: #1a1a1a;
+              border-radius: 16px;
+              overflow: hidden;
+              border: 1px solid rgba(255, 255, 255, 0.08);
+            "
+          >
+            <!-- Header -->
+            <tr>
+              <td
+                style="
+                  background: linear-gradient(135deg, #1a1a1a 0%, #262626 100%);
+                  padding: 32px 40px;
+                  text-align: center;
+                  border-bottom: 2px solid #f5a520;
+                "
+              >
+                <div style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: #f5a520">ReservoAI</div>
+                <div
+                  style="
+                    font-size: 0.8rem;
+                    color: rgba(255, 255, 255, 0.5);
+                    margin-top: 4px;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                  "
+                >
+                  Platforma de rezervări
+                </div>
+              </td>
+            </tr>
+
+            <!-- Success icon -->
+            <tr>
+              <td style="padding: 32px 40px 0; text-align: center">
+                <div
+                  style="
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 50%;
+                    background: rgba(34, 197, 94, 0.15);
+                    border: 2px solid #22c55e;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2rem;
+                    margin-bottom: 16px;
+                  "
+                >
+                  ✓
+                </div>
+                <h1 style="margin: 0 0 8px; font-size: 1.5rem; font-weight: 700; color: #f1f1f1">Comanda a fost confirmată!</h1>
+                <p style="margin: 0; color: rgba(255, 255, 255, 0.55); font-size: 0.9rem">
+                  Bună ziua, <strong th:text="${clientName}" style="color: #f5a520">Client</strong>!<br />
+                  Comanda ta de la <strong th:text="${restaurantName}">Restaurant</strong> a fost primită cu succes.
+                </p>
+              </td>
+            </tr>
+
+            <!-- Confirmation code -->
+            <tr>
+              <td style="padding: 24px 40px">
+                <div
+                  style="
+                    background: rgba(245, 165, 32, 0.08);
+                    border: 1px solid rgba(245, 165, 32, 0.3);
+                    border-radius: 12px;
+                    padding: 16px 20px;
+                    text-align: center;
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 0.75rem;
+                      color: rgba(255, 255, 255, 0.5);
+                      text-transform: uppercase;
+                      letter-spacing: 0.1em;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    Cod comandă
+                  </div>
+                  <div style="font-size: 1.6rem; font-weight: 800; color: #f5a520; letter-spacing: 0.08em" th:text="${orderCode}">
+                    ORD-XXXXXX
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Details -->
+            <tr>
+              <td style="padding: 0 40px">
+                <div
+                  style="
+                    background: rgba(255, 255, 255, 0.04);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    border-radius: 12px;
+                    padding: 24px;
+                    margin-bottom: 16px;
+                  "
+                >
+                  <h3
+                    style="
+                      margin: 0 0 20px;
+                      font-size: 0.85rem;
+                      font-weight: 600;
+                      color: rgba(255, 255, 255, 0.5);
+                      text-transform: uppercase;
+                      letter-spacing: 0.08em;
+                    "
+                  >
+                    Detalii comandă
+                  </h3>
+                  <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06)">
+                        <span style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem">📍 Locație</span>
+                      </td>
+                      <td style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); text-align: right">
+                        <span style="color: #f1f1f1; font-size: 0.9rem; font-weight: 500" th:text="${locationAddress}">Adresa</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06)">
+                        <span style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem">🚀 Tip comandă</span>
+                      </td>
+                      <td style="padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); text-align: right">
+                        <span style="color: #f1f1f1; font-size: 0.9rem; font-weight: 500" th:text="${orderType}">Livrare</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 8px 0">
+                        <span style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem">⏰ Programat pentru</span>
+                      </td>
+                      <td style="padding: 8px 0; text-align: right">
+                        <span style="color: #f1f1f1; font-size: 0.9rem; font-weight: 500" th:text="${scheduledFor}">Data și ora</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Items -->
+            <tr>
+              <td style="padding: 0 40px 32px">
+                <div
+                  style="
+                    background: rgba(255, 255, 255, 0.04);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    border-radius: 12px;
+                    padding: 24px;
+                  "
+                >
+                  <h3
+                    style="
+                      margin: 0 0 16px;
+                      font-size: 0.85rem;
+                      font-weight: 600;
+                      color: rgba(255, 255, 255, 0.5);
+                      text-transform: uppercase;
+                      letter-spacing: 0.08em;
+                    "
+                  >
+                    Produse comandate
+                  </h3>
+                  <div
+                    style="white-space: pre-line; font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); line-height: 1.7"
+                    th:text="${itemsSummary}"
+                  >
+                    Lista produse
+                  </div>
+                  <div
+                    style="
+                      border-top: 1px solid rgba(255, 255, 255, 0.1);
+                      margin-top: 16px;
+                      padding-top: 16px;
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                    "
+                  >
+                    <span style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem">Total</span>
+                    <span style="color: #f5a520; font-size: 1.2rem; font-weight: 700" th:text="${totalAmount + ' MDL'}">0 MDL</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background: #111111; padding: 24px 40px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.06)">
+                <p style="margin: 0 0 8px; font-size: 0.82rem; color: rgba(255, 255, 255, 0.4)">
+                  Dacă ai întrebări, contactează restaurantul direct.
+                </p>
+                <p style="margin: 0; font-size: 0.78rem; color: rgba(255, 255, 255, 0.25)">© 2026 ReservoAI · Chișinău, Moldova</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -8,6 +8,7 @@ import SharedModule from 'app/shared/shared.module';
 import { LoginService } from 'app/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
 import { RegisterService } from 'app/account/register/register.service';
+import { AccountRoleService } from 'app/core/profile/account-role.service';
 import { EMAIL_ALREADY_USED_TYPE, LOGIN_ALREADY_USED_TYPE } from 'app/config/error.constants';
 
 @Component({
@@ -64,6 +65,7 @@ export default class LoginComponent implements OnInit, AfterViewInit {
   private readonly accountService = inject(AccountService);
   private readonly loginService = inject(LoginService);
   private readonly registerService = inject(RegisterService);
+  private readonly accountRoleService = inject(AccountRoleService);
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -90,6 +92,7 @@ export default class LoginComponent implements OnInit, AfterViewInit {
     this.authenticationError.set(false);
     this.loginService.login(this.loginForm.getRawValue()).subscribe({
       next: () => {
+        this.accountRoleService.load();
         if (!this.router.getCurrentNavigation()) {
           this.router.navigate(['']);
         }

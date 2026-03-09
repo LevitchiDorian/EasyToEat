@@ -109,6 +109,16 @@ public class FloorPlanService {
             .flatMap(up -> buildForLocation(up.getLocation().getId(), date));
     }
 
+    /**
+     * Public version: same as buildForLocation but strips reservation details (privacy).
+     */
+    public Optional<FloorPlanDTO> buildPublicForLocation(Long locationId, LocalDate date) {
+        return buildForLocation(locationId, date).map(dto -> {
+            dto.getRooms().forEach(room -> room.getTables().forEach(table -> table.setReservation(null)));
+            return dto;
+        });
+    }
+
     private FloorPlanTableDTO mapTable(RestaurantTable t, ReservationTable rt) {
         FloorPlanTableDTO dto = new FloorPlanTableDTO();
         dto.setId(t.getId());
@@ -121,7 +131,12 @@ public class FloorPlanService {
         dto.setWidthPx(t.getWidthPx());
         dto.setHeightPx(t.getHeightPx());
         dto.setRotation(t.getRotation());
-        dto.setStatus(t.getStatus() != null ? t.getStatus().name() : null);
+        // Reservation overrides AVAILABLE status but not OCCUPIED/OUT_OF_SERVICE
+        String baseStatus = t.getStatus() != null ? t.getStatus().name() : "AVAILABLE";
+        String effectiveStatus = (rt != null && !"OCCUPIED".equals(baseStatus) && !"OUT_OF_SERVICE".equals(baseStatus))
+            ? "RESERVED"
+            : baseStatus;
+        dto.setStatus(effectiveStatus);
         dto.setIsActive(t.getIsActive());
         dto.setNotes(t.getNotes());
         if (rt != null) {

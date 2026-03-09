@@ -43,12 +43,24 @@ const routes: Routes = [
     title: 'Pentru afaceri — ReservoAI',
   },
 
-  // ── Admin section ────────────────────────────────────────────────────────
+  // ── Admin section (SUPER_ADMIN = ROLE_ADMIN) ─────────────────────────────
   {
     path: 'admin',
     data: { authorities: [Authority.ADMIN] },
     canActivate: [UserRouteAccessService],
     loadChildren: () => import('./admin/admin.routes'),
+  },
+
+  // ── Manager section (ROLE_MANAGER) ───────────────────────────────────────
+  {
+    path: 'manager',
+    loadChildren: () => import('./manager/manager.routes'),
+  },
+
+  // ── Staff section (ROLE_STAFF) ────────────────────────────────────────────
+  {
+    path: 'staff',
+    loadChildren: () => import('./staff/staff.routes'),
   },
 
   // ── Account section ──────────────────────────────────────────────────────
@@ -71,6 +83,15 @@ const routes: Routes = [
     canActivate: [UserRouteAccessService],
     data: { authorities: [Authority.USER] },
     title: 'Profilul meu — ReservoAI',
+  },
+
+  // ── Order / Reservation history ───────────────────────────────────────────
+  {
+    path: 'istoricul-meu',
+    loadComponent: () => import('./public/order-history/order-history.component'),
+    canActivate: [UserRouteAccessService],
+    data: { authorities: [Authority.USER] },
+    title: 'Istoricul meu — ReservoAI',
   },
 
   // ── JHipster entity CRUD routes ──────────────────────────────────────────

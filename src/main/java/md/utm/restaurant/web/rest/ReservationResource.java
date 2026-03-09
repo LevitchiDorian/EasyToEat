@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import md.utm.restaurant.repository.ReservationRepository;
+import md.utm.restaurant.repository.UserRepository;
+import md.utm.restaurant.service.MailService;
 import md.utm.restaurant.service.ReservationQueryService;
 import md.utm.restaurant.service.ReservationService;
 import md.utm.restaurant.service.criteria.ReservationCriteria;
@@ -46,14 +48,22 @@ public class ReservationResource {
 
     private final ReservationQueryService reservationQueryService;
 
+    private final UserRepository userRepository;
+
+    private final MailService mailService;
+
     public ReservationResource(
         ReservationService reservationService,
         ReservationRepository reservationRepository,
-        ReservationQueryService reservationQueryService
+        ReservationQueryService reservationQueryService,
+        UserRepository userRepository,
+        MailService mailService
     ) {
         this.reservationService = reservationService;
         this.reservationRepository = reservationRepository;
         this.reservationQueryService = reservationQueryService;
+        this.userRepository = userRepository;
+        this.mailService = mailService;
     }
 
     /**
@@ -69,7 +79,46 @@ public class ReservationResource {
         if (reservationDTO.getId() != null) {
             throw new BadRequestAlertException("A new reservation cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        reservationDTO = reservationService.save(reservationDTO);
+        final ReservationDTO savedRes = reservationService.save(reservationDTO);
+        reservationDTO = savedRes;
+
+        // Send confirmation email
+        try {
+            Long clientId = savedRes.getClient() != null ? savedRes.getClient().getId() : null;
+            if (clientId != null) {
+                userRepository
+                    .findById(clientId)
+                    .ifPresent(user -> {
+                        String first = user.getFirstName() != null ? user.getFirstName() : "";
+                        String last = user.getLastName() != null ? user.getLastName() : "";
+                        String clientName = (first + " " + last).trim();
+                        if (clientName.isEmpty()) clientName = user.getLogin();
+                        String restaurantName = savedRes.getLocation() != null && savedRes.getLocation().getBrand() != null
+                            ? savedRes.getLocation().getBrand().getName()
+                            : "Restaurant";
+                        String locationAddr = savedRes.getLocation() != null
+                            ? savedRes.getLocation().getAddress() + ", " + savedRes.getLocation().getCity()
+                            : "";
+                        String roomName = savedRes.getRoom() != null ? savedRes.getRoom().getName() : null;
+                        mailService.sendReservationConfirmationEmail(
+                            user.getEmail(),
+                            clientName,
+                            savedRes.getReservationCode(),
+                            restaurantName,
+                            locationAddr,
+                            savedRes.getReservationDate().toString(),
+                            savedRes.getStartTime(),
+                            savedRes.getEndTime(),
+                            savedRes.getPartySize(),
+                            null,
+                            roomName
+                        );
+                    });
+            }
+        } catch (Exception e) {
+            LOG.warn("Could not send reservation confirmation email", e);
+        }
+
         return ResponseEntity.created(new URI("/api/reservations/" + reservationDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, reservationDTO.getId().toString()))
             .body(reservationDTO);

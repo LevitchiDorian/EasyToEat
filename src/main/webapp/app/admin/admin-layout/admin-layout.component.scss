@@ -10,6 +10,7 @@ $topbar-height: 56px;
   display: flex;
   min-height: 100vh;
   background: hsl(var(--background));
+  padding-top: var(--rv-navbar-height);
 }
 
 /* ── Sidebar ────────────────────────────────────────────────────────────── */

@@ -1,11 +1,6 @@
-id;overall_rating;food_rating;service_rating;ambience_rating;comment;is_approved;is_anonymous;created_at
-1;1;5;1;2;../fake-data/blob/hipster.txt;false;true;2026-02-23T07:31:53
-2;5;1;1;2;../fake-data/blob/hipster.txt;true;true;2026-02-22T20:37:13
-3;2;3;5;5;../fake-data/blob/hipster.txt;true;false;2026-02-22T23:28:50
-4;3;4;1;2;../fake-data/blob/hipster.txt;false;true;2026-02-23T13:41:40
-5;2;1;4;1;../fake-data/blob/hipster.txt;true;true;2026-02-23T06:15:08
-6;5;3;2;2;../fake-data/blob/hipster.txt;true;false;2026-02-23T11:44:25
-7;1;1;5;1;../fake-data/blob/hipster.txt;true;false;2026-02-23T05:03:53
-8;1;5;5;4;../fake-data/blob/hipster.txt;true;true;2026-02-22T18:46:20
-9;3;3;5;5;../fake-data/blob/hipster.txt;true;true;2026-02-22T23:18:15
-10;1;4;1;1;../fake-data/blob/hipster.txt;false;false;2026-02-22T20:21:10
+id;overall_rating;food_rating;service_rating;ambience_rating;comment;is_approved;is_anonymous;created_at;location_id;reservation_id;client_id
+1;5;5;5;5;Excelent! Plăcintele sunt delicioase, exact ca la bunica. Atmosferă caldă și primitoare. Recomand cu căldură!;true;false;2026-02-15T20:30:00;1;1;11
+2;4;5;4;4;Mâncarea a fost fantastică, sarmale și mămăligă perfecte. Serviciul puțin lent dar prietenos.;true;false;2026-02-20T19:45:00;6;10;12
+3;5;5;5;4;Sushi de calitate excepțională! Dragon Roll a fost superb. Prețuri corecte pentru calitatea oferită.;true;true;2026-02-25T21:00:00;5;8;13
+4;4;4;5;5;Pizza la Andy's mereu excelentă. Carbonara perfectă. Tiramisu - cel mai bun din Chișinău!;true;false;2026-02-10T20:15:00;3;5;12
+5;5;4;5;5;Atmosferă minunată la Green Hills. Smoothie-urile sunt proaspete și delicioase. Locul ideal pentru mic dejun.;true;true;2026-02-28T11:00:00;7;13;11

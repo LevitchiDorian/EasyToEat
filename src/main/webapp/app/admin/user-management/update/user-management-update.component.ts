@@ -60,6 +60,16 @@ export default class UserManagementUpdateComponent implements OnInit {
     this.userService.authorities().subscribe(authorities => this.authorities.set(authorities));
   }
 
+  get selectedAuthority(): string {
+    const auths: string[] = this.editForm.get('authorities')?.value ?? [];
+    return auths[0] ?? '';
+  }
+
+  selectAuthority(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.editForm.get('authorities')?.setValue(value ? [value] : []);
+  }
+
   previousState(): void {
     window.history.back();
   }

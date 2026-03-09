@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import md.utm.restaurant.repository.RestaurantOrderRepository;
+import md.utm.restaurant.repository.UserRepository;
+import md.utm.restaurant.service.MailService;
 import md.utm.restaurant.service.RestaurantOrderQueryService;
 import md.utm.restaurant.service.RestaurantOrderService;
 import md.utm.restaurant.service.criteria.RestaurantOrderCriteria;
@@ -46,14 +48,22 @@ public class RestaurantOrderResource {
 
     private final RestaurantOrderQueryService restaurantOrderQueryService;
 
+    private final UserRepository userRepository;
+
+    private final MailService mailService;
+
     public RestaurantOrderResource(
         RestaurantOrderService restaurantOrderService,
         RestaurantOrderRepository restaurantOrderRepository,
-        RestaurantOrderQueryService restaurantOrderQueryService
+        RestaurantOrderQueryService restaurantOrderQueryService,
+        UserRepository userRepository,
+        MailService mailService
     ) {
         this.restaurantOrderService = restaurantOrderService;
         this.restaurantOrderRepository = restaurantOrderRepository;
         this.restaurantOrderQueryService = restaurantOrderQueryService;
+        this.userRepository = userRepository;
+        this.mailService = mailService;
     }
 
     /**
@@ -70,7 +80,45 @@ public class RestaurantOrderResource {
         if (restaurantOrderDTO.getId() != null) {
             throw new BadRequestAlertException("A new restaurantOrder cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        restaurantOrderDTO = restaurantOrderService.save(restaurantOrderDTO);
+        final RestaurantOrderDTO savedOrder = restaurantOrderService.save(restaurantOrderDTO);
+        restaurantOrderDTO = savedOrder;
+
+        // Send confirmation email
+        try {
+            Long clientId = savedOrder.getClient() != null ? savedOrder.getClient().getId() : null;
+            if (clientId != null) {
+                userRepository
+                    .findById(clientId)
+                    .ifPresent(user -> {
+                        String first = user.getFirstName() != null ? user.getFirstName() : "";
+                        String last = user.getLastName() != null ? user.getLastName() : "";
+                        String clientName = (first + " " + last).trim();
+                        if (clientName.isEmpty()) clientName = user.getLogin();
+                        String restaurantName = savedOrder.getLocation() != null && savedOrder.getLocation().getBrand() != null
+                            ? savedOrder.getLocation().getBrand().getName()
+                            : "Restaurant";
+                        String locationAddr = savedOrder.getLocation() != null
+                            ? savedOrder.getLocation().getAddress() + ", " + savedOrder.getLocation().getCity()
+                            : "";
+                        String orderType = Boolean.TRUE.equals(savedOrder.getIsPreOrder()) ? "Pre-comandă" : "Comandă";
+                        String scheduledFor = savedOrder.getScheduledFor() != null ? savedOrder.getScheduledFor().toString() : "—";
+                        mailService.sendOrderConfirmationEmail(
+                            user.getEmail(),
+                            clientName,
+                            savedOrder.getOrderCode(),
+                            restaurantName,
+                            locationAddr,
+                            orderType,
+                            scheduledFor,
+                            "A se vedea în aplicație",
+                            savedOrder.getTotalAmount()
+                        );
+                    });
+            }
+        } catch (Exception e) {
+            LOG.warn("Could not send order confirmation email", e);
+        }
+
         return ResponseEntity.created(new URI("/api/restaurant-orders/" + restaurantOrderDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, restaurantOrderDTO.getId().toString()))
             .body(restaurantOrderDTO);
