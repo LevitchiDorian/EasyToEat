@@ -26,8 +26,13 @@ const routes: Routes = [
       },
       {
         path: 'meniu',
-        loadComponent: () => import('./manager-floor-plan/manager-floor-plan.component'),
+        loadComponent: () => import('./manager-menu/manager-menu.component'),
         title: 'Meniu — Manager',
+      },
+      {
+        path: 'rapoarte',
+        loadComponent: () => import('./manager-reports/manager-reports.component'),
+        title: 'Rapoarte — Manager',
       },
       {
         path: '',

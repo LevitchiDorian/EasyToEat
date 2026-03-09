@@ -7,13 +7,13 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Runs on EVERY dev startup (runAlways=true) to keep fresh real data.
-        Replaces all JHipster faker data with real Moldovan restaurant data.
-        Active in the 'dev' context.
+        One-time seed of real Moldovan restaurant data (runs once, then never again).
+        runAlways removed so user-created data (registrations, orders, reservations) persists across restarts.
     -->
 
     <!-- Step 1: Ensure new roles exist, then delete all data in reverse FK order -->
-    <changeSet id="20260305000001-1-delete" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-1-delete" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <!-- Ensure ROLE_MANAGER and ROLE_STAFF exist before inserting user_authorities -->
         <sql>INSERT INTO jhi_authority (name) VALUES ('ROLE_MANAGER') ON CONFLICT DO NOTHING;</sql>
         <sql>INSERT INTO jhi_authority (name) VALUES ('ROLE_STAFF') ON CONFLICT DO NOTHING;</sql>
@@ -44,7 +44,8 @@
     </changeSet>
 
     <!-- Step 2: Insert new users (managers + test clients) -->
-    <changeSet id="20260305000001-2-users" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-2-users" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <insert tableName="jhi_user">
             <column name="id" value="3"/><column name="login" value="manager1"/>
             <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
@@ -184,7 +185,8 @@
     </changeSet>
 
     <!-- Step 3: Load brand, location, location_hours -->
-    <changeSet id="20260305000001-3-brand" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-3-brand" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <loadData file="config/liquibase/fake-data/brand.csv" separator=";" tableName="brand" usePreparedStatements="true">
             <column name="id" type="numeric"/><column name="name" type="string"/>
             <column name="description" type="string"/><column name="logo_url" type="string"/>
@@ -216,7 +218,8 @@
     </changeSet>
 
     <!-- Step 4: Load dining rooms and tables -->
-    <changeSet id="20260305000001-4-rooms" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-4-rooms" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <loadData file="config/liquibase/fake-data/dining_room.csv" separator=";" tableName="dining_room" usePreparedStatements="true">
             <column name="id" type="numeric"/><column name="name" type="string"/>
             <column name="description" type="string"/><column name="floor" type="numeric"/>
@@ -237,7 +240,8 @@
     </changeSet>
 
     <!-- Step 5: Load user profiles -->
-    <changeSet id="20260305000001-5-profiles" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-5-profiles" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <loadData file="config/liquibase/fake-data/user_profile.csv" separator=";" tableName="user_profile" usePreparedStatements="true">
             <column name="id" type="numeric"/><column name="phone" type="string"/>
             <column name="avatar_url" type="string"/><column name="role" type="string"/>
@@ -250,7 +254,8 @@
     </changeSet>
 
     <!-- Step 6: Load menu data -->
-    <changeSet id="20260305000001-6-menu" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-6-menu" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <loadData file="config/liquibase/fake-data/menu_category.csv" separator=";" tableName="menu_category" usePreparedStatements="true">
             <column name="id" type="numeric"/><column name="name" type="string"/>
             <column name="description" type="string"/><column name="image_url" type="string"/>
@@ -303,7 +308,8 @@
     </changeSet>
 
     <!-- Step 7: Load reservations -->
-    <changeSet id="20260305000001-7-reservations" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-7-reservations" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <loadData file="config/liquibase/fake-data/reservation.csv" separator=";" tableName="reservation" usePreparedStatements="true">
             <column name="id" type="numeric"/><column name="reservation_code" type="string"/>
             <column name="reservation_date" type="date"/>
@@ -332,7 +338,8 @@
     </changeSet>
 
     <!-- Step 8: Load orders, reviews, notifications -->
-    <changeSet id="20260305000001-8-orders" author="dev" context="dev" runAlways="true">
+    <changeSet id="20260305000001-8-orders" author="dev" context="dev">
+        <validCheckSum>ANY</validCheckSum>
         <loadData file="config/liquibase/fake-data/restaurant_order.csv" separator=";" tableName="restaurant_order" usePreparedStatements="true">
             <column name="id" type="numeric"/><column name="order_code" type="string"/>
             <column name="status" type="string"/><column name="is_pre_order" type="boolean"/>

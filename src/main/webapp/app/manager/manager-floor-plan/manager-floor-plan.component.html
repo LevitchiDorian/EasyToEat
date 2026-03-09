@@ -62,6 +62,10 @@
       <div class="mgr-stat-card__value">{{ todayReservations().length }}</div>
       <div class="mgr-stat-card__label">Rezervări azi</div>
     </div>
+    <div class="mgr-stat-card mgr-stat-card--blue">
+      <div class="mgr-stat-card__value">{{ activeOrders().length }}</div>
+      <div class="mgr-stat-card__label">Comenzi active</div>
+    </div>
   </div>
 
   <!-- Map + panel -->
@@ -85,98 +89,169 @@
 
     <!-- Right info panel -->
     <div class="mgr-fp-side">
-      <!-- Selected table card -->
-      @if (selectedTable(); as t) {
+      <!-- Tab bar -->
+      <div class="mgr-tabs glass">
+        <button class="mgr-tab" [class.mgr-tab--active]="activeTab() === 'masa'" (click)="setTab('masa')">Masă</button>
+        <button class="mgr-tab" [class.mgr-tab--active]="activeTab() === 'rezervari'" (click)="setTab('rezervari')">
+          Rezervări ({{ todayReservations().length }})
+        </button>
+        <button class="mgr-tab" [class.mgr-tab--active]="activeTab() === 'comenzi'" (click)="setTab('comenzi')">
+          Comenzi ({{ activeOrders().length }})
+        </button>
+      </div>
+
+      <!-- TAB: Selected table -->
+      @if (activeTab() === 'masa') {
+        @if (selectedTable(); as t) {
+          <div class="glass mgr-info-card">
+            <div class="mgr-info-card__header">
+              <span class="mgr-info-card__title">Masa {{ t.tableNumber }}</span>
+              <button class="mgr-btn-icon" (click)="clearSelection()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+            <div class="mgr-detail-row">
+              <span class="mgr-detail-label">Stare</span>
+              <span [class]="statusClass(t.status)">{{ statusLabel(t.status) }}</span>
+            </div>
+            <div class="mgr-detail-row">
+              <span class="mgr-detail-label">Capacitate</span>
+              <span class="mgr-detail-value">{{ t.minCapacity }}–{{ t.maxCapacity }} pers.</span>
+            </div>
+            <div class="mgr-detail-row">
+              <span class="mgr-detail-label">Formă</span>
+              <span class="mgr-detail-value">{{
+                t.shape === 'ROUND' ? 'Rotundă' : t.shape === 'SQUARE' ? 'Pătrată' : 'Dreptunghiulară'
+              }}</span>
+            </div>
+            @if (t.notes) {
+              <div class="mgr-detail-row">
+                <span class="mgr-detail-label">Notițe</span>
+                <span class="mgr-detail-value">{{ t.notes }}</span>
+              </div>
+            }
+            @if (t.reservation; as res) {
+              <div class="mgr-res-box">
+                <div class="mgr-res-box__title">Rezervare activă</div>
+                <div class="mgr-detail-row">
+                  <span class="mgr-detail-label">Cod</span>
+                  <span class="mgr-detail-value mgr-mono">{{ res.reservationCode }}</span>
+                </div>
+                <div class="mgr-detail-row">
+                  <span class="mgr-detail-label">Oră</span>
+                  <span class="mgr-detail-value">{{ res.startTime }} – {{ res.endTime }}</span>
+                </div>
+                <div class="mgr-detail-row">
+                  <span class="mgr-detail-label">Persoane</span>
+                  <span class="mgr-detail-value">{{ res.partySize }}</span>
+                </div>
+                <div class="mgr-detail-row">
+                  <span class="mgr-detail-label">Client</span>
+                  <span class="mgr-detail-value">{{ res.clientFirstName }} {{ res.clientLastName }}</span>
+                </div>
+                <div class="mgr-detail-row">
+                  <span class="mgr-detail-label">Stare</span>
+                  <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+                </div>
+                @if (res.specialRequests) {
+                  <div class="mgr-detail-row mgr-detail-row--wrap">
+                    <span class="mgr-detail-label">Solicitări</span>
+                    <span class="mgr-detail-value">{{ res.specialRequests }}</span>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="mgr-no-res">Nicio rezervare activă</p>
+            }
+          </div>
+        } @else {
+          <div class="glass mgr-info-card mgr-hint">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+            <p>Selectează o masă de pe hartă</p>
+          </div>
+        }
+      }
+
+      <!-- TAB: All reservations for the day -->
+      @if (activeTab() === 'rezervari') {
         <div class="glass mgr-info-card">
           <div class="mgr-info-card__header">
-            <span class="mgr-info-card__title">Masa {{ t.tableNumber }}</span>
-            <button class="mgr-btn-icon" (click)="clearSelection()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
+            <span class="mgr-info-card__title">Rezervări – {{ selectedDate() }}</span>
           </div>
-          <div class="mgr-detail-row">
-            <span class="mgr-detail-label">Stare</span>
-            <span [class]="statusClass(t.status)">{{ statusLabel(t.status) }}</span>
-          </div>
-          <div class="mgr-detail-row">
-            <span class="mgr-detail-label">Capacitate</span>
-            <span class="mgr-detail-value">{{ t.minCapacity }}–{{ t.maxCapacity }} pers.</span>
-          </div>
-          <div class="mgr-detail-row">
-            <span class="mgr-detail-label">Formă</span>
-            <span class="mgr-detail-value">{{
-              t.shape === 'ROUND' ? 'Rotundă' : t.shape === 'SQUARE' ? 'Pătrată' : 'Dreptunghiulară'
-            }}</span>
-          </div>
-          @if (t.notes) {
-            <div class="mgr-detail-row">
-              <span class="mgr-detail-label">Notițe</span>
-              <span class="mgr-detail-value">{{ t.notes }}</span>
-            </div>
-          }
-          @if (t.reservation; as res) {
-            <div class="mgr-res-box">
-              <div class="mgr-res-box__title">Rezervare activă</div>
-              <div class="mgr-detail-row">
-                <span class="mgr-detail-label">Cod</span>
-                <span class="mgr-detail-value mgr-mono">{{ res.reservationCode }}</span>
-              </div>
-              <div class="mgr-detail-row">
-                <span class="mgr-detail-label">Oră</span>
-                <span class="mgr-detail-value">{{ res.startTime }} – {{ res.endTime }}</span>
-              </div>
-              <div class="mgr-detail-row">
-                <span class="mgr-detail-label">Persoane</span>
-                <span class="mgr-detail-value">{{ res.partySize }}</span>
-              </div>
-              <div class="mgr-detail-row">
-                <span class="mgr-detail-label">Client</span>
-                <span class="mgr-detail-value">{{ res.clientFirstName }} {{ res.clientLastName }}</span>
-              </div>
-              <div class="mgr-detail-row">
-                <span class="mgr-detail-label">Stare</span>
-                <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
-              </div>
-              @if (res.specialRequests) {
-                <div class="mgr-detail-row mgr-detail-row--wrap">
-                  <span class="mgr-detail-label">Solicitări</span>
-                  <span class="mgr-detail-value">{{ res.specialRequests }}</span>
-                </div>
-              }
-            </div>
+          @if (isLoadingReservations()) {
+            <p class="mgr-empty">Se încarcă...</p>
+          } @else if (allReservations().length === 0) {
+            <p class="mgr-empty">Nicio rezervare pentru data selectată.</p>
           } @else {
-            <p class="mgr-no-res">Nicio rezervare activă</p>
+            <ul class="mgr-res-list">
+              @for (res of allReservations(); track res.id) {
+                <li class="mgr-res-item" [class.mgr-res-item--muted]="res.status === 'CANCELLED'">
+                  <span class="mgr-res-item__time">{{ res.startTime }}</span>
+                  <div class="mgr-res-item__info">
+                    <div>{{ res.client?.firstName }} {{ res.client?.lastName }}</div>
+                    <div class="mgr-res-item__meta">
+                      {{ res.partySize }} pers. ·
+                      <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+                    </div>
+                    @if (res.specialRequests) {
+                      <div class="mgr-res-item__note">{{ res.specialRequests }}</div>
+                    }
+                  </div>
+                  <span class="mgr-mono mgr-res-item__code">{{ res.reservationCode }}</span>
+                </li>
+              }
+            </ul>
           }
         </div>
       }
 
-      <!-- Reservations list -->
-      <div class="glass mgr-info-card">
-        <div class="mgr-info-card__header">
-          <span class="mgr-info-card__title">Rezervări azi ({{ todayReservations().length }})</span>
-        </div>
-        @if (todayReservations().length === 0) {
-          <p class="mgr-empty">Nicio rezervare pentru data selectată.</p>
-        } @else {
-          <ul class="mgr-res-list">
-            @for (res of todayReservations(); track $index) {
-              <li class="mgr-res-item">
-                <span class="mgr-res-item__time">{{ res?.startTime }}</span>
-                <div class="mgr-res-item__info">
-                  <div>{{ res?.clientFirstName }} {{ res?.clientLastName }}</div>
-                  <div class="mgr-res-item__meta">
-                    {{ res?.partySize }} pers. · <span [class]="statusClass(res?.status ?? '')">{{ statusLabel(res?.status ?? '') }}</span>
+      <!-- TAB: Active orders -->
+      @if (activeTab() === 'comenzi') {
+        <div class="glass mgr-info-card">
+          <div class="mgr-info-card__header">
+            <span class="mgr-info-card__title">Comenzi active</span>
+            <button class="mgr-btn-refresh" (click)="manualRefresh()" style="padding: 4px 8px; font-size: 0.75rem">Reîncarcă</button>
+          </div>
+          @if (isLoadingOrders()) {
+            <p class="mgr-empty">Se încarcă...</p>
+          } @else if (activeOrders().length === 0) {
+            <p class="mgr-empty">Nicio comandă activă momentan.</p>
+          } @else {
+            <ul class="mgr-res-list">
+              @for (ord of activeOrders(); track ord.id) {
+                <li class="mgr-res-item">
+                  <span class="mgr-res-item__time">#{{ ord.id }}</span>
+                  <div class="mgr-res-item__info">
+                    <div>
+                      {{ ord.client?.firstName }} {{ ord.client?.lastName }}
+                      @if (ord.table?.tableNumber) {
+                        · Masa {{ ord.table?.tableNumber }}
+                      }
+                    </div>
+                    <div class="mgr-res-item__meta">
+                      <span [class]="statusClass(ord.status)">{{ statusLabel(ord.status) }}</span>
+                      @if (ord.totalAmount) {
+                        · {{ ord.totalAmount | number: '1.2-2' }} MDL
+                      }
+                    </div>
+                    @if (ord.notes) {
+                      <div class="mgr-res-item__note">{{ ord.notes }}</div>
+                    }
                   </div>
-                </div>
-                <span class="mgr-mono mgr-res-item__code">{{ res?.reservationCode }}</span>
-              </li>
-            }
-          </ul>
-        }
-      </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
     </div>
   </div>
 </div>

@@ -31,6 +31,12 @@
       <div class="sd-stat sd-stat--muted">
         <span>{{ totalTables() }} total</span>
       </div>
+      @if (activeOrders().length > 0) {
+        <div class="sd-stat sd-stat--blue">
+          <span class="sd-stat__dot"></span>
+          <span>{{ activeOrders().length }} comenzi</span>
+        </div>
+      }
     </div>
 
     <div class="sd-header__right">
@@ -105,120 +111,216 @@
 
     <!-- Right panel -->
     <aside class="sd-panel glass">
-      <!-- Selected table -->
-      @if (selectedTable(); as table) {
-        <div class="sd-panel__section">
-          <div class="sd-panel__section-header">
-            <h3 class="sd-panel__section-title">Masa {{ table.tableNumber }}</h3>
-            <button class="sd-btn-icon" (click)="clearSelection()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          </div>
-          <div class="sd-table-details">
-            <div class="sd-detail-row">
-              <span class="sd-detail-label">Stare</span>
-              <span [class]="statusClass(table.status)">{{ statusLabel(table.status) }}</span>
-            </div>
-            <div class="sd-detail-row">
-              <span class="sd-detail-label">Capacitate</span>
-              <span class="sd-detail-value">{{ table.minCapacity }}–{{ table.maxCapacity }} pers.</span>
-            </div>
-            <div class="sd-detail-row">
-              <span class="sd-detail-label">Formă</span>
-              <span class="sd-detail-value">{{
-                table.shape === 'ROUND' ? 'Rotundă' : table.shape === 'SQUARE' ? 'Pătrată' : 'Dreptunghiulară'
-              }}</span>
-            </div>
-            @if (table.notes) {
-              <div class="sd-detail-row">
-                <span class="sd-detail-label">Notițe</span>
-                <span class="sd-detail-value">{{ table.notes }}</span>
-              </div>
-            }
-          </div>
+      <!-- Tab bar -->
+      <div class="sd-tabs">
+        <button class="sd-tab" [class.sd-tab--active]="activeTab() === 'masa'" (click)="setTab('masa')">Masă</button>
+        <button class="sd-tab" [class.sd-tab--active]="activeTab() === 'rezervari'" (click)="setTab('rezervari')">
+          Rezervări ({{ todayReservations().length }})
+        </button>
+        <button class="sd-tab" [class.sd-tab--active]="activeTab() === 'comenzi'" (click)="setTab('comenzi')">
+          Comenzi ({{ activeOrders().length }})
+        </button>
+      </div>
 
-          @if (table.reservation; as res) {
-            <div class="sd-reservation-card">
-              <div class="sd-reservation-card__header">
+      <!-- TAB: Selected table -->
+      @if (activeTab() === 'masa') {
+        @if (selectedTable(); as table) {
+          <div class="sd-panel__section">
+            <div class="sd-panel__section-header">
+              <h3 class="sd-panel__section-title">Masa {{ table.tableNumber }}</h3>
+              <button class="sd-btn-icon" (click)="clearSelection()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
-                Rezervare
-              </div>
-              <div class="sd-detail-row">
-                <span class="sd-detail-label">Cod</span>
-                <span class="sd-detail-value sd-mono">{{ res.reservationCode }}</span>
-              </div>
-              <div class="sd-detail-row">
-                <span class="sd-detail-label">Oră</span>
-                <span class="sd-detail-value">{{ res.startTime }} – {{ res.endTime }}</span>
-              </div>
-              <div class="sd-detail-row">
-                <span class="sd-detail-label">Persoane</span>
-                <span class="sd-detail-value">{{ res.partySize }}</span>
-              </div>
-              <div class="sd-detail-row">
-                <span class="sd-detail-label">Client</span>
-                <span class="sd-detail-value">{{ res.clientFirstName }} {{ res.clientLastName }}</span>
-              </div>
-              @if (res.specialRequests) {
-                <div class="sd-detail-row sd-detail-row--wrap">
-                  <span class="sd-detail-label">Solicitări</span>
-                  <span class="sd-detail-value">{{ res.specialRequests }}</span>
-                </div>
-              }
+              </button>
+            </div>
+            <div class="sd-table-details">
               <div class="sd-detail-row">
                 <span class="sd-detail-label">Stare</span>
-                <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+                <span [class]="statusClass(table.status)">{{ statusLabel(table.status) }}</span>
               </div>
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Capacitate</span>
+                <span class="sd-detail-value">{{ table.minCapacity }}–{{ table.maxCapacity }} pers.</span>
+              </div>
+              <div class="sd-detail-row">
+                <span class="sd-detail-label">Formă</span>
+                <span class="sd-detail-value">{{
+                  table.shape === 'ROUND' ? 'Rotundă' : table.shape === 'SQUARE' ? 'Pătrată' : 'Dreptunghiulară'
+                }}</span>
+              </div>
+              @if (table.notes) {
+                <div class="sd-detail-row">
+                  <span class="sd-detail-label">Notițe</span>
+                  <span class="sd-detail-value">{{ table.notes }}</span>
+                </div>
+              }
             </div>
+
+            <!-- Table status actions -->
+            <div class="sd-table-actions">
+              @if (table.status === 'AVAILABLE' || table.status === 'RESERVED') {
+                <button class="sd-action-btn sd-action-btn--occupy" (click)="updateTableStatus(table.id, table.status)">
+                  Marchează Ocupată
+                </button>
+              }
+              @if (table.status === 'OCCUPIED') {
+                <button class="sd-action-btn sd-action-btn--free" (click)="updateTableStatus(table.id, table.status)">
+                  Marchează Liberă
+                </button>
+              }
+            </div>
+
+            @if (table.reservation; as res) {
+              <div class="sd-reservation-card">
+                <div class="sd-reservation-card__header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  Rezervare
+                </div>
+                <div class="sd-detail-row">
+                  <span class="sd-detail-label">Cod</span>
+                  <span class="sd-detail-value sd-mono">{{ res.reservationCode }}</span>
+                </div>
+                <div class="sd-detail-row">
+                  <span class="sd-detail-label">Oră</span>
+                  <span class="sd-detail-value">{{ res.startTime }} – {{ res.endTime }}</span>
+                </div>
+                <div class="sd-detail-row">
+                  <span class="sd-detail-label">Persoane</span>
+                  <span class="sd-detail-value">{{ res.partySize }}</span>
+                </div>
+                <div class="sd-detail-row">
+                  <span class="sd-detail-label">Client</span>
+                  <span class="sd-detail-value">{{ res.clientFirstName }} {{ res.clientLastName }}</span>
+                </div>
+                @if (res.specialRequests) {
+                  <div class="sd-detail-row sd-detail-row--wrap">
+                    <span class="sd-detail-label">Solicitări</span>
+                    <span class="sd-detail-value">{{ res.specialRequests }}</span>
+                  </div>
+                }
+                <div class="sd-detail-row">
+                  <span class="sd-detail-label">Stare</span>
+                  <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+                </div>
+                <div class="sd-res-actions">
+                  @if (res.status === 'PENDING') {
+                    <button class="sd-action-btn sd-action-btn--confirm" (click)="updateReservationStatus(res.id, 'CONFIRMED')">
+                      ✓ Confirmă
+                    </button>
+                  }
+                  @if (res.status === 'CONFIRMED') {
+                    <button class="sd-action-btn sd-action-btn--complete" (click)="updateReservationStatus(res.id, 'COMPLETED')">
+                      ✓ Finalizat
+                    </button>
+                    <button class="sd-action-btn sd-action-btn--noshow" (click)="updateReservationStatus(res.id, 'NO_SHOW')">Absent</button>
+                  }
+                  @if (res.status !== 'CANCELLED' && res.status !== 'COMPLETED' && res.status !== 'NO_SHOW') {
+                    <button class="sd-action-btn sd-action-btn--cancel" (click)="updateReservationStatus(res.id, 'CANCELLED')">
+                      ✕ Anulează
+                    </button>
+                  }
+                </div>
+              </div>
+            } @else {
+              <p class="sd-no-reservation">Nicio rezervare activă</p>
+            }
+          </div>
+        } @else {
+          <div class="sd-panel__hint">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+            <p>Selectează o masă de pe hartă pentru a vedea detalii</p>
+          </div>
+        }
+      }
+
+      <!-- TAB: All reservations -->
+      @if (activeTab() === 'rezervari') {
+        <div class="sd-panel__section">
+          <h3 class="sd-panel__section-title">Rezervări – {{ selectedDate() }}</h3>
+          @if (isLoadingReservations()) {
+            <p class="sd-empty-list">Se încarcă...</p>
+          } @else if (allReservations().length === 0) {
+            <p class="sd-empty-list">Nicio rezervare pentru data selectată.</p>
           } @else {
-            <p class="sd-no-reservation">Nicio rezervare activă</p>
+            <ul class="sd-res-list">
+              @for (res of allReservations(); track res.id) {
+                <li class="sd-res-item" [class.sd-res-item--muted]="res.status === 'CANCELLED'">
+                  <div class="sd-res-item__time">{{ res.startTime }}</div>
+                  <div class="sd-res-item__info">
+                    <div class="sd-res-item__name">
+                      {{ res.client?.firstName ?? res.clientFirstName }} {{ res.client?.lastName ?? res.clientLastName }}
+                    </div>
+                    <div class="sd-res-item__meta">
+                      {{ res.partySize }} pers. · <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+                    </div>
+                    @if (res.specialRequests) {
+                      <div class="sd-res-item__note">{{ res.specialRequests }}</div>
+                    }
+                    <div class="sd-res-quick-actions">
+                      @if (res.status === 'PENDING') {
+                        <button class="sd-quick-btn sd-quick-btn--confirm" (click)="updateReservationStatus(res.id, 'CONFIRMED')">✓</button>
+                      }
+                      @if (res.status !== 'CANCELLED' && res.status !== 'COMPLETED' && res.status !== 'NO_SHOW') {
+                        <button class="sd-quick-btn sd-quick-btn--cancel" (click)="updateReservationStatus(res.id, 'CANCELLED')">✕</button>
+                      }
+                    </div>
+                  </div>
+                  <div class="sd-res-item__code sd-mono">{{ res.reservationCode }}</div>
+                </li>
+              }
+            </ul>
           }
-        </div>
-      } @else {
-        <div class="sd-panel__hint">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-          </svg>
-          <p>Selectează o masă de pe hartă pentru a vedea detalii</p>
         </div>
       }
 
-      <!-- Divider -->
-      <div class="sd-panel__divider"></div>
-
-      <!-- Today's reservations list -->
-      <div class="sd-panel__section">
-        <h3 class="sd-panel__section-title">Rezervări azi ({{ todayReservations().length }})</h3>
-        @if (todayReservations().length === 0) {
-          <p class="sd-empty-list">Nicio rezervare pentru data selectată.</p>
-        } @else {
-          <ul class="sd-res-list">
-            @for (res of todayReservations(); track res.id) {
-              <li class="sd-res-item">
-                <div class="sd-res-item__time">{{ res.startTime }}</div>
-                <div class="sd-res-item__info">
-                  <div class="sd-res-item__name">{{ res.clientFirstName }} {{ res.clientLastName }}</div>
-                  <div class="sd-res-item__meta">
-                    {{ res.partySize }} pers. · <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
+      <!-- TAB: Active orders -->
+      @if (activeTab() === 'comenzi') {
+        <div class="sd-panel__section">
+          <h3 class="sd-panel__section-title">Comenzi active</h3>
+          @if (isLoadingOrders()) {
+            <p class="sd-empty-list">Se încarcă...</p>
+          } @else if (activeOrders().length === 0) {
+            <p class="sd-empty-list">Nicio comandă activă momentan.</p>
+          } @else {
+            <ul class="sd-res-list">
+              @for (ord of activeOrders(); track ord.id) {
+                <li class="sd-res-item">
+                  <div class="sd-res-item__time">#{{ ord.id }}</div>
+                  <div class="sd-res-item__info">
+                    <div class="sd-res-item__name">
+                      {{ ord.client?.firstName }} {{ ord.client?.lastName }}
+                      @if (ord.table?.tableNumber) {
+                        · Masa {{ ord.table?.tableNumber }}
+                      }
+                    </div>
+                    <div class="sd-res-item__meta">
+                      <span [class]="statusClass(ord.status)">{{ statusLabel(ord.status) }}</span>
+                      @if (ord.totalAmount) {
+                        · {{ ord.totalAmount | number: '1.2-2' }} MDL
+                      }
+                    </div>
+                    @if (ord.notes) {
+                      <div class="sd-res-item__note">{{ ord.notes }}</div>
+                    }
                   </div>
-                </div>
-                <div class="sd-res-item__code sd-mono">{{ res.reservationCode }}</div>
-              </li>
-            }
-          </ul>
-        }
-      </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
     </aside>
   </div>
 </div>

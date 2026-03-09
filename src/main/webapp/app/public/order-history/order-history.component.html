@@ -181,6 +181,11 @@
                   </div>
                 }
               </div>
+              @if (canCancelReservation(res)) {
+                <div class="oh-card__actions">
+                  <button class="oh-btn-cancel" (click)="cancelReservation(res)">Anulează rezervarea</button>
+                </div>
+              }
             </div>
           }
         </div>

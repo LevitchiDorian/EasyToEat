@@ -239,6 +239,41 @@
   animation: sd-spin 0.9s linear infinite;
 }
 
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+.sd-tabs {
+  display: flex;
+  padding: 6px;
+  gap: 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-shrink: 0;
+}
+
+.sd-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 7px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &--active {
+    background: rgba(245, 165, 32, 0.15);
+    color: var(--rv-orange, #f5a520);
+    border: 1px solid rgba(245, 165, 32, 0.2);
+  }
+}
+
 // ── Side panel ────────────────────────────────────────────────────────────────
 .sd-panel {
   display: flex;
@@ -455,6 +490,134 @@
   font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.3);
   margin: 4px 0 0;
+}
+
+.sd-table-details {
+  margin-bottom: 4px;
+}
+
+// Table + reservation action buttons
+.sd-table-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.sd-res-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.sd-action-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+
+  &--occupy {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+    &:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+  }
+  &--free {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+    &:hover {
+      background: rgba(34, 197, 94, 0.2);
+    }
+  }
+  &--confirm {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+    &:hover {
+      background: rgba(34, 197, 94, 0.2);
+    }
+  }
+  &--complete {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #60a5fa;
+    &:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+  }
+  &--noshow {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+    &:hover {
+      background: rgba(245, 158, 11, 0.2);
+    }
+  }
+  &--cancel {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    &:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+  }
+}
+
+.sd-res-quick-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.sd-quick-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+
+  &--confirm {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+    &:hover {
+      background: rgba(34, 197, 94, 0.25);
+    }
+  }
+  &--cancel {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    &:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+  }
+}
+
+.sd-res-item {
+  &__note {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.3);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  &--muted {
+    opacity: 0.45;
+  }
 }
 
 // Responsive: collapse panel on small screens

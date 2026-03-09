@@ -120,11 +120,34 @@
           <option value="">-- Selectează rol --</option>
           @for (authority of authorities(); track $index) {
             <option [value]="authority">
-              {{ authority === 'ROLE_ADMIN' ? 'Administrator' : authority === 'ROLE_USER' ? 'Utilizator standard' : authority }}
+              {{
+                authority === 'ROLE_ADMIN'
+                  ? 'Super Administrator'
+                  : authority === 'ROLE_USER'
+                    ? 'Client'
+                    : authority === 'ROLE_MANAGER'
+                      ? 'Manager'
+                      : authority === 'ROLE_STAFF'
+                        ? 'Staff'
+                        : authority
+              }}
             </option>
           }
         </select>
       </div>
+
+      @if (needsLocation) {
+        <div class="rv-form-group">
+          <label for="field_location">Locație asignată</label>
+          <select class="rv-input" id="field_location" [value]="selectedLocationId() ?? ''" (change)="selectLocation($event)">
+            <option value="">-- Fără locație --</option>
+            @for (loc of locations(); track loc.id) {
+              <option [value]="loc.id">{{ loc.name }}</option>
+            }
+          </select>
+          <small style="color: rgba(255, 255, 255, 0.4); font-size: 0.75rem">Locația la care va fi asignat managerul / staff-ul</small>
+        </div>
+      }
 
       <div class="rv-admin-form-actions">
         <button type="button" class="rv-btn rv-btn--ghost" (click)="previousState()">

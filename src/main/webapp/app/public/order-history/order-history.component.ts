@@ -3,12 +3,14 @@ import { DecimalPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { ApplicationConfigService } from 'app/core/config/application-config.service';
 
 import { IReservation } from 'app/entities/reservation/reservation.model';
 import { IRestaurantOrder } from 'app/entities/restaurant-order/restaurant-order.model';
 import { ReservationService } from 'app/entities/reservation/service/reservation.service';
 import { RestaurantOrderService } from 'app/entities/restaurant-order/service/restaurant-order.service';
 import { AccountService } from 'app/core/auth/account.service';
+import dayjs from 'dayjs/esm';
 
 type Tab = 'reservations' | 'orders';
 
@@ -27,6 +29,7 @@ export default class OrderHistoryComponent implements OnInit {
   error = signal(false);
 
   private readonly http = inject(HttpClient);
+  private readonly configService = inject(ApplicationConfigService);
   private readonly reservationService = inject(ReservationService);
   private readonly orderService = inject(RestaurantOrderService);
   private readonly accountService = inject(AccountService);
@@ -109,6 +112,23 @@ export default class OrderHistoryComponent implements OnInit {
 
   orderTypeLabel(order: IRestaurantOrder): string {
     return order.isPreOrder ? 'Pre-comandă' : 'Comandă';
+  }
+
+  canCancelReservation(res: IReservation): boolean {
+    if (res.status === 'CANCELLED' || res.status === 'COMPLETED' || res.status === 'NO_SHOW') return false;
+    if (!res.reservationDate || !res.startTime) return true;
+    const dateStr = res.reservationDate.format('YYYY-MM-DD');
+    const resDateTime = dayjs(`${dateStr}T${res.startTime}`);
+    return resDateTime.diff(dayjs(), 'hour') >= 2;
+  }
+
+  cancelReservation(res: IReservation): void {
+    if (!confirm('Ești sigur că vrei să anulezi această rezervare?')) return;
+    this.http.patch(this.configService.getEndpointFor(`api/reservations/${res.id}`), { id: res.id, status: 'CANCELLED' }).subscribe({
+      next: () => {
+        this.reservations.update(list => list.map(r => (r.id === res.id ? { ...r, status: 'CANCELLED' } : r)));
+      },
+    });
   }
 
   statusMod(status: string | null | undefined): string {

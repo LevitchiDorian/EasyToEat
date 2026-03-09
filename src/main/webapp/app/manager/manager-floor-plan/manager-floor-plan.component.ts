@@ -8,6 +8,31 @@ import { AccountService } from 'app/core/auth/account.service';
 import { FloorMapComponent, FloorPlan, FloorTable } from 'app/public/floor-map/floor-map.component';
 import { StaffFloorPlanResponse, StaffTableInfo, LocationOption } from 'app/admin/staff-floor-plan/staff-floor-plan.component';
 
+interface ReservationItem {
+  id: number;
+  reservationCode: string;
+  reservationDate: string;
+  startTime: string;
+  endTime: string;
+  partySize: number;
+  status: string;
+  specialRequests?: string;
+  client?: { id: number; firstName?: string; lastName?: string };
+}
+
+interface OrderItem {
+  id: number;
+  orderNumber?: string;
+  status: string;
+  totalAmount?: number;
+  createdAt?: string;
+  notes?: string;
+  client?: { id: number; firstName?: string; lastName?: string };
+  table?: { id: number; tableNumber?: string };
+}
+
+type SideTab = 'masa' | 'rezervari' | 'comenzi';
+
 @Component({
   selector: 'app-manager-floor-plan',
   standalone: true,
@@ -32,6 +57,12 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
   selectedTable = signal<StaffTableInfo | null>(null);
   refreshCountdown = signal<number>(30);
   lastRefreshed = signal<string>('');
+
+  activeTab = signal<SideTab>('rezervari');
+  allReservations = signal<ReservationItem[]>([]);
+  isLoadingReservations = signal(false);
+  activeOrders = signal<OrderItem[]>([]);
+  isLoadingOrders = signal(false);
 
   private refreshSub?: Subscription;
 
@@ -59,17 +90,11 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
     return r.rooms.reduce((acc, room) => acc + room.tables.filter(t => t.status === 'OCCUPIED' && t.isActive).length, 0);
   });
 
-  todayReservations = computed(() => {
-    const r = this.rawResponse();
-    if (!r) return [];
-    const list: StaffTableInfo['reservation'][] = [];
-    for (const room of r.rooms) {
-      for (const table of room.tables) {
-        if (table.reservation) list.push(table.reservation);
-      }
-    }
-    return list.filter(Boolean).sort((a, b) => (a!.startTime ?? '').localeCompare(b!.startTime ?? ''));
-  });
+  todayReservations = computed(() =>
+    this.allReservations()
+      .filter(r => r.status !== 'CANCELLED')
+      .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? '')),
+  );
 
   ngOnInit(): void {
     this.accountService.identity().subscribe(account => {
@@ -123,6 +148,7 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
         this.isLoading.set(false);
         this.lastRefreshed.set(new Date().toLocaleTimeString('ro-RO'));
         this.refreshSelectedTable(res);
+        this.loadSideData(res.locationId);
       },
       error: () => {
         this.error.set('Nu s-a putut încărca planul sălii.');
@@ -142,11 +168,44 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
         this.isLoading.set(false);
         this.lastRefreshed.set(new Date().toLocaleTimeString('ro-RO'));
         this.refreshSelectedTable(res);
+        this.loadSideData(locationId);
       },
       error: () => {
         this.error.set('Nu s-a putut încărca planul sălii.');
         this.isLoading.set(false);
       },
+    });
+  }
+
+  private loadSideData(locationId: number): void {
+    this.loadAllReservations(locationId);
+    this.loadActiveOrders(locationId);
+  }
+
+  private loadAllReservations(locationId: number): void {
+    this.isLoadingReservations.set(true);
+    const date = this.selectedDate();
+    const url = this.configService.getEndpointFor(
+      `api/reservations?locationId.equals=${locationId}&reservationDate.equals=${date}&size=200&sort=startTime,asc`,
+    );
+    this.http.get<ReservationItem[]>(url).subscribe({
+      next: data => {
+        this.allReservations.set(data);
+        this.isLoadingReservations.set(false);
+      },
+      error: () => this.isLoadingReservations.set(false),
+    });
+  }
+
+  private loadActiveOrders(locationId: number): void {
+    this.isLoadingOrders.set(true);
+    const url = this.configService.getEndpointFor(`api/restaurant-orders?locationId.equals=${locationId}&size=100&sort=id,desc`);
+    this.http.get<OrderItem[]>(url).subscribe({
+      next: data => {
+        this.activeOrders.set(data.filter(o => ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'].includes(o.status)));
+        this.isLoadingOrders.set(false);
+      },
+      error: () => this.isLoadingOrders.set(false),
     });
   }
 
@@ -189,10 +248,16 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
       if (found) break;
     }
     this.selectedTable.set(found ?? null);
+    this.activeTab.set('masa');
   }
 
   clearSelection(): void {
     this.selectedTable.set(null);
+    this.activeTab.set('rezervari');
+  }
+
+  setTab(tab: SideTab): void {
+    this.activeTab.set(tab);
   }
 
   private refreshSelectedTable(res: StaffFloorPlanResponse): void {
@@ -225,6 +290,8 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
       CONFIRMED: 'Confirmată',
       COMPLETED: 'Finalizată',
       CANCELLED: 'Anulată',
+      PREPARING: 'Se prepară',
+      READY: 'Gata',
     };
     return map[status] ?? status;
   }
@@ -232,7 +299,7 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
   statusClass(status: string): string {
     if (status === 'AVAILABLE' || status === 'COMPLETED') return 'mgr-badge mgr-badge--green';
     if (status === 'RESERVED' || status === 'PENDING' || status === 'CONFIRMED') return 'mgr-badge mgr-badge--amber';
-    if (status === 'OCCUPIED') return 'mgr-badge mgr-badge--blue';
+    if (status === 'OCCUPIED' || status === 'PREPARING' || status === 'READY') return 'mgr-badge mgr-badge--blue';
     return 'mgr-badge mgr-badge--red';
   }
 

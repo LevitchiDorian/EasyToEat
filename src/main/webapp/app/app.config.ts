@@ -2,6 +2,7 @@ import { ApplicationConfig, LOCALE_ID, importProvidersFrom, inject } from '@angu
 import { BrowserModule, Title } from '@angular/platform-browser';
 import {
   NavigationError,
+  PreloadAllModules,
   Router,
   RouterFeatures,
   TitleStrategy,
@@ -9,6 +10,7 @@ import {
   withComponentInputBinding,
   withDebugTracing,
   withNavigationErrorHandler,
+  withPreloading,
   withViewTransitions,
 } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -27,6 +29,7 @@ import { AppPageTitleStrategy } from './app-page-title-strategy';
 
 const routerFeatures: RouterFeatures[] = [
   withComponentInputBinding(),
+  withPreloading(PreloadAllModules),
   withViewTransitions(),
   withNavigationErrorHandler((e: NavigationError) => {
     const router = inject(Router);

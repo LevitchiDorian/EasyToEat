@@ -205,6 +205,29 @@
   margin: 0 0 8px;
 }
 
+/* ── Card actions ─────────────────────────────────────────────────── */
+.oh-card__actions {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid hsl(var(--border) / 0.5);
+}
+
+.oh-btn-cancel {
+  padding: 7px 16px;
+  background: hsl(var(--occupied) / 0.1);
+  border: 1px solid hsl(var(--occupied) / 0.3);
+  border-radius: 8px;
+  color: hsl(var(--occupied));
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: hsl(var(--occupied) / 0.2);
+  }
+}
+
 /* ── Responsive ───────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .oh-tab {

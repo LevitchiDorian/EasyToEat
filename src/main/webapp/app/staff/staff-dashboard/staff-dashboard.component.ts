@@ -19,6 +19,7 @@ interface ReservationInfo {
   clientLogin?: string;
   clientFirstName?: string;
   clientLastName?: string;
+  client?: { id: number; firstName?: string; lastName?: string };
 }
 
 interface TableInfo {
@@ -55,6 +56,17 @@ interface FloorPlanResponse {
   rooms: RoomInfo[];
 }
 
+interface OrderItem {
+  id: number;
+  status: string;
+  totalAmount?: number;
+  notes?: string;
+  client?: { id: number; firstName?: string; lastName?: string };
+  table?: { id: number; tableNumber?: string };
+}
+
+type SideTab = 'masa' | 'rezervari' | 'comenzi';
+
 @Component({
   selector: 'app-staff-dashboard',
   standalone: true,
@@ -76,9 +88,14 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
   refreshCountdown = signal<number>(30);
   lastRefreshed = signal<string>('');
 
+  activeTab = signal<SideTab>('rezervari');
+  allReservations = signal<ReservationInfo[]>([]);
+  isLoadingReservations = signal(false);
+  activeOrders = signal<OrderItem[]>([]);
+  isLoadingOrders = signal(false);
+
   private refreshSub?: Subscription;
 
-  // Stats derived from rawResponse
   totalTables = computed(() => {
     const r = this.rawResponse();
     if (!r) return 0;
@@ -103,23 +120,14 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
     return r.rooms.reduce((acc, room) => acc + room.tables.filter(t => t.status === 'OCCUPIED' && t.isActive).length, 0);
   });
 
-  // All today's reservations extracted from floor plan
-  todayReservations = computed((): ReservationInfo[] => {
-    const r = this.rawResponse();
-    if (!r) return [];
-    const list: ReservationInfo[] = [];
-    for (const room of r.rooms) {
-      for (const table of room.tables) {
-        if (table.reservation) list.push(table.reservation);
-      }
-    }
-    // Sort by start time
-    return list.sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? ''));
-  });
+  todayReservations = computed((): ReservationInfo[] =>
+    this.allReservations()
+      .filter(r => r.status !== 'CANCELLED')
+      .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? '')),
+  );
 
   ngOnInit(): void {
     this.loadFloorPlan();
-    // Auto-refresh countdown
     this.refreshSub = interval(1000).subscribe(() => {
       const c = this.refreshCountdown() - 1;
       if (c <= 0) {
@@ -145,7 +153,6 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
         this.floorPlan.set(this.mapToFloorPlan(res));
         this.isLoading.set(false);
         this.lastRefreshed.set(new Date().toLocaleTimeString('ro-RO'));
-        // Update selected table if still valid
         const prev = this.selectedTable();
         if (prev) {
           let found: TableInfo | undefined;
@@ -155,11 +162,44 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
           }
           this.selectedTable.set(found ?? null);
         }
+        this.loadSideData(res.locationId);
       },
       error: () => {
         this.error.set('Nu s-a putut încărca planul sălii. Verificați conexiunea.');
         this.isLoading.set(false);
       },
+    });
+  }
+
+  private loadSideData(locationId: number): void {
+    this.loadAllReservations(locationId);
+    this.loadActiveOrders(locationId);
+  }
+
+  private loadAllReservations(locationId: number): void {
+    this.isLoadingReservations.set(true);
+    const date = this.selectedDate();
+    const url = this.configService.getEndpointFor(
+      `api/reservations?locationId.equals=${locationId}&reservationDate.equals=${date}&size=200&sort=startTime,asc`,
+    );
+    this.http.get<ReservationInfo[]>(url).subscribe({
+      next: data => {
+        this.allReservations.set(data);
+        this.isLoadingReservations.set(false);
+      },
+      error: () => this.isLoadingReservations.set(false),
+    });
+  }
+
+  private loadActiveOrders(locationId: number): void {
+    this.isLoadingOrders.set(true);
+    const url = this.configService.getEndpointFor(`api/restaurant-orders?locationId.equals=${locationId}&size=100&sort=id,desc`);
+    this.http.get<OrderItem[]>(url).subscribe({
+      next: data => {
+        this.activeOrders.set(data.filter(o => ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'].includes(o.status)));
+        this.isLoadingOrders.set(false);
+      },
+      error: () => this.isLoadingOrders.set(false),
     });
   }
 
@@ -173,6 +213,43 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
     this.loadFloorPlan();
   }
 
+  updateTableStatus(tableId: number, currentStatus: string): void {
+    const newStatus = currentStatus === 'OCCUPIED' ? 'AVAILABLE' : 'OCCUPIED';
+    this.http.patch(this.configService.getEndpointFor(`api/restaurant-tables/${tableId}`), { id: tableId, status: newStatus }).subscribe({
+      next: () => {
+        this.rawResponse.update(r => {
+          if (!r) return r;
+          return {
+            ...r,
+            rooms: r.rooms.map(room => ({
+              ...room,
+              tables: room.tables.map(t => (t.id === tableId ? { ...t, status: newStatus } : t)),
+            })),
+          };
+        });
+        const sel = this.selectedTable();
+        if (sel && sel.id === tableId) this.selectedTable.set({ ...sel, status: newStatus });
+        const raw = this.rawResponse();
+        if (raw) this.floorPlan.set(this.mapToFloorPlan(raw));
+      },
+      error: () => alert('Eroare la actualizare status masă.'),
+    });
+  }
+
+  updateReservationStatus(resId: number, newStatus: string): void {
+    if (newStatus === 'CANCELLED' && !confirm('Anulezi această rezervare?')) return;
+    this.http.patch(this.configService.getEndpointFor(`api/reservations/${resId}`), { id: resId, status: newStatus }).subscribe({
+      next: () => {
+        this.allReservations.update(list => list.map(r => (r.id === resId ? { ...r, status: newStatus } : r)));
+        const sel = this.selectedTable();
+        if (sel?.reservation && sel.reservation.id === resId) {
+          this.selectedTable.set({ ...sel, reservation: { ...sel.reservation, status: newStatus } });
+        }
+      },
+      error: () => alert('Eroare la actualizare rezervare.'),
+    });
+  }
+
   onTableSelected(table: FloorTable): void {
     const response = this.rawResponse();
     if (!response) return;
@@ -182,10 +259,16 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
       if (found) break;
     }
     this.selectedTable.set(found ?? null);
+    this.activeTab.set('masa');
   }
 
   clearSelection(): void {
     this.selectedTable.set(null);
+    this.activeTab.set('rezervari');
+  }
+
+  setTab(tab: SideTab): void {
+    this.activeTab.set(tab);
   }
 
   get locationName(): string {
@@ -206,6 +289,8 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
       CONFIRMED: 'Confirmată',
       COMPLETED: 'Finalizată',
       CANCELLED: 'Anulată',
+      PREPARING: 'Se prepară',
+      READY: 'Gata',
     };
     return map[status] ?? status;
   }
@@ -213,7 +298,7 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
   statusClass(status: string): string {
     if (status === 'AVAILABLE' || status === 'COMPLETED') return 'sd-badge sd-badge--green';
     if (status === 'RESERVED' || status === 'PENDING' || status === 'CONFIRMED') return 'sd-badge sd-badge--amber';
-    if (status === 'OCCUPIED') return 'sd-badge sd-badge--blue';
+    if (status === 'OCCUPIED' || status === 'PREPARING' || status === 'READY') return 'sd-badge sd-badge--blue';
     return 'sd-badge sd-badge--red';
   }
 

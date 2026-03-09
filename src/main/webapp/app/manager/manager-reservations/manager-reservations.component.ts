@@ -46,26 +46,39 @@ interface ReservationItem {
             <thead>
               <tr>
                 <th>Cod</th>
-                <th>Data</th>
                 <th>Oră</th>
                 <th>Persoane</th>
                 <th>Client</th>
-                <th>Stare</th>
                 <th>Solicitări</th>
+                <th>Stare</th>
+                <th>Acțiuni</th>
               </tr>
             </thead>
             <tbody>
               @for (r of reservations(); track r.id) {
                 <tr>
                   <td class="mgr-mono">{{ r.reservationCode }}</td>
-                  <td>{{ r.reservationDate }}</td>
                   <td>{{ r.startTime }} – {{ r.endTime }}</td>
                   <td>{{ r.partySize }}</td>
                   <td>{{ r.client?.firstName }} {{ r.client?.lastName }}</td>
+                  <td style="max-width:180px;font-size:.78rem;color:rgba(255,255,255,.5)">{{ r.specialRequests || '—' }}</td>
                   <td>
                     <span class="rv-status-badge" [class]="badgeClass(r.status)">{{ statusLabel(r.status) }}</span>
                   </td>
-                  <td style="max-width:200px;font-size:.78rem;color:rgba(255,255,255,.5)">{{ r.specialRequests || '—' }}</td>
+                  <td>
+                    <div class="mr-actions">
+                      @if (r.status === 'PENDING') {
+                        <button class="mr-action-btn mr-action-btn--confirm" (click)="updateStatus(r, 'CONFIRMED')">✓ Confirmă</button>
+                      }
+                      @if (r.status === 'CONFIRMED') {
+                        <button class="mr-action-btn mr-action-btn--complete" (click)="updateStatus(r, 'COMPLETED')">✓ Finalizat</button>
+                        <button class="mr-action-btn mr-action-btn--noshow" (click)="updateStatus(r, 'NO_SHOW')">Absent</button>
+                      }
+                      @if (r.status !== 'CANCELLED' && r.status !== 'COMPLETED' && r.status !== 'NO_SHOW') {
+                        <button class="mr-action-btn mr-action-btn--cancel" (click)="updateStatus(r, 'CANCELLED')">✕ Anulează</button>
+                      }
+                    </div>
+                  </td>
                 </tr>
               }
               @if (reservations().length === 0) {
@@ -111,6 +124,53 @@ interface ReservationItem {
         font-size: 0.78rem;
         color: var(--rv-orange, #f5a520);
       }
+      .mr-actions {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .mr-action-btn {
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        border: 1px solid;
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+        &--confirm {
+          background: rgba(34, 197, 94, 0.1);
+          border-color: rgba(34, 197, 94, 0.3);
+          color: #22c55e;
+          &:hover {
+            background: rgba(34, 197, 94, 0.2);
+          }
+        }
+        &--complete {
+          background: rgba(59, 130, 246, 0.1);
+          border-color: rgba(59, 130, 246, 0.3);
+          color: #60a5fa;
+          &:hover {
+            background: rgba(59, 130, 246, 0.2);
+          }
+        }
+        &--noshow {
+          background: rgba(245, 158, 11, 0.1);
+          border-color: rgba(245, 158, 11, 0.3);
+          color: #f59e0b;
+          &:hover {
+            background: rgba(245, 158, 11, 0.2);
+          }
+        }
+        &--cancel {
+          background: rgba(239, 68, 68, 0.1);
+          border-color: rgba(239, 68, 68, 0.3);
+          color: #ef4444;
+          &:hover {
+            background: rgba(239, 68, 68, 0.2);
+          }
+        }
+      }
     `,
   ],
 })
@@ -125,7 +185,6 @@ export default class ManagerReservationsComponent implements OnInit {
   selectedDate = signal<string>(new Date().toISOString().substring(0, 10));
 
   ngOnInit(): void {
-    // Ensure profile is loaded
     this.roleService.load();
     this.load();
   }
@@ -147,6 +206,18 @@ export default class ManagerReservationsComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  updateStatus(res: ReservationItem, newStatus: string): void {
+    if (newStatus === 'CANCELLED' && !confirm(`Anulezi rezervarea ${res.reservationCode}?`)) return;
+    this.http
+      .patch<ReservationItem>(this.configService.getEndpointFor(`api/reservations/${res.id}`), { id: res.id, status: newStatus })
+      .subscribe({
+        next: () => {
+          this.reservations.update(list => list.map(r => (r.id === res.id ? { ...r, status: newStatus } : r)));
+        },
+        error: () => alert('Eroare la actualizare. Încearcă din nou.'),
+      });
   }
 
   onDateChange(d: string): void {
