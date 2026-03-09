@@ -143,6 +143,11 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
     const url = this.configService.getEndpointFor(`api/staff/floor-plan/my?date=${this.selectedDate()}`);
     this.http.get<StaffFloorPlanResponse>(url).subscribe({
       next: res => {
+        if (!res.locationId) {
+          this.error.set('Contul tău nu are o locație asignată. Contactează administratorul.');
+          this.isLoading.set(false);
+          return;
+        }
         this.rawResponse.set(res);
         this.floorPlan.set(this.mapToFloorPlan(res));
         this.isLoading.set(false);

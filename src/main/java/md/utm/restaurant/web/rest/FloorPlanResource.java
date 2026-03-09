@@ -31,7 +31,8 @@ public class FloorPlanResource {
         LocalDate effectiveDate = date != null ? date : LocalDate.now();
         String login = SecurityUtils.getCurrentUserLogin().orElseThrow();
         Optional<FloorPlanDTO> result = floorPlanService.buildForCurrentUser(login, effectiveDate);
-        return result.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        // Return empty DTO (locationId=null) when no location assigned — frontend shows a friendly message
+        return ResponseEntity.ok(result.orElseGet(FloorPlanDTO::new));
     }
 
     /**
