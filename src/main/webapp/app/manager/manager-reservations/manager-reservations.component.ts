@@ -209,7 +209,6 @@ export default class ManagerReservationsComponent implements OnInit {
   }
 
   updateStatus(res: ReservationItem, newStatus: string): void {
-    if (newStatus === 'CANCELLED' && !confirm(`Anulezi rezervarea ${res.reservationCode}?`)) return;
     this.http
       .patch<ReservationItem>(this.configService.getEndpointFor(`api/reservations/${res.id}`), { id: res.id, status: newStatus })
       .subscribe({

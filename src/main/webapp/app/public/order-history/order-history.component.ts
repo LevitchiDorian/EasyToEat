@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
@@ -14,6 +14,18 @@ import dayjs from 'dayjs/esm';
 
 type Tab = 'reservations' | 'orders';
 
+interface SimpleMenuItem {
+  id: number;
+  name: string;
+  price: number;
+  categoryName?: string;
+}
+
+interface PickerEntry {
+  item: SimpleMenuItem;
+  qty: number;
+}
+
 @Component({
   selector: 'jhi-order-history',
   standalone: true,
@@ -27,6 +39,17 @@ export default class OrderHistoryComponent implements OnInit {
   orders = signal<IRestaurantOrder[]>([]);
   isLoading = signal(true);
   error = signal(false);
+
+  // Add-items picker state
+  pickerOrderId = signal<number | null>(null);
+  pickerLocationId = signal<number | null>(null);
+  menuItems = signal<SimpleMenuItem[]>([]);
+  isLoadingMenu = signal(false);
+  pickerEntries = signal<PickerEntry[]>([]);
+  isAddingItems = signal(false);
+  addSuccess = signal(false);
+
+  pickerTotal = computed(() => this.pickerEntries().reduce((s, e) => s + e.item.price * e.qty, 0));
 
   private readonly http = inject(HttpClient);
   private readonly configService = inject(ApplicationConfigService);
@@ -70,6 +93,81 @@ export default class OrderHistoryComponent implements OnInit {
 
   setTab(tab: Tab): void {
     this.activeTab.set(tab);
+  }
+
+  isActiveOrder(order: IRestaurantOrder): boolean {
+    return ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'].includes(order.status ?? '');
+  }
+
+  openPicker(order: IRestaurantOrder): void {
+    const locationId = (order as any).location?.id ?? null;
+    this.pickerOrderId.set(order.id);
+    this.pickerLocationId.set(locationId);
+    this.pickerEntries.set([]);
+    this.addSuccess.set(false);
+    this.isLoadingMenu.set(true);
+    const url = locationId
+      ? this.configService.getEndpointFor(
+          `api/menu-items?locationId.equals=${locationId}&isAvailable.equals=true&size=200&sort=displayOrder,asc`,
+        )
+      : this.configService.getEndpointFor(`api/menu-items?isAvailable.equals=true&size=200&sort=displayOrder,asc`);
+    this.http.get<any[]>(url).subscribe({
+      next: items => {
+        this.menuItems.set(items.map(i => ({ id: i.id, name: i.name ?? 'Produs', price: i.price ?? 0, categoryName: i.category?.name })));
+        this.isLoadingMenu.set(false);
+      },
+      error: () => this.isLoadingMenu.set(false),
+    });
+  }
+
+  closePicker(): void {
+    this.pickerOrderId.set(null);
+  }
+
+  pickerQty(itemId: number): number {
+    return this.pickerEntries().find(e => e.item.id === itemId)?.qty ?? 0;
+  }
+
+  adjustQty(item: SimpleMenuItem, delta: number): void {
+    const entries = [...this.pickerEntries()];
+    const idx = entries.findIndex(e => e.item.id === item.id);
+    if (idx === -1) {
+      if (delta > 0) entries.push({ item, qty: delta });
+    } else {
+      const newQty = entries[idx].qty + delta;
+      if (newQty <= 0) {
+        entries.splice(idx, 1);
+      } else {
+        entries[idx] = { ...entries[idx], qty: newQty };
+      }
+    }
+    this.pickerEntries.set(entries);
+  }
+
+  confirmAddItems(): void {
+    const orderId = this.pickerOrderId();
+    if (!orderId || this.pickerEntries().length === 0) return;
+    this.isAddingItems.set(true);
+    const posts = this.pickerEntries().map(e =>
+      this.http.post(this.configService.getEndpointFor('api/order-items'), {
+        restaurantOrder: { id: orderId },
+        menuItem: { id: e.item.id },
+        quantity: e.qty,
+        unitPrice: e.item.price,
+        totalPrice: e.item.price * e.qty,
+        status: 'PENDING',
+      }),
+    );
+    forkJoin(posts).subscribe({
+      next: () => {
+        this.isAddingItems.set(false);
+        this.addSuccess.set(true);
+        this.pickerEntries.set([]);
+        // Refresh the order total by reloading
+        this.http.get<any>('/api/account').subscribe({ next: acc => this.loadHistory(acc.id) });
+      },
+      error: () => this.isAddingItems.set(false),
+    });
   }
 
   reservationStatusLabel(status: string | null | undefined): string {
@@ -123,7 +221,6 @@ export default class OrderHistoryComponent implements OnInit {
   }
 
   cancelReservation(res: IReservation): void {
-    if (!confirm('Ești sigur că vrei să anulezi această rezervare?')) return;
     this.http.patch(this.configService.getEndpointFor(`api/reservations/${res.id}`), { id: res.id, status: 'CANCELLED' }).subscribe({
       next: () => {
         this.reservations.update(list => list.map(r => (r.id === res.id ? { ...r, status: 'CANCELLED' } : r)));

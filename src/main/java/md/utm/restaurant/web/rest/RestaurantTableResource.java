@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import md.utm.restaurant.repository.RestaurantTableRepository;
+import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.RestaurantTableQueryService;
 import md.utm.restaurant.service.RestaurantTableService;
 import md.utm.restaurant.service.criteria.RestaurantTableCriteria;
@@ -46,14 +47,18 @@ public class RestaurantTableResource {
 
     private final RestaurantTableQueryService restaurantTableQueryService;
 
+    private final FloorPlanNotificationService floorPlanNotificationService;
+
     public RestaurantTableResource(
         RestaurantTableService restaurantTableService,
         RestaurantTableRepository restaurantTableRepository,
-        RestaurantTableQueryService restaurantTableQueryService
+        RestaurantTableQueryService restaurantTableQueryService,
+        FloorPlanNotificationService floorPlanNotificationService
     ) {
         this.restaurantTableService = restaurantTableService;
         this.restaurantTableRepository = restaurantTableRepository;
         this.restaurantTableQueryService = restaurantTableQueryService;
+        this.floorPlanNotificationService = floorPlanNotificationService;
     }
 
     /**
@@ -138,6 +143,8 @@ public class RestaurantTableResource {
         }
 
         Optional<RestaurantTableDTO> result = restaurantTableService.partialUpdate(restaurantTableDTO);
+
+        result.ifPresent(dto -> restaurantTableRepository.findLocationIdById(id).ifPresent(floorPlanNotificationService::notifyUpdate));
 
         return ResponseUtil.wrapOrNotFound(
             result,

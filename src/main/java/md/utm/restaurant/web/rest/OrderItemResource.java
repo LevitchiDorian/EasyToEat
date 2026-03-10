@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import md.utm.restaurant.repository.OrderItemRepository;
+import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.OrderItemService;
 import md.utm.restaurant.service.dto.OrderItemDTO;
 import md.utm.restaurant.web.rest.errors.BadRequestAlertException;
@@ -42,9 +43,16 @@ public class OrderItemResource {
 
     private final OrderItemRepository orderItemRepository;
 
-    public OrderItemResource(OrderItemService orderItemService, OrderItemRepository orderItemRepository) {
+    private final FloorPlanNotificationService floorPlanNotificationService;
+
+    public OrderItemResource(
+        OrderItemService orderItemService,
+        OrderItemRepository orderItemRepository,
+        FloorPlanNotificationService floorPlanNotificationService
+    ) {
         this.orderItemService = orderItemService;
         this.orderItemRepository = orderItemRepository;
+        this.floorPlanNotificationService = floorPlanNotificationService;
     }
 
     /**
@@ -61,6 +69,9 @@ public class OrderItemResource {
             throw new BadRequestAlertException("A new orderItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
         orderItemDTO = orderItemService.save(orderItemDTO);
+        if (orderItemDTO.getOrder() != null && orderItemDTO.getOrder().getLocation() != null) {
+            floorPlanNotificationService.notifyUpdate(orderItemDTO.getOrder().getLocation().getId());
+        }
         return ResponseEntity.created(new URI("/api/order-items/" + orderItemDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, orderItemDTO.getId().toString()))
             .body(orderItemDTO);
@@ -145,11 +156,14 @@ public class OrderItemResource {
     @GetMapping("")
     public ResponseEntity<List<OrderItemDTO>> getAllOrderItems(
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
-        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload,
+        @RequestParam(name = "restaurantOrderId.equals", required = false) Long orderId
     ) {
         LOG.debug("REST request to get a page of OrderItems");
         Page<OrderItemDTO> page;
-        if (eagerload) {
+        if (orderId != null) {
+            page = orderItemService.findByOrderId(orderId, pageable);
+        } else if (eagerload) {
             page = orderItemService.findAllWithEagerRelationships(pageable);
         } else {
             page = orderItemService.findAll(pageable);

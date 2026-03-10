@@ -629,3 +629,223 @@
     display: none;
   }
 }
+
+/* ── Order card (occupied / pre-order items) ──────────────────── */
+.sd-order-card {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.sd-order-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 8px;
+
+  svg {
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+}
+
+.sd-order-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sd-order-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.78rem;
+}
+
+.sd-order-item__qty {
+  color: var(--rv-orange, #f5a520);
+  font-weight: 700;
+  min-width: 22px;
+}
+
+.sd-order-item__name {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sd-order-item__price {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.73rem;
+}
+
+.sd-order-total {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: right;
+
+  strong {
+    color: var(--rv-orange, #f5a520);
+  }
+}
+
+// ── Check-in alert overlay ─────────────────────────────────────────────────────
+.sd-checkin-stack {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+  max-width: 340px;
+  width: calc(100vw - 48px);
+  pointer-events: none;
+}
+
+.sd-checkin-alert {
+  pointer-events: all;
+  background: rgba(26, 26, 26, 0.97);
+  border: 1px solid rgba(245, 165, 32, 0.45);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(245, 165, 32, 0.15);
+  backdrop-filter: blur(16px);
+  animation: sd-alert-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  @keyframes sd-alert-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+}
+
+.sd-checkin-alert__icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.sd-checkin-alert__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sd-checkin-alert__title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--rv-orange, #f5a520);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sd-checkin-alert__ext {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 1px 7px;
+}
+
+.sd-checkin-alert__meta {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sd-checkin-alert__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rv-amber, #f59e0b);
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px var(--rv-amber, #f59e0b);
+  animation: sd-dot-pulse 1.6s ease-in-out infinite;
+
+  @keyframes sd-dot-pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(0.75);
+    }
+  }
+}
+
+.sd-checkin-alert__question {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+.sd-checkin-alert__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.sd-checkin-btn {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.15s,
+    transform 0.1s;
+  line-height: 1.2;
+
+  &:hover {
+    opacity: 0.85;
+  }
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &--present {
+    background: var(--rv-green, #22c55e);
+    color: #000;
+    border-color: var(--rv-green, #22c55e);
+  }
+
+  &--extend {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--rv-amber, #f59e0b);
+    border-color: rgba(245, 158, 11, 0.35);
+  }
+
+  &--absent {
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--rv-red, #ef4444);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+}

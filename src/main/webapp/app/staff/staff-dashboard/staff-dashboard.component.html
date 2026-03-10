@@ -105,7 +105,14 @@
           <button class="sd-btn-refresh" (click)="manualRefresh()">Reîncearcă</button>
         </div>
       } @else if (floorPlan()) {
-        <app-floor-map [floorPlan]="floorPlan()!" (tableSelected)="onTableSelected($event)" />
+        <app-floor-map
+          [floorPlan]="floorPlan()!"
+          [staffMode]="true"
+          [showSelectionBar]="false"
+          [showLegend]="false"
+          [fixedView]="true"
+          (tableSelected)="onTableSelected($event)"
+        />
       }
     </div>
 
@@ -188,8 +195,8 @@
                   <span class="sd-detail-value sd-mono">{{ res.reservationCode }}</span>
                 </div>
                 <div class="sd-detail-row">
-                  <span class="sd-detail-label">Oră</span>
-                  <span class="sd-detail-value">{{ res.startTime }} – {{ res.endTime }}</span>
+                  <span class="sd-detail-label">Oră sosire</span>
+                  <span class="sd-detail-value">{{ res.startTime }}</span>
                 </div>
                 <div class="sd-detail-row">
                   <span class="sd-detail-label">Persoane</span>
@@ -210,18 +217,11 @@
                   <span [class]="statusClass(res.status)">{{ statusLabel(res.status) }}</span>
                 </div>
                 <div class="sd-res-actions">
-                  @if (res.status === 'PENDING') {
-                    <button class="sd-action-btn sd-action-btn--confirm" (click)="updateReservationStatus(res.id, 'CONFIRMED')">
-                      ✓ Confirmă
-                    </button>
-                  }
-                  @if (res.status === 'CONFIRMED') {
+                  @if (res.status === 'PENDING' || res.status === 'CONFIRMED') {
                     <button class="sd-action-btn sd-action-btn--complete" (click)="updateReservationStatus(res.id, 'COMPLETED')">
                       ✓ Finalizat
                     </button>
                     <button class="sd-action-btn sd-action-btn--noshow" (click)="updateReservationStatus(res.id, 'NO_SHOW')">Absent</button>
-                  }
-                  @if (res.status !== 'CANCELLED' && res.status !== 'COMPLETED' && res.status !== 'NO_SHOW') {
                     <button class="sd-action-btn sd-action-btn--cancel" (click)="updateReservationStatus(res.id, 'CANCELLED')">
                       ✕ Anulează
                     </button>
@@ -230,6 +230,42 @@
               </div>
             } @else {
               <p class="sd-no-reservation">Nicio rezervare activă</p>
+            }
+
+            <!-- Order items (OCCUPIED table or pre-order for RESERVED) -->
+            @if (isLoadingTableOrder()) {
+              <p class="sd-no-reservation">Se încarcă comanda...</p>
+            } @else if (selectedTableOrder()) {
+              @if (selectedTableOrder(); as ord) {
+                <div class="sd-order-card">
+                  <div class="sd-order-card__header">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                      <line x1="3" y1="6" x2="21" y2="6" />
+                    </svg>
+                    Comanda #{{ ord.id }}
+                    <span [class]="statusClass(ord.status)">{{ statusLabel(ord.status) }}</span>
+                  </div>
+                  @if (ord.items.length === 0) {
+                    <p class="sd-no-reservation">Fără produse</p>
+                  } @else {
+                    <ul class="sd-order-items">
+                      @for (item of ord.items; track item.id) {
+                        <li class="sd-order-item">
+                          <span class="sd-order-item__qty">{{ item.quantity }}×</span>
+                          <span class="sd-order-item__name">{{ item.menuItem?.name ?? 'Produs' }}</span>
+                          <span class="sd-order-item__price">{{ item.unitPrice | number: '1.2-2' }} MDL</span>
+                        </li>
+                      }
+                    </ul>
+                    @if (ord.totalAmount) {
+                      <div class="sd-order-total">
+                        Total: <strong>{{ ord.totalAmount | number: '1.2-2' }} MDL</strong>
+                      </div>
+                    }
+                  }
+                </div>
+              }
             }
           </div>
         } @else {
@@ -269,9 +305,6 @@
                       <div class="sd-res-item__note">{{ res.specialRequests }}</div>
                     }
                     <div class="sd-res-quick-actions">
-                      @if (res.status === 'PENDING') {
-                        <button class="sd-quick-btn sd-quick-btn--confirm" (click)="updateReservationStatus(res.id, 'CONFIRMED')">✓</button>
-                      }
                       @if (res.status !== 'CANCELLED' && res.status !== 'COMPLETED' && res.status !== 'NO_SHOW') {
                         <button class="sd-quick-btn sd-quick-btn--cancel" (click)="updateReservationStatus(res.id, 'CANCELLED')">✕</button>
                       }
@@ -323,4 +356,77 @@
       }
     </aside>
   </div>
+
+  <!-- ── Check-in alert notifications ──────────────────────────────────────── -->
+  @if (checkInAlerts().length > 0) {
+    <div class="sd-checkin-stack">
+      @for (alert of checkInAlerts(); track alert.reservationId) {
+        <div class="sd-checkin-alert glass">
+          <div class="sd-checkin-alert__icon">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+          <div class="sd-checkin-alert__body">
+            <div class="sd-checkin-alert__title">
+              Rezervare — Masa <strong>{{ alert.tableNumber }}</strong>
+              @if (alert.extendCount > 0) {
+                <span class="sd-checkin-alert__ext">(+{{ alert.extendCount * 10 }} min)</span>
+              }
+            </div>
+            <div class="sd-checkin-alert__meta">
+              <span>{{ alert.clientName }}</span>
+              <span class="sd-checkin-alert__dot">·</span>
+              <span>ora {{ alert.startTime }}</span>
+            </div>
+            <div class="sd-checkin-alert__question">Clientul este pe loc?</div>
+          </div>
+          <div class="sd-checkin-alert__actions">
+            <button class="sd-checkin-btn sd-checkin-btn--present" (click)="alertPresent(alert)" title="Da, este prezent">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              Da, este
+            </button>
+            <button class="sd-checkin-btn sd-checkin-btn--extend" (click)="alertExtend(alert)" title="+10 minute">+10 min</button>
+            <button class="sd-checkin-btn sd-checkin-btn--absent" (click)="alertAbsent(alert)" title="Client absent">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+              Absent
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
 </div>

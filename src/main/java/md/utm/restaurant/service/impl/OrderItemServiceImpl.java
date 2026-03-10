@@ -81,6 +81,13 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<OrderItemDTO> findByOrderId(Long orderId, Pageable pageable) {
+        LOG.debug("Request to get OrderItems for order : {}", orderId);
+        return orderItemRepository.findByOrderId(orderId, pageable).map(orderItemMapper::toDto);
+    }
+
+    @Override
     public void delete(Long id) {
         LOG.debug("Request to delete OrderItem : {}", id);
         orderItemRepository.deleteById(id);

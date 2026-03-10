@@ -37,4 +37,10 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
     @Query("select orderItem from OrderItem orderItem left join fetch orderItem.menuItem where orderItem.id =:id")
     Optional<OrderItem> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query(
+        value = "select orderItem from OrderItem orderItem left join fetch orderItem.menuItem where orderItem.order.id = :orderId",
+        countQuery = "select count(orderItem) from OrderItem orderItem where orderItem.order.id = :orderId"
+    )
+    Page<OrderItem> findByOrderId(@Param("orderId") Long orderId, Pageable pageable);
 }

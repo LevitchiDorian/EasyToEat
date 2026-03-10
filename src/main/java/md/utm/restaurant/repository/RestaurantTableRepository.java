@@ -48,4 +48,7 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
         """
     )
     List<RestaurantTable> findActiveByLocationId(@Param("locationId") Long locationId);
+
+    @Query("select t.room.location.id from RestaurantTable t where t.id = :id")
+    Optional<Long> findLocationIdById(@Param("id") Long id);
 }

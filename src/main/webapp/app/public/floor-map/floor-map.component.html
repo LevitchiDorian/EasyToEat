@@ -1,22 +1,29 @@
-<div class="rv-floor-map" [class.rv-floor-map--readonly]="readonly" [class.rv-floor-map--interactive]="!readonly">
+<div
+  class="rv-floor-map"
+  [class.rv-floor-map--readonly]="readonly"
+  [class.rv-floor-map--interactive]="!readonly && !fixedView"
+  [class.rv-floor-map--fixed]="fixedView"
+>
   <!-- Header: legend + zoom controls (always visible, never overlapping canvas) -->
   <div class="rv-floor-header">
-    <div class="rv-floor-legend">
-      <div class="rv-legend-item">
-        <span class="rv-legend-dot rv-legend-dot--available"></span>
-        Disponibilă
+    @if (showLegend) {
+      <div class="rv-floor-legend">
+        <div class="rv-legend-item">
+          <span class="rv-legend-dot rv-legend-dot--available"></span>
+          Disponibilă
+        </div>
+        <div class="rv-legend-item">
+          <span class="rv-legend-dot rv-legend-dot--reserved"></span>
+          Rezervată
+        </div>
+        <div class="rv-legend-item">
+          <span class="rv-legend-dot rv-legend-dot--occupied"></span>
+          Ocupată
+        </div>
       </div>
-      <div class="rv-legend-item">
-        <span class="rv-legend-dot rv-legend-dot--reserved"></span>
-        Rezervată
-      </div>
-      <div class="rv-legend-item">
-        <span class="rv-legend-dot rv-legend-dot--occupied"></span>
-        Ocupată
-      </div>
-    </div>
+    }
 
-    @if (!readonly) {
+    @if (!readonly && !fixedView) {
       <div class="rv-floor-controls">
         <button class="rv-floor-btn" (click)="zoomIn()" title="Mărire">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">

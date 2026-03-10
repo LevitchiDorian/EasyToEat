@@ -7,6 +7,7 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { AccountService } from 'app/core/auth/account.service';
 import { FloorMapComponent, FloorPlan, FloorTable } from 'app/public/floor-map/floor-map.component';
 import { StaffFloorPlanResponse, StaffTableInfo, LocationOption } from 'app/admin/staff-floor-plan/staff-floor-plan.component';
+import { FloorPlanWsService } from 'app/core/floor-plan-ws/floor-plan-ws.service';
 
 interface ReservationItem {
   id: number;
@@ -31,6 +32,23 @@ interface OrderItem {
   table?: { id: number; tableNumber?: string };
 }
 
+interface OrderLine {
+  id: number;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  status: string;
+  menuItem?: { id: number; name?: string };
+}
+
+interface TableOrderInfo {
+  id: number;
+  status: string;
+  totalAmount?: number;
+  notes?: string;
+  items: OrderLine[];
+}
+
 type SideTab = 'masa' | 'rezervari' | 'comenzi';
 
 @Component({
@@ -45,6 +63,7 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly configService = inject(ApplicationConfigService);
   private readonly accountService = inject(AccountService);
+  private readonly floorPlanWs = inject(FloorPlanWsService);
 
   isAdmin = signal(false);
   isLoading = signal(false);
@@ -64,7 +83,11 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
   activeOrders = signal<OrderItem[]>([]);
   isLoadingOrders = signal(false);
 
+  selectedTableOrder = signal<TableOrderInfo | null>(null);
+  isLoadingTableOrder = signal(false);
+
   private refreshSub?: Subscription;
+  private wsSub?: Subscription;
 
   totalTables = computed(() => {
     const r = this.rawResponse();
@@ -120,6 +143,7 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.refreshSub?.unsubscribe();
+    this.wsSub?.unsubscribe();
   }
 
   private loadLocations(): void {
@@ -154,6 +178,9 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
         this.lastRefreshed.set(new Date().toLocaleTimeString('ro-RO'));
         this.refreshSelectedTable(res);
         this.loadSideData(res.locationId);
+        if (!this.wsSub) {
+          this.wsSub = this.floorPlanWs.watchLocation(res.locationId).subscribe(() => this.loadMyFloorPlan(true));
+        }
       },
       error: () => {
         this.error.set('Nu s-a putut încărca planul sălii.');
@@ -174,6 +201,9 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
         this.lastRefreshed.set(new Date().toLocaleTimeString('ro-RO'));
         this.refreshSelectedTable(res);
         this.loadSideData(locationId);
+        if (!this.wsSub) {
+          this.wsSub = this.floorPlanWs.watchLocation(locationId).subscribe(() => this.loadFloorPlan(locationId, true));
+        }
       },
       error: () => {
         this.error.set('Nu s-a putut încărca planul sălii.');
@@ -254,10 +284,59 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
     }
     this.selectedTable.set(found ?? null);
     this.activeTab.set('masa');
+    this.selectedTableOrder.set(null);
+    if (found?.status === 'OCCUPIED') {
+      this.loadTableOrder(found.id);
+    } else if (found?.status === 'RESERVED' && found.reservation) {
+      this.loadReservationOrder(found.reservation.id);
+    }
+  }
+
+  loadTableOrder(tableId: number): void {
+    this.isLoadingTableOrder.set(true);
+    const url = this.configService.getEndpointFor(`api/restaurant-orders?tableId.equals=${tableId}&size=1&sort=id,desc`);
+    this.http.get<any[]>(url).subscribe({
+      next: orders => {
+        const active = orders.filter(o => ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'].includes(o.status));
+        if (active.length > 0) {
+          this.fetchOrderItems(active[0]);
+        } else {
+          this.isLoadingTableOrder.set(false);
+        }
+      },
+      error: () => this.isLoadingTableOrder.set(false),
+    });
+  }
+
+  loadReservationOrder(reservationId: number): void {
+    this.isLoadingTableOrder.set(true);
+    const url = this.configService.getEndpointFor(`api/restaurant-orders?reservationId.equals=${reservationId}&size=1&sort=id,desc`);
+    this.http.get<any[]>(url).subscribe({
+      next: orders => {
+        if (orders.length > 0) {
+          this.fetchOrderItems(orders[0]);
+        } else {
+          this.isLoadingTableOrder.set(false);
+        }
+      },
+      error: () => this.isLoadingTableOrder.set(false),
+    });
+  }
+
+  private fetchOrderItems(order: any): void {
+    const url = this.configService.getEndpointFor(`api/order-items?restaurantOrderId.equals=${order.id}&size=100`);
+    this.http.get<OrderLine[]>(url).subscribe({
+      next: items => {
+        this.selectedTableOrder.set({ id: order.id, status: order.status, totalAmount: order.totalAmount, notes: order.notes, items });
+        this.isLoadingTableOrder.set(false);
+      },
+      error: () => this.isLoadingTableOrder.set(false),
+    });
   }
 
   clearSelection(): void {
     this.selectedTable.set(null);
+    this.selectedTableOrder.set(null);
     this.activeTab.set('rezervari');
   }
 

@@ -83,7 +83,14 @@
           <button class="mgr-btn-refresh" (click)="manualRefresh()">Reîncearcă</button>
         </div>
       } @else if (floorPlan()) {
-        <app-floor-map [floorPlan]="floorPlan()!" (tableSelected)="onTableSelected($event)" />
+        <app-floor-map
+          [floorPlan]="floorPlan()!"
+          [staffMode]="true"
+          [showSelectionBar]="false"
+          [showLegend]="false"
+          [fixedView]="true"
+          (tableSelected)="onTableSelected($event)"
+        />
       }
     </div>
 
@@ -165,6 +172,35 @@
               </div>
             } @else {
               <p class="mgr-no-res">Nicio rezervare activă</p>
+            }
+            <!-- Order details -->
+            @if (isLoadingTableOrder()) {
+              <p class="mgr-no-res">Se încarcă comanda...</p>
+            } @else if (selectedTableOrder()) {
+              @if (selectedTableOrder(); as ord) {
+                <div class="mgr-res-box">
+                  <div class="mgr-res-box__title">
+                    Comanda #{{ ord.id }}
+                    <span [class]="statusClass(ord.status)" style="margin-left: 8px">{{ statusLabel(ord.status) }}</span>
+                  </div>
+                  @if (ord.items.length === 0) {
+                    <p class="mgr-no-res" style="margin: 4px 0 0">Niciun produs comandat.</p>
+                  } @else {
+                    <ul class="mgr-order-items">
+                      @for (item of ord.items; track item.id) {
+                        <li class="mgr-order-item">
+                          <span class="mgr-order-item__qty">{{ item.quantity }}×</span>
+                          <span class="mgr-order-item__name">{{ item.menuItem?.name ?? 'Produs' }}</span>
+                          <span class="mgr-order-item__price">{{ item.unitPrice | number: '1.2-2' }} MDL</span>
+                        </li>
+                      }
+                    </ul>
+                    @if (ord.totalAmount) {
+                      <div class="mgr-order-total">Total: {{ ord.totalAmount | number: '1.2-2' }} MDL</div>
+                    }
+                  }
+                </div>
+              }
             }
           </div>
         } @else {

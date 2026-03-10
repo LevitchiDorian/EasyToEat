@@ -50,7 +50,7 @@ public interface ReservationTableRepository extends JpaRepository<ReservationTab
         JOIN t.room rm
         WHERE rm.location.id = :locationId
           AND r.reservationDate = :date
-          AND r.status IN ('PENDING', 'CONFIRMED', 'COMPLETED')
+          AND r.status IN ('PENDING', 'CONFIRMED')
         """
     )
     List<ReservationTable> findActiveByLocationAndDate(@Param("locationId") Long locationId, @Param("date") LocalDate date);

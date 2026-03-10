@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import md.utm.restaurant.repository.RestaurantOrderRepository;
 import md.utm.restaurant.repository.UserRepository;
+import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.MailService;
 import md.utm.restaurant.service.RestaurantOrderQueryService;
 import md.utm.restaurant.service.RestaurantOrderService;
@@ -52,18 +53,22 @@ public class RestaurantOrderResource {
 
     private final MailService mailService;
 
+    private final FloorPlanNotificationService floorPlanNotificationService;
+
     public RestaurantOrderResource(
         RestaurantOrderService restaurantOrderService,
         RestaurantOrderRepository restaurantOrderRepository,
         RestaurantOrderQueryService restaurantOrderQueryService,
         UserRepository userRepository,
-        MailService mailService
+        MailService mailService,
+        FloorPlanNotificationService floorPlanNotificationService
     ) {
         this.restaurantOrderService = restaurantOrderService;
         this.restaurantOrderRepository = restaurantOrderRepository;
         this.restaurantOrderQueryService = restaurantOrderQueryService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.floorPlanNotificationService = floorPlanNotificationService;
     }
 
     /**
@@ -117,6 +122,10 @@ public class RestaurantOrderResource {
             }
         } catch (Exception e) {
             LOG.warn("Could not send order confirmation email", e);
+        }
+
+        if (savedOrder.getLocation() != null) {
+            floorPlanNotificationService.notifyUpdate(savedOrder.getLocation().getId());
         }
 
         return ResponseEntity.created(new URI("/api/restaurant-orders/" + restaurantOrderDTO.getId()))
@@ -186,6 +195,12 @@ public class RestaurantOrderResource {
         }
 
         Optional<RestaurantOrderDTO> result = restaurantOrderService.partialUpdate(restaurantOrderDTO);
+
+        result.ifPresent(dto -> {
+            if (dto.getLocation() != null) {
+                floorPlanNotificationService.notifyUpdate(dto.getLocation().getId());
+            }
+        });
 
         return ResponseUtil.wrapOrNotFound(
             result,

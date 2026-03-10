@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +10,7 @@ import { BookingWizardComponent } from '../booking-wizard/booking-wizard.compone
 import { RestaurantCard } from '../restaurants/restaurants.component';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { AccountService } from 'app/core/auth/account.service';
+import { FloorPlanWsService } from 'app/core/floor-plan-ws/floor-plan-ws.service';
 
 interface MenuCategory {
   id: number;
@@ -239,7 +241,7 @@ type DetailTab = 'mese' | 'meniu' | 'recenzii';
   styleUrl: './restaurant-detail.component.scss',
   imports: [RouterModule, CommonModule, FormsModule, FloorMapComponent, BookingWizardComponent],
 })
-export default class RestaurantDetailComponent implements OnInit {
+export default class RestaurantDetailComponent implements OnInit, OnDestroy {
   restaurant = signal<(RestaurantCard & { locations: LocationCard[]; fullDescription: string }) | null>(null);
   selectedLocationId = signal<number | null>(null);
   activeTab = signal<DetailTab>('mese');
@@ -267,6 +269,9 @@ export default class RestaurantDetailComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly configService = inject(ApplicationConfigService);
   private readonly accountService = inject(AccountService);
+  private readonly floorPlanWs = inject(FloorPlanWsService);
+
+  private wsSub?: Subscription;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -302,12 +307,19 @@ export default class RestaurantDetailComponent implements OnInit {
         const mapped = this.mapToFloorPlan(res);
         this.floorPlan.set(mapped.rooms.length > 0 ? mapped : DEMO_FLOOR_PLAN);
         this.isLoadingFloorPlan.set(false);
+        if (!this.wsSub) {
+          this.wsSub = this.floorPlanWs.watchLocation(locationId).subscribe(() => this.loadFloorPlan(locationId));
+        }
       },
       error: () => {
         this.floorPlan.set(DEMO_FLOOR_PLAN);
         this.isLoadingFloorPlan.set(false);
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.wsSub?.unsubscribe();
   }
 
   onDateChange(): void {
