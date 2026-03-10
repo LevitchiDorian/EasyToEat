@@ -7,7 +7,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import md.utm.restaurant.repository.ReservationRepository;
 import md.utm.restaurant.repository.ReservationTableRepository;
+import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.ReservationTableService;
 import md.utm.restaurant.service.dto.ReservationTableDTO;
 import md.utm.restaurant.web.rest.errors.BadRequestAlertException;
@@ -37,12 +39,20 @@ public class ReservationTableResource {
 
     private final ReservationTableRepository reservationTableRepository;
 
+    private final FloorPlanNotificationService floorPlanNotificationService;
+
+    private final ReservationRepository reservationRepository;
+
     public ReservationTableResource(
         ReservationTableService reservationTableService,
-        ReservationTableRepository reservationTableRepository
+        ReservationTableRepository reservationTableRepository,
+        FloorPlanNotificationService floorPlanNotificationService,
+        ReservationRepository reservationRepository
     ) {
         this.reservationTableService = reservationTableService;
         this.reservationTableRepository = reservationTableRepository;
+        this.floorPlanNotificationService = floorPlanNotificationService;
+        this.reservationRepository = reservationRepository;
     }
 
     /**
@@ -60,6 +70,16 @@ public class ReservationTableResource {
             throw new BadRequestAlertException("A new reservationTable cannot already have an ID", ENTITY_NAME, "idexists");
         }
         reservationTableDTO = reservationTableService.save(reservationTableDTO);
+        // Look up the full reservation to get its location (mapper only returns id)
+        if (reservationTableDTO.getReservation() != null && reservationTableDTO.getReservation().getId() != null) {
+            reservationRepository
+                .findById(reservationTableDTO.getReservation().getId())
+                .ifPresent(reservation -> {
+                    if (reservation.getLocation() != null) {
+                        floorPlanNotificationService.notifyUpdate(reservation.getLocation().getId());
+                    }
+                });
+        }
         return ResponseEntity.created(new URI("/api/reservation-tables/" + reservationTableDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, reservationTableDTO.getId().toString()))
             .body(reservationTableDTO);

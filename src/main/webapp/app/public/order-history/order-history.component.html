@@ -300,10 +300,98 @@
                   </div>
                 }
               </div>
+              @if (isActiveOrder(order)) {
+                <div class="oh-card__actions">
+                  <button class="oh-btn-add" (click)="openPicker(order)">
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Adaugă produse
+                  </button>
+                </div>
+              }
             </div>
           }
         </div>
       }
     }
   </div>
+
+  <!-- Add items picker overlay -->
+  @if (pickerOrderId() !== null) {
+    <div class="oh-picker-overlay" (click)="closePicker()">
+      <div class="oh-picker glass" (click)="$event.stopPropagation()">
+        <div class="oh-picker__header">
+          <span>Adaugă produse la comanda #{{ pickerOrderId() }}</span>
+          <button class="oh-picker__close" (click)="closePicker()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        @if (addSuccess()) {
+          <div class="oh-picker__success">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            Produsele au fost adăugate!
+          </div>
+        }
+
+        @if (isLoadingMenu()) {
+          <p class="oh-picker__loading">Se încarcă meniul...</p>
+        } @else {
+          <div class="oh-picker__list">
+            @for (item of menuItems(); track item.id) {
+              <div class="oh-picker-item">
+                <div class="oh-picker-item__info">
+                  @if (item.categoryName) {
+                    <span class="oh-picker-item__cat">{{ item.categoryName }}</span>
+                  }
+                  <span class="oh-picker-item__name">{{ item.name }}</span>
+                  <span class="oh-picker-item__price">{{ item.price | number: '1.2-2' }} MDL</span>
+                </div>
+                <div class="oh-picker-item__qty">
+                  <button class="oh-qty-btn" (click)="adjustQty(item, -1)" [disabled]="pickerQty(item.id) === 0">−</button>
+                  <span class="oh-qty-val">{{ pickerQty(item.id) }}</span>
+                  <button class="oh-qty-btn" (click)="adjustQty(item, 1)">+</button>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (pickerEntries().length > 0) {
+            <div class="oh-picker__footer">
+              <span class="oh-picker__total">Total: {{ pickerTotal() | number: '1.2-2' }} MDL</span>
+              <button class="rv-btn rv-btn--primary oh-picker__confirm" (click)="confirmAddItems()" [disabled]="isAddingItems()">
+                {{ isAddingItems() ? 'Se adaugă...' : 'Confirmă adăugarea' }}
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  }
 </div>

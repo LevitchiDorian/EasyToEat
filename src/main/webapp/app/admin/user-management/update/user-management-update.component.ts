@@ -147,8 +147,10 @@ export default class UserManagementUpdateComponent implements OnInit {
       return;
     }
     const locId = this.selectedLocationId();
+    const auth = this.selectedAuthority;
+    const role = auth === 'ROLE_MANAGER' ? 'MANAGER' : auth === 'ROLE_STAFF' ? 'STAFF' : null;
     this.http
-      .patch(this.configService.getEndpointFor(`api/admin/users/${login}/location`), { locationId: locId })
+      .patch(this.configService.getEndpointFor(`api/admin/users/${login}/location`), { locationId: locId, role })
       .subscribe({ next: () => this.onSaveSuccess(), error: () => this.onSaveSuccess() });
   }
 

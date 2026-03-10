@@ -1,13 +1,11 @@
 import { Routes } from '@angular/router';
-import { Authority } from 'app/config/authority.constants';
-import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
+import { ManagerRouteAccessService } from 'app/core/auth/manager-route-access.service';
 
 const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./manager-layout/manager-layout.component'),
-    data: { authorities: [Authority.MANAGER, Authority.ADMIN] },
-    canActivate: [UserRouteAccessService],
+    canActivate: [ManagerRouteAccessService],
     children: [
       {
         path: 'floor-plan',

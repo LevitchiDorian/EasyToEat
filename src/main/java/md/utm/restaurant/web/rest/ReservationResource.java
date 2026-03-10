@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import md.utm.restaurant.repository.ReservationRepository;
 import md.utm.restaurant.repository.UserRepository;
+import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.MailService;
 import md.utm.restaurant.service.ReservationQueryService;
 import md.utm.restaurant.service.ReservationService;
@@ -52,18 +53,22 @@ public class ReservationResource {
 
     private final MailService mailService;
 
+    private final FloorPlanNotificationService floorPlanNotificationService;
+
     public ReservationResource(
         ReservationService reservationService,
         ReservationRepository reservationRepository,
         ReservationQueryService reservationQueryService,
         UserRepository userRepository,
-        MailService mailService
+        MailService mailService,
+        FloorPlanNotificationService floorPlanNotificationService
     ) {
         this.reservationService = reservationService;
         this.reservationRepository = reservationRepository;
         this.reservationQueryService = reservationQueryService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.floorPlanNotificationService = floorPlanNotificationService;
     }
 
     /**
@@ -119,6 +124,9 @@ public class ReservationResource {
             LOG.warn("Could not send reservation confirmation email", e);
         }
 
+        if (savedRes.getLocation() != null) {
+            floorPlanNotificationService.notifyUpdate(savedRes.getLocation().getId());
+        }
         return ResponseEntity.created(new URI("/api/reservations/" + reservationDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, reservationDTO.getId().toString()))
             .body(reservationDTO);
@@ -152,6 +160,9 @@ public class ReservationResource {
         }
 
         reservationDTO = reservationService.update(reservationDTO);
+        if (reservationDTO.getLocation() != null) {
+            floorPlanNotificationService.notifyUpdate(reservationDTO.getLocation().getId());
+        }
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, reservationDTO.getId().toString()))
             .body(reservationDTO);
@@ -186,6 +197,12 @@ public class ReservationResource {
         }
 
         Optional<ReservationDTO> result = reservationService.partialUpdate(reservationDTO);
+
+        result.ifPresent(dto -> {
+            if (dto.getLocation() != null) {
+                floorPlanNotificationService.notifyUpdate(dto.getLocation().getId());
+            }
+        });
 
         return ResponseUtil.wrapOrNotFound(
             result,

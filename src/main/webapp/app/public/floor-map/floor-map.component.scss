@@ -142,9 +142,12 @@
 
 /* Readonly: static, lets the body scroll naturally */
 .rv-floor-map--readonly .rv-floor-canvas-wrap {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   padding: 12px;
-  min-width: min-content;
+  min-width: max-content;
+  min-height: 100%;
 }
 
 /* ── Canvas — actual drawing surface ───────────────────────────── */
@@ -417,6 +420,27 @@
     color: hsl(var(--reserved));
     border: 1px solid hsl(var(--reserved) / 0.3);
   }
+}
+
+/* ── Fixed view (staff/manager): scrollable, no pan/zoom, click enabled ── */
+.rv-floor-map--fixed .rv-floor-body {
+  cursor: default;
+  overflow: auto;
+  min-height: unset;
+  max-height: 60vh;
+}
+
+.rv-floor-map--fixed .rv-floor-canvas-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12px;
+  min-width: max-content;
+  min-height: 100%;
+}
+
+.rv-floor-map--fixed .rv-floor-canvas {
+  transform: none !important;
 }
 
 /* ── Responsive tweaks ──────────────────────────────────────────── */

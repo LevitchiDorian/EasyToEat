@@ -22,8 +22,13 @@ export default class NavbarComponent implements OnInit {
   scrolled = false;
   account = inject(AccountService).trackCurrentAccount();
   isAdmin = computed(() => this.accountService.hasAnyAuthority([Authority.ADMIN]));
-  isManager = computed(() => this.accountService.hasAnyAuthority([Authority.MANAGER]));
-  isStaff = computed(() => this.accountService.hasAnyAuthority([Authority.STAFF]));
+  isManager = computed(
+    () => !this.isAdmin() && (this.accountRoleService.isManager() || this.accountService.hasAnyAuthority([Authority.MANAGER])),
+  );
+  isStaff = computed(
+    () =>
+      !this.isAdmin() && !this.isManager() && (this.accountRoleService.isStaff() || this.accountService.hasAnyAuthority([Authority.STAFF])),
+  );
   readonly accountRoleService = inject(AccountRoleService);
 
   private readonly accountService = inject(AccountService);

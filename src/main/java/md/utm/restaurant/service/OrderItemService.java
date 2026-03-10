@@ -58,6 +58,15 @@ public interface OrderItemService {
     Optional<OrderItemDTO> findOne(Long id);
 
     /**
+     * Get all orderItems for a given order.
+     *
+     * @param orderId  the id of the restaurant order.
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    Page<OrderItemDTO> findByOrderId(Long orderId, Pageable pageable);
+
+    /**
      * Delete the "id" orderItem.
      *
      * @param id the id of the entity.

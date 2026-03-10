@@ -508,6 +508,18 @@ export class BookingWizardComponent implements OnInit {
           this.http.post<{ id: number; reservationCode: string }>(this.configService.getEndpointFor('api/reservations'), resBody),
         );
 
+        // Link the selected table to the reservation so the floor plan shows it as RESERVED
+        const tableId = this.selectedTable()?.id;
+        if (tableId) {
+          await firstValueFrom(
+            this.http.post(this.configService.getEndpointFor('api/reservation-tables'), {
+              assignedAt: new Date().toISOString(),
+              reservation: { id: reservation.id },
+              table: { id: tableId },
+            }),
+          );
+        }
+
         if (rt === 'TABLE_MENU' && this.cart().length > 0) {
           const orderCode = this.generateCode('ORD');
           const total = this.cartTotal();
