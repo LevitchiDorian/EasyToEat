@@ -35,6 +35,8 @@ public class DiningRoomDTO implements Serializable {
 
     private Double heightPx;
 
+    private String decorationsJson;
+
     @NotNull
     private LocationDTO location;
 
@@ -108,6 +110,14 @@ public class DiningRoomDTO implements Serializable {
 
     public void setHeightPx(Double heightPx) {
         this.heightPx = heightPx;
+    }
+
+    public String getDecorationsJson() {
+        return decorationsJson;
+    }
+
+    public void setDecorationsJson(String decorationsJson) {
+        this.decorationsJson = decorationsJson;
     }
 
     public LocationDTO getLocation() {

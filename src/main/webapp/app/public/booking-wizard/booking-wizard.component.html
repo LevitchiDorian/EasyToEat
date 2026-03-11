@@ -1,5 +1,5 @@
 <div class="rv-wiz-overlay" (click)="$event.target === $event.currentTarget && close()">
-  <div class="rv-wiz">
+  <div class="rv-wiz" (click)="calOpen && closeCal()">
     <!-- Header -->
     <div class="rv-wiz__header">
       <div class="rv-wiz__header-left">
@@ -144,6 +144,10 @@
             </label>
           </div>
 
+          @if (tableConflictError) {
+            <div class="rv-wiz__error" style="margin-bottom: 0.75rem">{{ tableConflictError }}</div>
+          }
+
           @if (selectedTable(); as t) {
             <div class="rv-wiz__table-badge">
               <svg
@@ -193,28 +197,117 @@
           <div class="rv-wiz__form-grid">
             <!-- Personal info -->
             <label class="rv-wiz__field">
-              <span>Prenume <span class="rv-wiz__req">*</span></span>
-              <input type="text" class="rv-input" [(ngModel)]="firstName" placeholder="Ion" required />
+              <span>Prenume <span class="rv-req">*</span></span>
+              <input
+                type="text"
+                class="rv-input"
+                [class.rv-input--error]="touched['firstName'] && !firstName.trim()"
+                [(ngModel)]="firstName"
+                placeholder="Ion"
+                (blur)="touched['firstName'] = true"
+              />
+              @if (touched['firstName'] && !firstName.trim()) {
+                <span class="rv-field-err">Câmpul este obligatoriu.</span>
+              }
             </label>
+
             <label class="rv-wiz__field">
-              <span>Nume <span class="rv-wiz__req">*</span></span>
-              <input type="text" class="rv-input" [(ngModel)]="lastName" placeholder="Popescu" required />
+              <span>Nume <span class="rv-req">*</span></span>
+              <input
+                type="text"
+                class="rv-input"
+                [class.rv-input--error]="touched['lastName'] && !lastName.trim()"
+                [(ngModel)]="lastName"
+                placeholder="Popescu"
+                (blur)="touched['lastName'] = true"
+              />
+              @if (touched['lastName'] && !lastName.trim()) {
+                <span class="rv-field-err">Câmpul este obligatoriu.</span>
+              }
             </label>
+
             <label class="rv-wiz__field">
-              <span>Email <span class="rv-wiz__req">*</span></span>
-              <input type="email" class="rv-input" [(ngModel)]="email" placeholder="email@exemplu.com" required />
+              <span>Email <span class="rv-req">*</span></span>
+              <input
+                type="email"
+                class="rv-input"
+                [class.rv-input--error]="touched['email'] && !email.trim()"
+                [(ngModel)]="email"
+                placeholder="email@exemplu.com"
+                (blur)="touched['email'] = true"
+              />
+              @if (touched['email'] && !email.trim()) {
+                <span class="rv-field-err">Câmpul este obligatoriu.</span>
+              }
             </label>
+
             <label class="rv-wiz__field">
-              <span>Telefon <span class="rv-wiz__req">*</span></span>
-              <input type="tel" class="rv-input" [(ngModel)]="phone" placeholder="+373 60 000 000" required />
+              <span>Telefon <span class="rv-req">*</span></span>
+              <input
+                type="tel"
+                class="rv-input"
+                [class.rv-input--error]="touched['phone'] && !phone.trim()"
+                [(ngModel)]="phone"
+                placeholder="+373 60 000 000"
+                (blur)="touched['phone'] = true"
+              />
+              @if (touched['phone'] && !phone.trim()) {
+                <span class="rv-field-err">Câmpul este obligatoriu.</span>
+              }
             </label>
 
             <!-- Reservation / Banquet specific -->
             @if (bookingType() === 'RESERVATION') {
               <label class="rv-wiz__field">
-                <span>Data <span class="rv-wiz__req">*</span></span>
-                <input type="date" class="rv-input" [(ngModel)]="reservationDate" [min]="today" style="color-scheme: dark" required />
+                <span>Data <span class="rv-req">*</span></span>
+                <div
+                  class="rv-datepick"
+                  [class.rv-datepick--error]="touched['reservationDate'] && !reservationDate"
+                  (click)="$event.stopPropagation()"
+                >
+                  <button type="button" class="rv-datepick__trigger rv-input" (click)="openCal('reservation')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    {{ formatDate(reservationDate) }}
+                  </button>
+                  @if (calOpen && calTarget === 'reservation') {
+                    <div class="rv-cal" (click)="$event.stopPropagation()">
+                      <div class="rv-cal__nav">
+                        <button type="button" class="rv-cal__nav-btn" (click)="calPrev()">‹</button>
+                        <span class="rv-cal__month">{{ calMonthLabel() }}</span>
+                        <button type="button" class="rv-cal__nav-btn" (click)="calNext()">›</button>
+                      </div>
+                      <div class="rv-cal__grid">
+                        @for (h of ['Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sa', 'Du']; track h) {
+                          <span class="rv-cal__dow">{{ h }}</span>
+                        }
+                        @for (cell of calDays(); track $index) {
+                          <button
+                            type="button"
+                            class="rv-cal__day"
+                            [class.rv-cal__day--empty]="!cell.day"
+                            [class.rv-cal__day--disabled]="cell.disabled"
+                            [class.rv-cal__day--today]="cell.today"
+                            [class.rv-cal__day--selected]="cell.selected"
+                            [disabled]="cell.disabled || !cell.day"
+                            (click)="calSelect(cell.day)"
+                          >
+                            {{ cell.day ?? '' }}
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+                @if (touched['reservationDate'] && !reservationDate) {
+                  <span class="rv-field-err">Câmpul este obligatoriu.</span>
+                }
               </label>
+
               @if (reservationType() !== 'BANQUET') {
                 <label class="rv-wiz__field">
                   <span>Ora sosirii</span>
@@ -236,32 +329,96 @@
                   </select>
                 </label>
               }
+
               <label class="rv-wiz__field">
                 <span>Număr persoane</span>
                 <input
-                  type="number"
+                  type="text"
+                  inputmode="numeric"
                   class="rv-input"
+                  [class.rv-input--error]="touched['partySize'] && !!partySizeError"
                   [(ngModel)]="partySize"
-                  [min]="1"
-                  [max]="reservationType() === 'BANQUET' ? 500 : (selectedTable()?.maxCapacity ?? 20)"
+                  (blur)="touched['partySize'] = true; validatePartySize()"
+                  (input)="validatePartySize()"
+                  placeholder="ex: 2"
                 />
+                @if (touched['partySize'] && partySizeError) {
+                  <span class="rv-field-err">{{ partySizeError }}</span>
+                }
               </label>
             }
 
             <!-- Delivery / Takeaway specific -->
             @if (bookingType() === 'DELIVERY' || bookingType() === 'TAKEAWAY') {
               <label class="rv-wiz__field">
-                <span>Data {{ bookingType() === 'DELIVERY' ? 'livrării' : 'ridicării' }} <span class="rv-wiz__req">*</span></span>
-                <input type="date" class="rv-input" [(ngModel)]="scheduledDate" [min]="today" style="color-scheme: dark" required />
+                <span>Data {{ bookingType() === 'DELIVERY' ? 'livrării' : 'ridicării' }} <span class="rv-req">*</span></span>
+                <div
+                  class="rv-datepick"
+                  [class.rv-datepick--error]="touched['scheduledDate'] && !scheduledDate"
+                  (click)="$event.stopPropagation()"
+                >
+                  <button type="button" class="rv-datepick__trigger rv-input" (click)="openCal('scheduled')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <line x1="16" y1="2" x2="16" y2="6" />
+                      <line x1="8" y1="2" x2="8" y2="6" />
+                      <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    {{ formatDate(scheduledDate) }}
+                  </button>
+                  @if (calOpen && calTarget === 'scheduled') {
+                    <div class="rv-cal" (click)="$event.stopPropagation()">
+                      <div class="rv-cal__nav">
+                        <button type="button" class="rv-cal__nav-btn" (click)="calPrev()">‹</button>
+                        <span class="rv-cal__month">{{ calMonthLabel() }}</span>
+                        <button type="button" class="rv-cal__nav-btn" (click)="calNext()">›</button>
+                      </div>
+                      <div class="rv-cal__grid">
+                        @for (h of ['Lu', 'Ma', 'Mi', 'Jo', 'Vi', 'Sa', 'Du']; track h) {
+                          <span class="rv-cal__dow">{{ h }}</span>
+                        }
+                        @for (cell of calDays(); track $index) {
+                          <button
+                            type="button"
+                            class="rv-cal__day"
+                            [class.rv-cal__day--empty]="!cell.day"
+                            [class.rv-cal__day--disabled]="cell.disabled"
+                            [class.rv-cal__day--today]="cell.today"
+                            [class.rv-cal__day--selected]="cell.selected"
+                            [disabled]="cell.disabled || !cell.day"
+                            (click)="calSelect(cell.day)"
+                          >
+                            {{ cell.day ?? '' }}
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+                @if (touched['scheduledDate'] && !scheduledDate) {
+                  <span class="rv-field-err">Câmpul este obligatoriu.</span>
+                }
               </label>
+
               <label class="rv-wiz__field">
                 <span>Ora {{ bookingType() === 'DELIVERY' ? 'livrării' : 'ridicării' }}</span>
                 <input type="time" class="rv-input" [(ngModel)]="scheduledTime" />
               </label>
+
               @if (bookingType() === 'DELIVERY') {
                 <label class="rv-wiz__field rv-wiz__field--full">
-                  <span>Adresa de livrare <span class="rv-wiz__req">*</span></span>
-                  <input type="text" class="rv-input" [(ngModel)]="address" placeholder="Str. Exemplu 1, ap. 5, Chișinău" required />
+                  <span>Adresa de livrare <span class="rv-req">*</span></span>
+                  <input
+                    type="text"
+                    class="rv-input"
+                    [class.rv-input--error]="touched['address'] && !address.trim()"
+                    [(ngModel)]="address"
+                    placeholder="Str. Exemplu 1, ap. 5, Chișinău"
+                    (blur)="touched['address'] = true"
+                  />
+                  @if (touched['address'] && !address.trim()) {
+                    <span class="rv-field-err">Câmpul este obligatoriu.</span>
+                  }
                 </label>
               }
             }

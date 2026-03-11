@@ -767,3 +767,146 @@
   padding: 0.6rem 1rem;
   font-size: 0.85rem;
 }
+
+// ─── Validation ──────────────────────────────────────────────────────────────
+.rv-input--error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3);
+}
+
+.rv-field-err {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: -0.15rem;
+}
+
+.rv-req {
+  color: #ef4444;
+}
+
+// ─── Custom date picker ───────────────────────────────────────────────────────
+.rv-datepick {
+  position: relative;
+
+  &__trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.85);
+    padding: 0.6rem 0.9rem;
+    border-radius: 0.5rem;
+    font-size: 0.88rem;
+    transition: border-color 0.15s;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+  }
+
+  &--error .rv-datepick__trigger {
+    border-color: #ef4444 !important;
+  }
+}
+
+.rv-cal {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 200;
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  min-width: 240px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  &__nav-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    line-height: 1;
+
+    &:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  &__month {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+
+  &__dow {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 0.2rem 0;
+    font-weight: 600;
+  }
+
+  &__day {
+    aspect-ratio: 1;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.78rem;
+    border-radius: 0.35rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.12s;
+
+    &:hover:not(:disabled):not(.rv-cal__day--empty) {
+      background: rgba(245, 165, 32, 0.15);
+      color: #fff;
+    }
+
+    &--disabled {
+      color: rgba(255, 255, 255, 0.2) !important;
+      cursor: not-allowed;
+    }
+
+    &--empty {
+      pointer-events: none;
+    }
+
+    &--today {
+      border: 1px dotted rgba(245, 165, 32, 0.5);
+    }
+
+    &--selected {
+      background: hsl(var(--primary));
+      color: #000 !important;
+      font-weight: 700;
+
+      &:hover {
+        background: hsl(var(--primary));
+      }
+    }
+  }
+}

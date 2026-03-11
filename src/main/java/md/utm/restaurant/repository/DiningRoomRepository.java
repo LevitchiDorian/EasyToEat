@@ -37,4 +37,7 @@ public interface DiningRoomRepository extends JpaRepository<DiningRoom, Long>, J
 
     @Query("select diningRoom from DiningRoom diningRoom left join fetch diningRoom.location where diningRoom.id =:id")
     Optional<DiningRoom> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query("SELECT dr.location.id FROM DiningRoom dr WHERE dr.id = :roomId")
+    Optional<Long> findLocationIdById(@Param("roomId") Long roomId);
 }

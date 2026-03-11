@@ -58,6 +58,9 @@ public class MenuItemDTO implements Serializable {
     @Min(value = 0)
     private Integer displayOrder;
 
+    @Min(value = 0)
+    private Integer stockQuantity;
+
     @NotNull
     private MenuCategoryDTO category;
 
@@ -179,6 +182,14 @@ public class MenuItemDTO implements Serializable {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
+    }
+
+    public Integer getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public MenuCategoryDTO getCategory() {

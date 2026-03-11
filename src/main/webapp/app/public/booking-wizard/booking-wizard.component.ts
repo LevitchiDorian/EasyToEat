@@ -117,7 +117,7 @@ export class BookingWizardComponent implements OnInit {
   reservationDate = new Date().toISOString().substring(0, 10);
   startTime = '19:00';
   endTime = '20:30';
-  partySize = 2;
+  partySize: any = 2;
   address = '';
   scheduledDate = new Date().toISOString().substring(0, 10);
   scheduledTime = '12:00';
@@ -131,6 +131,19 @@ export class BookingWizardComponent implements OnInit {
 
   today = new Date().toISOString().substring(0, 10);
   accountId: number | null = null;
+
+  // Touched tracking (mark on blur)
+  touched: Record<string, boolean> = {};
+
+  // Calendar state
+  calOpen = false;
+  calTarget: 'reservation' | 'scheduled' = 'reservation';
+  calYear = new Date().getFullYear();
+  calMonth = new Date().getMonth();
+
+  // Party size validation
+  partySizeError = '';
+  tableConflictError = '';
 
   ngOnInit(): void {
     this.loadAccount();
@@ -147,6 +160,111 @@ export class BookingWizardComponent implements OnInit {
           this.lastName = acc.lastName ?? '';
         },
       });
+  }
+
+  // ─── Calendar ─────────────────────────────────────────────────────
+
+  openCal(target: 'reservation' | 'scheduled'): void {
+    this.calTarget = target;
+    const dateStr = target === 'reservation' ? this.reservationDate : this.scheduledDate;
+    if (dateStr) {
+      const [y, m] = dateStr.split('-').map(Number);
+      this.calYear = y;
+      this.calMonth = m - 1;
+    }
+    this.calOpen = !this.calOpen;
+  }
+
+  closeCal(): void {
+    this.calOpen = false;
+  }
+
+  calPrev(): void {
+    if (this.calMonth === 0) {
+      this.calMonth = 11;
+      this.calYear--;
+    } else this.calMonth--;
+  }
+
+  calNext(): void {
+    if (this.calMonth === 11) {
+      this.calMonth = 0;
+      this.calYear++;
+    } else this.calMonth++;
+  }
+
+  calMonthLabel(): string {
+    const months = [
+      'Ianuarie',
+      'Februarie',
+      'Martie',
+      'Aprilie',
+      'Mai',
+      'Iunie',
+      'Iulie',
+      'August',
+      'Septembrie',
+      'Octombrie',
+      'Noiembrie',
+      'Decembrie',
+    ];
+    return `${months[this.calMonth]} ${this.calYear}`;
+  }
+
+  calDays(): { day: number | null; disabled: boolean; today: boolean; selected: boolean }[] {
+    const firstDay = new Date(this.calYear, this.calMonth, 1).getDay();
+    const startPad = (firstDay + 6) % 7; // Monday-first
+    const daysInMonth = new Date(this.calYear, this.calMonth + 1, 0).getDate();
+    const todayStr = new Date().toISOString().substring(0, 10);
+    const selectedStr = this.calTarget === 'reservation' ? this.reservationDate : this.scheduledDate;
+    const result: { day: number | null; disabled: boolean; today: boolean; selected: boolean }[] = [];
+    for (let i = 0; i < startPad; i++) result.push({ day: null, disabled: true, today: false, selected: false });
+    for (let d = 1; d <= daysInMonth; d++) {
+      const mm = String(this.calMonth + 1).padStart(2, '0');
+      const dd = String(d).padStart(2, '0');
+      const str = `${this.calYear}-${mm}-${dd}`;
+      result.push({ day: d, disabled: str < todayStr, today: str === todayStr, selected: str === selectedStr });
+    }
+    return result;
+  }
+
+  calSelect(day: number | null): void {
+    if (!day) return;
+    const mm = String(this.calMonth + 1).padStart(2, '0');
+    const dd = String(day).padStart(2, '0');
+    const str = `${this.calYear}-${mm}-${dd}`;
+    if (str < new Date().toISOString().substring(0, 10)) return;
+    if (this.calTarget === 'reservation') {
+      this.reservationDate = str;
+      if (this.step() === 'FLOOR_MAP') this.reloadFloorPlan();
+    } else {
+      this.scheduledDate = str;
+    }
+    this.calOpen = false;
+    this.touched['reservationDate'] = true;
+    this.touched['scheduledDate'] = true;
+  }
+
+  formatDate(dateStr: string): string {
+    if (!dateStr) return 'Selectează data';
+    const [y, m, d] = dateStr.split('-').map(Number);
+    const months = ['Ian', 'Feb', 'Mar', 'Apr', 'Mai', 'Iun', 'Iul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${d} ${months[m - 1]} ${y}`;
+  }
+
+  validatePartySize(): void {
+    const val = Number(this.partySize);
+    const table = this.selectedTable();
+    const rt = this.reservationType();
+    if (!val || val < 1) {
+      this.partySizeError = 'Introduceți numărul de persoane.';
+    } else if (rt !== 'BANQUET' && table && val > table.maxCapacity) {
+      this.partySizeError = `Capacitate maximă a mesei: ${table.maxCapacity} persoane.`;
+    } else if (rt !== 'BANQUET' && table && val < table.minCapacity) {
+      this.partySizeError = `Capacitate minimă a mesei: ${table.minCapacity} persoane.`;
+    } else {
+      this.partySizeError = '';
+    }
   }
 
   // ─── Navigation ───────────────────────────────────────────────────
@@ -267,6 +385,7 @@ export class BookingWizardComponent implements OnInit {
   onTableSelected(table: FloorTable): void {
     if (table.status === 'RESERVED' || table.status === 'OCCUPIED' || table.status === 'OUT_OF_SERVICE') return;
     this.selectedTable.set(table);
+    this.tableConflictError = '';
     const fp = this.floorPlan();
     if (fp) {
       for (const room of fp.rooms) {
@@ -426,6 +545,7 @@ export class BookingWizardComponent implements OnInit {
   get isFormValid(): boolean {
     const base = !!(this.firstName.trim() && this.lastName.trim() && this.email.trim() && this.phone.trim());
     if (!base) return false;
+    if (this.partySizeError) return false;
     const bt = this.bookingType();
     if (bt === 'DELIVERY') return !!(this.scheduledDate && this.address.trim());
     if (bt === 'TAKEAWAY') return !!this.scheduledDate;
@@ -488,6 +608,32 @@ export class BookingWizardComponent implements OnInit {
       const rt = this.reservationType();
 
       if (bt === 'RESERVATION') {
+        // Double-booking check: reload floor plan and verify table is still AVAILABLE
+        const tableId = this.selectedTable()?.id;
+        if (tableId) {
+          const freshFp = await firstValueFrom(
+            this.http.get<FloorPlanResponse>(
+              this.configService.getEndpointFor(`api/public/floor-plan/${this.locationId}?date=${this.reservationDate}`),
+            ),
+          );
+          let tableStillAvailable = false;
+          for (const room of freshFp.rooms) {
+            const t = room.tables.find(t => t.id === tableId);
+            if (t) {
+              tableStillAvailable = t.status === 'AVAILABLE';
+              break;
+            }
+          }
+          if (!tableStillAvailable) {
+            this.floorPlan.set(this.mapToFloorPlan(freshFp));
+            this.selectedTable.set(null);
+            this.isSubmitting.set(false);
+            this.step.set('FLOOR_MAP');
+            this.tableConflictError = 'Masa selectată a fost rezervată de altcineva. Te rog alege altă masă disponibilă.';
+            return;
+          }
+        }
+
         const resCode = this.generateCode('RES');
         const autoEndTime = this.addMinutes(this.startTime, 90);
         const resBody: Record<string, unknown> = {
@@ -509,7 +655,6 @@ export class BookingWizardComponent implements OnInit {
         );
 
         // Link the selected table to the reservation so the floor plan shows it as RESERVED
-        const tableId = this.selectedTable()?.id;
         if (tableId) {
           await firstValueFrom(
             this.http.post(this.configService.getEndpointFor('api/reservation-tables'), {

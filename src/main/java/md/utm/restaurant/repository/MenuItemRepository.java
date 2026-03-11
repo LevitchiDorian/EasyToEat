@@ -37,4 +37,14 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long>, JpaSp
 
     @Query("select menuItem from MenuItem menuItem left join fetch menuItem.category where menuItem.id =:id")
     Optional<MenuItem> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @Query(
+        "UPDATE MenuItem m SET m.stockQuantity = m.stockQuantity - :qty WHERE m.id = :id AND m.stockQuantity IS NOT NULL AND m.stockQuantity >= :qty"
+    )
+    int decrementStock(@Param("id") Long id, @Param("qty") int qty);
+
+    @Query("select m.category.brand.id from MenuItem m where m.id = :id")
+    Optional<Long> findBrandIdByMenuItemId(@Param("id") Long id);
 }
