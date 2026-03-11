@@ -61,12 +61,6 @@
     <div class="sfp-content" [class.sfp-content--panel-open]="panelOpen()">
       <!-- Floor map -->
       <div class="sfp-map-wrap glass">
-        <!-- Legend -->
-        <div class="sfp-legend">
-          <span class="sfp-legend__item sfp-legend__item--available">Disponibilă</span>
-          <span class="sfp-legend__item sfp-legend__item--reserved">Rezervată</span>
-          <span class="sfp-legend__item sfp-legend__item--occupied">Ocupată</span>
-        </div>
         <app-floor-map [floorPlan]="floorPlan()!" [staffMode]="true" (tableSelected)="onTableSelected($event)" />
       </div>
 

@@ -46,6 +46,11 @@ const routes: Routes = [
         loadComponent: () => import('./staff-floor-plan/staff-floor-plan.component'),
         title: 'Planul sălii',
       },
+      {
+        path: 'editor-sala',
+        loadComponent: () => import('../manager/manager-floor-plan-editor/manager-floor-plan-editor.component'),
+        title: 'Editor sală',
+      },
       /* jhipster-needle-add-admin-route - JHipster will add admin routes here */
     ],
   },

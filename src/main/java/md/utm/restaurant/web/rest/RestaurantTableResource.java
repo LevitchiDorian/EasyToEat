@@ -76,6 +76,7 @@ public class RestaurantTableResource {
             throw new BadRequestAlertException("A new restaurantTable cannot already have an ID", ENTITY_NAME, "idexists");
         }
         restaurantTableDTO = restaurantTableService.save(restaurantTableDTO);
+        restaurantTableRepository.findLocationIdById(restaurantTableDTO.getId()).ifPresent(floorPlanNotificationService::notifyUpdate);
         return ResponseEntity.created(new URI("/api/restaurant-tables/" + restaurantTableDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, restaurantTableDTO.getId().toString()))
             .body(restaurantTableDTO);

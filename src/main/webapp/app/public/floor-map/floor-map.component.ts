@@ -20,6 +20,15 @@ export interface FloorTable {
   notes?: string;
 }
 
+export interface FloorDecoration {
+  label: string;
+  type: string;
+  posX: number;
+  posY: number;
+  width: number;
+  height: number;
+}
+
 export interface FloorRoom {
   id: number;
   name: string;
@@ -28,6 +37,7 @@ export interface FloorRoom {
   width: number;
   height: number;
   tables: FloorTable[];
+  decorations?: FloorDecoration[];
 }
 
 export interface FloorPlan {

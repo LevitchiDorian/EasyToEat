@@ -84,6 +84,10 @@ public class MenuItem implements Serializable {
     @Column(name = "display_order", nullable = false)
     private Integer displayOrder;
 
+    @Min(value = 0)
+    @Column(name = "stock_quantity")
+    private Integer stockQuantity;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "menuItem")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "menuItem" }, allowSetters = true)
@@ -294,6 +298,19 @@ public class MenuItem implements Serializable {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
+    }
+
+    public Integer getStockQuantity() {
+        return this.stockQuantity;
+    }
+
+    public MenuItem stockQuantity(Integer stockQuantity) {
+        this.setStockQuantity(stockQuantity);
+        return this;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public Set<MenuItemAllergen> getAllergens() {

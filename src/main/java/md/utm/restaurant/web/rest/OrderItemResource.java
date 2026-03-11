@@ -7,8 +7,10 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import md.utm.restaurant.repository.MenuItemRepository;
 import md.utm.restaurant.repository.OrderItemRepository;
 import md.utm.restaurant.service.FloorPlanNotificationService;
+import md.utm.restaurant.service.MenuNotificationService;
 import md.utm.restaurant.service.OrderItemService;
 import md.utm.restaurant.service.dto.OrderItemDTO;
 import md.utm.restaurant.web.rest.errors.BadRequestAlertException;
@@ -45,14 +47,22 @@ public class OrderItemResource {
 
     private final FloorPlanNotificationService floorPlanNotificationService;
 
+    private final MenuItemRepository menuItemRepository;
+
+    private final MenuNotificationService menuNotificationService;
+
     public OrderItemResource(
         OrderItemService orderItemService,
         OrderItemRepository orderItemRepository,
-        FloorPlanNotificationService floorPlanNotificationService
+        FloorPlanNotificationService floorPlanNotificationService,
+        MenuItemRepository menuItemRepository,
+        MenuNotificationService menuNotificationService
     ) {
         this.orderItemService = orderItemService;
         this.orderItemRepository = orderItemRepository;
         this.floorPlanNotificationService = floorPlanNotificationService;
+        this.menuItemRepository = menuItemRepository;
+        this.menuNotificationService = menuNotificationService;
     }
 
     /**
@@ -71,6 +81,24 @@ public class OrderItemResource {
         orderItemDTO = orderItemService.save(orderItemDTO);
         if (orderItemDTO.getOrder() != null && orderItemDTO.getOrder().getLocation() != null) {
             floorPlanNotificationService.notifyUpdate(orderItemDTO.getOrder().getLocation().getId());
+        }
+        if (orderItemDTO.getMenuItem() != null && orderItemDTO.getMenuItem().getId() != null) {
+            Long menuItemId = orderItemDTO.getMenuItem().getId();
+            int qty = orderItemDTO.getQuantity() != null ? orderItemDTO.getQuantity() : 1;
+            int updated = menuItemRepository.decrementStock(menuItemId, qty);
+            if (updated > 0) {
+                menuItemRepository
+                    .findById(menuItemId)
+                    .ifPresent(item -> {
+                        if (item.getStockQuantity() != null && item.getStockQuantity() <= 0) {
+                            item.setIsAvailable(false);
+                            menuItemRepository.save(item);
+                        }
+                    });
+                menuItemRepository
+                    .findBrandIdByMenuItemId(menuItemId)
+                    .ifPresent(brandId -> menuNotificationService.notifyMenuChange(brandId));
+            }
         }
         return ResponseEntity.created(new URI("/api/order-items/" + orderItemDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, orderItemDTO.getId().toString()))

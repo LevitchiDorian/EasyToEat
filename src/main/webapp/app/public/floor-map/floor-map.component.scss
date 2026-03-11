@@ -1,3 +1,48 @@
+/* ── Decoration obstacles ────────────────────────────────────────── */
+
+.rv-deco {
+  position: absolute;
+  background: rgba(120, 120, 120, 0.18);
+  border: 1.5px dashed rgba(160, 160, 160, 0.4);
+  border-radius: 4px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  z-index: 1;
+
+  &--plant {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+
+  &--wall {
+    background: rgba(130, 130, 130, 0.28);
+    border-color: rgba(160, 160, 160, 0.5);
+    border-style: solid;
+    border-radius: 2px;
+  }
+
+  &--pillar {
+    background: rgba(180, 130, 50, 0.15);
+    border-color: rgba(180, 130, 50, 0.4);
+    border-radius: 50%;
+  }
+
+  &__label {
+    font-size: 0.58rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    pointer-events: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    padding: 2px;
+  }
+}
+
 /* ── Floor Map Component ─────────────────────────────────────────── */
 
 .rv-floor-map {

@@ -55,6 +55,16 @@ public class FloorPlanRoomDTO implements Serializable {
         this.heightPx = heightPx;
     }
 
+    private String decorationsJson;
+
+    public String getDecorationsJson() {
+        return decorationsJson;
+    }
+
+    public void setDecorationsJson(String decorationsJson) {
+        this.decorationsJson = decorationsJson;
+    }
+
     public List<FloorPlanTableDTO> getTables() {
         return tables;
     }

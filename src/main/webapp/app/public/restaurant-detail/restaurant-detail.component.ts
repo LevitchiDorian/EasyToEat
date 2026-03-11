@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { FloorMapComponent, FloorPlan, FloorTable, DEMO_FLOOR_PLAN } from '../floor-map/floor-map.component';
+import { FloorMapComponent, FloorPlan, FloorTable, FloorDecoration, DEMO_FLOOR_PLAN } from '../floor-map/floor-map.component';
 import { BookingWizardComponent } from '../booking-wizard/booking-wizard.component';
 import { RestaurantCard } from '../restaurants/restaurants.component';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
@@ -55,6 +55,7 @@ interface FloorPlanResponse {
     floor?: number;
     widthPx: number;
     heightPx: number;
+    decorationsJson?: string;
     tables: {
       id: number;
       tableNumber: string;
@@ -298,6 +299,10 @@ export default class RestaurantDetailComponent implements OnInit, OnDestroy {
   }
 
   loadFloorPlan(locationId: number): void {
+    // Re-subscribe to correct location on every load (handles location switches)
+    this.wsSub?.unsubscribe();
+    this.wsSub = this.floorPlanWs.watchLocation(locationId).subscribe(() => this.loadFloorPlan(locationId));
+
     this.isLoadingFloorPlan.set(true);
     this.floorPlan.set(null);
     const url = this.configService.getEndpointFor(`api/public/floor-plan/${locationId}?date=${this.reservationDate}`);
@@ -307,9 +312,6 @@ export default class RestaurantDetailComponent implements OnInit, OnDestroy {
         const mapped = this.mapToFloorPlan(res);
         this.floorPlan.set(mapped.rooms.length > 0 ? mapped : DEMO_FLOOR_PLAN);
         this.isLoadingFloorPlan.set(false);
-        if (!this.wsSub) {
-          this.wsSub = this.floorPlanWs.watchLocation(locationId).subscribe(() => this.loadFloorPlan(locationId));
-        }
       },
       error: () => {
         this.floorPlan.set(DEMO_FLOOR_PLAN);
@@ -457,6 +459,16 @@ export default class RestaurantDetailComponent implements OnInit, OnDestroy {
       const posY = currentY;
       currentY += h + GAP;
       canvasWidth = Math.max(canvasWidth, posX + w + 20);
+
+      let decorations: FloorDecoration[] = [];
+      if (room.decorationsJson) {
+        try {
+          decorations = JSON.parse(room.decorationsJson) ?? [];
+        } catch {
+          decorations = [];
+        }
+      }
+
       return {
         id: room.id,
         name: room.name,
@@ -464,6 +476,7 @@ export default class RestaurantDetailComponent implements OnInit, OnDestroy {
         posY,
         width: w,
         height: h,
+        decorations,
         tables: room.tables.map(t => ({
           id: t.id,
           tableNumber: t.tableNumber,

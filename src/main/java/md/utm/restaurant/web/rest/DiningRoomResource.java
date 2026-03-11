@@ -10,6 +10,7 @@ import java.util.Optional;
 import md.utm.restaurant.repository.DiningRoomRepository;
 import md.utm.restaurant.service.DiningRoomQueryService;
 import md.utm.restaurant.service.DiningRoomService;
+import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.criteria.DiningRoomCriteria;
 import md.utm.restaurant.service.dto.DiningRoomDTO;
 import md.utm.restaurant.web.rest.errors.BadRequestAlertException;
@@ -46,14 +47,18 @@ public class DiningRoomResource {
 
     private final DiningRoomQueryService diningRoomQueryService;
 
+    private final FloorPlanNotificationService floorPlanNotificationService;
+
     public DiningRoomResource(
         DiningRoomService diningRoomService,
         DiningRoomRepository diningRoomRepository,
-        DiningRoomQueryService diningRoomQueryService
+        DiningRoomQueryService diningRoomQueryService,
+        FloorPlanNotificationService floorPlanNotificationService
     ) {
         this.diningRoomService = diningRoomService;
         this.diningRoomRepository = diningRoomRepository;
         this.diningRoomQueryService = diningRoomQueryService;
+        this.floorPlanNotificationService = floorPlanNotificationService;
     }
 
     /**
@@ -137,6 +142,8 @@ public class DiningRoomResource {
         }
 
         Optional<DiningRoomDTO> result = diningRoomService.partialUpdate(diningRoomDTO);
+
+        result.ifPresent(dto -> diningRoomRepository.findLocationIdById(id).ifPresent(floorPlanNotificationService::notifyUpdate));
 
         return ResponseUtil.wrapOrNotFound(
             result,

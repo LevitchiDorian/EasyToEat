@@ -131,6 +131,21 @@
           >
             <span class="rv-room__label">{{ room.name }}</span>
 
+            @for (deco of room.decorations ?? []; track deco.posX + deco.posY) {
+              <div
+                class="rv-deco"
+                [class.rv-deco--plant]="deco.type === 'PLANT'"
+                [class.rv-deco--wall]="deco.type === 'WALL'"
+                [class.rv-deco--pillar]="deco.type === 'PILLAR'"
+                [style.left.px]="deco.posX"
+                [style.top.px]="deco.posY"
+                [style.width.px]="deco.width"
+                [style.height.px]="deco.height"
+              >
+                <span class="rv-deco__label">{{ deco.label }}</span>
+              </div>
+            }
+
             @for (table of room.tables; track table.id) {
               <div
                 [class]="tableClass(table)"

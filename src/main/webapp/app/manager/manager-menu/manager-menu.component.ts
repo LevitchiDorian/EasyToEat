@@ -30,6 +30,7 @@ interface MenuItem {
   calories?: number;
   preparationTimeMinutes?: number;
   displayOrder?: number;
+  stockQuantity?: number | null;
   menuCategory?: { id: number; name?: string };
 }
 
@@ -137,6 +138,15 @@ interface Location {
                         }
                         <div class="mm-item-meta">
                           <span class="mm-item-price">{{ item.price | number: '1.2-2' }} MDL</span>
+                          @if (item.stockQuantity != null) {
+                            <span
+                              class="mm-tag"
+                              [class.mm-tag--red]="item.stockQuantity === 0"
+                              [class.mm-tag--amber]="(item.stockQuantity ?? 1) > 0"
+                            >
+                              Stoc: {{ item.stockQuantity }}
+                            </span>
+                          }
                           @if (item.isVegetarian) {
                             <span class="mm-tag mm-tag--green">🌱</span>
                           }
@@ -257,6 +267,10 @@ interface Location {
               <div class="rv-form-group mm-form-span">
                 <label>URL imagine</label>
                 <input class="rv-input" [(ngModel)]="itemForm.imageUrl" placeholder="https://..." />
+              </div>
+              <div class="rv-form-group">
+                <label>Stoc limitat (nr. comenzi)</label>
+                <input class="rv-input" type="number" min="0" [(ngModel)]="itemForm.stockQuantity" placeholder="Lasă gol = nelimitat" />
               </div>
             </div>
             <div class="mm-checkboxes">
@@ -794,6 +808,7 @@ export default class ManagerMenuComponent implements OnInit {
       calories: item.calories,
       preparationTimeMinutes: item.preparationTimeMinutes,
       displayOrder: item.displayOrder ?? 0,
+      stockQuantity: item.stockQuantity ?? null,
     };
     this.showItemModal.set(true);
   }
@@ -824,6 +839,8 @@ export default class ManagerMenuComponent implements OnInit {
       calories: this.itemForm.calories || undefined,
       preparationTimeMinutes: this.itemForm.preparationTimeMinutes || undefined,
       displayOrder: this.itemForm.displayOrder ?? 0,
+      stockQuantity:
+        this.itemForm.stockQuantity != null && this.itemForm.stockQuantity !== ('' as any) ? Number(this.itemForm.stockQuantity) : null,
       menuCategory: { id: catId },
     };
 
@@ -876,6 +893,7 @@ export default class ManagerMenuComponent implements OnInit {
       isVegan: false,
       isGlutenFree: false,
       spicyLevel: 0,
+      stockQuantity: null,
     };
   }
 }

@@ -1,0 +1,410 @@
+<div class="fpe-page">
+  <!-- Header -->
+  <div class="fpe-header rv-admin-page-header">
+    <div class="fpe-header__left">
+      <div>
+        <h1 class="rv-admin-page-title">Editor plan sală</h1>
+        @if (isAdmin()) {
+          <select class="rv-input fpe-loc-select" [ngModel]="selectedLocationId()" (ngModelChange)="onLocationChange($event)">
+            @for (loc of locations(); track loc.id) {
+              <option [value]="loc.id">{{ loc.name }}</option>
+            }
+          </select>
+        } @else {
+          <p class="rv-admin-page-subtitle">{{ locationName() }}</p>
+        }
+      </div>
+    </div>
+    <div class="fpe-header__right">
+      @if (saveSuccess()) {
+        <span class="fpe-success-badge">Salvat cu succes!</span>
+      }
+      @if (isDirty() && !saveSuccess()) {
+        <span class="fpe-dirty-badge">Modificări nesalvate</span>
+      }
+      <button class="mm-btn mm-btn--ghost" (click)="resetChanges()" [disabled]="!isDirty() || isSaving()">Renunță</button>
+      <button class="mm-btn mm-btn--primary" (click)="saveAll()" [disabled]="!isDirty() || isSaving()">
+        {{ isSaving() ? 'Se salvează...' : 'Salvează' }}
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="fpe-loading">Se încarcă planul sălii...</div>
+  } @else if (error()) {
+    <div class="fpe-error glass">{{ error() }}</div>
+  } @else {
+    <div class="fpe-toolbar glass">
+      <div class="fpe-hint-text">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        Trage mesele · Colț dreapta-jos = redimensionare · Suprapunere → revenire automată
+      </div>
+      <div class="fpe-toolbar__controls">
+        <label class="fpe-snap-toggle">
+          <input type="checkbox" [ngModel]="snapToGrid()" (ngModelChange)="snapToGrid.set($event)" />
+          Grilă
+        </label>
+        @if (snapToGrid()) {
+          <select class="rv-input fpe-grid-select" [ngModel]="gridSize()" (ngModelChange)="gridSize.set(+$event)">
+            <option [value]="5">5 px</option>
+            <option [value]="10">10 px</option>
+            <option [value]="20">20 px</option>
+          </select>
+        }
+      </div>
+    </div>
+
+    <div class="fpe-layout">
+      <!-- Canvas area -->
+      <div class="fpe-canvas-area">
+        @for (room of rooms(); track room.id) {
+          <div class="fpe-room glass">
+            <div class="fpe-room__header">
+              <span class="fpe-room__name">{{ room.name }}</span>
+              <span class="fpe-room__size">{{ room.widthPx }} × {{ room.heightPx }} px</span>
+              <button class="mm-btn mm-btn--ghost fpe-add-btn" (click)="openAddDeco(room.id)">+ Decor</button>
+              <button class="mm-btn mm-btn--primary fpe-add-btn" (click)="openAddTable(room.id)">+ Masă</button>
+            </div>
+
+            <div
+              class="fpe-room__canvas"
+              [class.fpe-room__canvas--grid]="snapToGrid()"
+              [style.width.px]="room.widthPx"
+              [style.height.px]="room.heightPx"
+              [style.--grid-size]="gridSize() + 'px'"
+            >
+              <!-- Decorations (obstacles) -->
+              @for (deco of decorationsInRoom(room.id); track deco.id) {
+                <div
+                  class="fpe-deco"
+                  [class.fpe-deco--selected]="selectedDecorationId() === deco.id"
+                  [class.fpe-deco--plant]="deco.type === 'PLANT'"
+                  [class.fpe-deco--wall]="deco.type === 'WALL'"
+                  [class.fpe-deco--pillar]="deco.type === 'PILLAR'"
+                  [style.left.px]="deco.posX"
+                  [style.top.px]="deco.posY"
+                  [style.width.px]="deco.width"
+                  [style.height.px]="deco.height"
+                  (mousedown)="onDecoMouseDown($event, deco, room)"
+                  (click)="selectDecoration(deco)"
+                >
+                  <span class="fpe-deco__label">{{ deco.label }}</span>
+                  <div class="fpe-resize-handle" (mousedown)="onDecoResizeMouseDown($event, deco, room)"></div>
+                </div>
+              }
+
+              <!-- Tables -->
+              @for (table of activeTablesInRoom(room.id); track table.id) {
+                <div
+                  class="fpe-table"
+                  [class.fpe-table--round]="table.shape === 'ROUND'"
+                  [class.fpe-table--square]="table.shape === 'SQUARE'"
+                  [class.fpe-table--selected]="selectedTableId() === table.id"
+                  [class.fpe-table--new]="table.isNew"
+                  [class.fpe-table--overlap]="table.isOverlapping"
+                  [style.left.px]="table.positionX"
+                  [style.top.px]="table.positionY"
+                  [style.width.px]="table.widthPx"
+                  [style.height.px]="table.heightPx"
+                  [style.transform]="table.rotation ? 'rotate(' + table.rotation + 'deg)' : ''"
+                  (mousedown)="onTableMouseDown($event, table, room)"
+                  (click)="selectTable(table)"
+                >
+                  <span class="fpe-table__num">{{ table.tableNumber }}</span>
+                  <span class="fpe-table__cap">{{ table.maxCapacity }}p</span>
+                  @if (table.isDirty || table.isNew) {
+                    <span class="fpe-table__dot"></span>
+                  }
+                  <div class="fpe-resize-handle" (mousedown)="onResizeMouseDown($event, table, room)"></div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Side panel: selected table -->
+      @if (selectedTable()) {
+        @let t = selectedTable()!;
+        <div class="fpe-panel glass">
+          <div class="fpe-panel__header">
+            <span class="fpe-panel__title">Masa {{ t.tableNumber }}</span>
+            @if (t.isNew) {
+              <span class="fpe-badge fpe-badge--new">Nouă</span>
+            }
+            <button class="mm-icon-btn mm-icon-btn--danger fpe-delete-btn" title="Dezactivează masa" (click)="deleteTable(t)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4h6v2" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="rv-form-group">
+            <label>Nr. masă</label>
+            <input class="rv-input" [(ngModel)]="selectedTableEdits.tableNumber" (ngModelChange)="applyEdit(t.id)" />
+          </div>
+
+          <div class="rv-form-group">
+            <label>Formă</label>
+            <select class="rv-input" [(ngModel)]="selectedTableEdits.shape" (ngModelChange)="applyEdit(t.id)">
+              <option value="ROUND">Rotundă</option>
+              <option value="SQUARE">Pătrată</option>
+              <option value="RECTANGLE">Dreptunghiulară</option>
+            </select>
+          </div>
+
+          <div class="fpe-form-row">
+            <div class="rv-form-group">
+              <label>Min pers.</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="1"
+                [(ngModel)]="selectedTableEdits.minCapacity"
+                (ngModelChange)="applyEdit(t.id)"
+              />
+            </div>
+            <div class="rv-form-group">
+              <label>Max pers.</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="1"
+                [(ngModel)]="selectedTableEdits.maxCapacity"
+                (ngModelChange)="applyEdit(t.id)"
+              />
+            </div>
+          </div>
+
+          <div class="fpe-form-row">
+            <div class="rv-form-group">
+              <label>Lățime (px)</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="40"
+                [(ngModel)]="selectedTableEdits.widthPx"
+                (ngModelChange)="applyEditSize(t.id)"
+              />
+            </div>
+            <div class="rv-form-group">
+              <label>Înălțime (px)</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="40"
+                [(ngModel)]="selectedTableEdits.heightPx"
+                (ngModelChange)="applyEditSize(t.id)"
+              />
+            </div>
+          </div>
+
+          <div class="fpe-form-row">
+            <div class="rv-form-group">
+              <label>Poziție X</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="0"
+                [(ngModel)]="selectedTableEdits.positionX"
+                (ngModelChange)="applyEditPos(t.id)"
+              />
+            </div>
+            <div class="rv-form-group">
+              <label>Poziție Y</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="0"
+                [(ngModel)]="selectedTableEdits.positionY"
+                (ngModelChange)="applyEditPos(t.id)"
+              />
+            </div>
+          </div>
+
+          <div class="rv-form-group">
+            <label>Rotație (grade)</label>
+            <input
+              class="rv-input"
+              type="number"
+              min="0"
+              max="360"
+              [(ngModel)]="selectedTableEdits.rotation"
+              (ngModelChange)="applyEdit(t.id)"
+            />
+          </div>
+
+          <label class="mm-check-item" style="margin-top: 4px">
+            <input type="checkbox" [(ngModel)]="selectedTableEdits.isActive" (ngModelChange)="applyEdit(t.id)" />
+            Masă activă
+          </label>
+
+          <div class="fpe-panel__info">
+            <span>ID: {{ t.id > 0 ? t.id : 'nou' }}</span>
+            <span>Formă: {{ shapeLabel(t.shape) }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Side panel: selected decoration -->
+      @if (selectedDecoration()) {
+        @let d = selectedDecoration()!;
+        <div class="fpe-panel glass">
+          <div class="fpe-panel__header">
+            <span class="fpe-panel__title">{{ d.label }}</span>
+            <span class="fpe-badge fpe-badge--deco">{{ decoTypeLabel(d.type) }}</span>
+            <button class="mm-icon-btn mm-icon-btn--danger fpe-delete-btn" title="Șterge decorația" (click)="deleteDeco(d)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6M14 11v6" />
+                <path d="M9 6V4h6v2" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="rv-form-group">
+            <label>Denumire</label>
+            <input class="rv-input" [(ngModel)]="selectedDecoEdits.label" (ngModelChange)="applyDecoEdit(d.id)" />
+          </div>
+
+          <div class="rv-form-group">
+            <label>Tip</label>
+            <select class="rv-input" [(ngModel)]="selectedDecoEdits.type" (ngModelChange)="applyDecoEdit(d.id)">
+              <option value="PLANT">Plantă</option>
+              <option value="WALL">Perete</option>
+              <option value="PILLAR">Stâlp</option>
+              <option value="OTHER">Altul</option>
+            </select>
+          </div>
+
+          <div class="fpe-form-row">
+            <div class="rv-form-group">
+              <label>Lățime (px)</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="20"
+                [(ngModel)]="selectedDecoEdits.width"
+                (ngModelChange)="applyDecoEditSize(d.id)"
+              />
+            </div>
+            <div class="rv-form-group">
+              <label>Înălțime (px)</label>
+              <input
+                class="rv-input"
+                type="number"
+                min="20"
+                [(ngModel)]="selectedDecoEdits.height"
+                (ngModelChange)="applyDecoEditSize(d.id)"
+              />
+            </div>
+          </div>
+
+          <div class="fpe-form-row">
+            <div class="rv-form-group">
+              <label>Poziție X</label>
+              <input class="rv-input" type="number" min="0" [(ngModel)]="selectedDecoEdits.posX" (ngModelChange)="applyDecoEditPos(d.id)" />
+            </div>
+            <div class="rv-form-group">
+              <label>Poziție Y</label>
+              <input class="rv-input" type="number" min="0" [(ngModel)]="selectedDecoEdits.posY" (ngModelChange)="applyDecoEditPos(d.id)" />
+            </div>
+          </div>
+
+          <div class="fpe-panel__info">
+            <span>Drag pentru a muta · Colț dreapta-jos = resize</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Add Table Modal -->
+@if (showAddModal()) {
+  <div class="mm-modal-backdrop" (click)="closeAddModal()">
+    <div class="mm-modal glass" (click)="$event.stopPropagation()">
+      <h3 class="mm-modal-title">Adaugă masă nouă</h3>
+      <div class="rv-form-group">
+        <label>Nr. masă *</label>
+        <input class="rv-input" [(ngModel)]="newTableForm.tableNumber" placeholder="ex: T7" />
+      </div>
+      <div class="rv-form-group">
+        <label>Formă</label>
+        <select class="rv-input" [(ngModel)]="newTableForm.shape">
+          <option value="ROUND">Rotundă</option>
+          <option value="SQUARE">Pătrată</option>
+          <option value="RECTANGLE">Dreptunghiulară</option>
+        </select>
+      </div>
+      <div class="fpe-form-row">
+        <div class="rv-form-group">
+          <label>Min persoane</label>
+          <input class="rv-input" type="number" min="1" [(ngModel)]="newTableForm.minCapacity" />
+        </div>
+        <div class="rv-form-group">
+          <label>Max persoane</label>
+          <input class="rv-input" type="number" min="1" [(ngModel)]="newTableForm.maxCapacity" />
+        </div>
+      </div>
+      <div class="fpe-form-row">
+        <div class="rv-form-group">
+          <label>Lățime (px)</label>
+          <input class="rv-input" type="number" min="40" [(ngModel)]="newTableForm.widthPx" />
+        </div>
+        <div class="rv-form-group">
+          <label>Înălțime (px)</label>
+          <input class="rv-input" type="number" min="40" [(ngModel)]="newTableForm.heightPx" />
+        </div>
+      </div>
+      <div class="mm-modal-actions">
+        <button class="mm-btn mm-btn--ghost" (click)="closeAddModal()">Anulează</button>
+        <button class="mm-btn mm-btn--primary" (click)="confirmAddTable()" [disabled]="!newTableForm.tableNumber">Adaugă</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Add Decoration Modal -->
+@if (showAddDecoModal()) {
+  <div class="mm-modal-backdrop" (click)="closeAddDecoModal()">
+    <div class="mm-modal glass" (click)="$event.stopPropagation()">
+      <h3 class="mm-modal-title">Adaugă obstacol / decor</h3>
+      <div class="rv-form-group">
+        <label>Denumire *</label>
+        <input class="rv-input" [(ngModel)]="newDecoForm.label" placeholder="ex: Plantă, Stâlp, Perete" />
+      </div>
+      <div class="rv-form-group">
+        <label>Tip</label>
+        <select class="rv-input" [(ngModel)]="newDecoForm.type">
+          <option value="PLANT">Plantă</option>
+          <option value="WALL">Perete</option>
+          <option value="PILLAR">Stâlp</option>
+          <option value="OTHER">Altul</option>
+        </select>
+      </div>
+      <div class="fpe-form-row">
+        <div class="rv-form-group">
+          <label>Lățime (px)</label>
+          <input class="rv-input" type="number" min="20" [(ngModel)]="newDecoForm.width" />
+        </div>
+        <div class="rv-form-group">
+          <label>Înălțime (px)</label>
+          <input class="rv-input" type="number" min="20" [(ngModel)]="newDecoForm.height" />
+        </div>
+      </div>
+      <div class="mm-modal-actions">
+        <button class="mm-btn mm-btn--ghost" (click)="closeAddDecoModal()">Anulează</button>
+        <button class="mm-btn mm-btn--primary" (click)="confirmAddDeco()" [disabled]="!newDecoForm.label">Adaugă</button>
+      </div>
+    </div>
+  </div>
+}

@@ -57,6 +57,9 @@ public class DiningRoom implements Serializable {
     @Column(name = "height_px")
     private Double heightPx;
 
+    @Column(name = "decorations_json", columnDefinition = "text")
+    private String decorationsJson;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "room")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "room" }, allowSetters = true)
@@ -184,6 +187,19 @@ public class DiningRoom implements Serializable {
 
     public void setHeightPx(Double heightPx) {
         this.heightPx = heightPx;
+    }
+
+    public String getDecorationsJson() {
+        return this.decorationsJson;
+    }
+
+    public DiningRoom decorationsJson(String decorationsJson) {
+        this.setDecorationsJson(decorationsJson);
+        return this;
+    }
+
+    public void setDecorationsJson(String decorationsJson) {
+        this.decorationsJson = decorationsJson;
     }
 
     public Set<RestaurantTable> getTables() {

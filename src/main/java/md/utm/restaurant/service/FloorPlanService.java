@@ -89,6 +89,7 @@ public class FloorPlanService {
             roomDTO.setFloor(room.getFloor());
             roomDTO.setWidthPx(room.getWidthPx());
             roomDTO.setHeightPx(room.getHeightPx());
+            roomDTO.setDecorationsJson(room.getDecorationsJson());
             roomDTO.setTables(tableDTOs);
             roomDTOs.add(roomDTO);
         }

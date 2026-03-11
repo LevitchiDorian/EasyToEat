@@ -33,6 +33,11 @@ const routes: Routes = [
         title: 'Rapoarte — Manager',
       },
       {
+        path: 'editor-sala',
+        loadComponent: () => import('./manager-floor-plan-editor/manager-floor-plan-editor.component'),
+        title: 'Editor sală — Manager',
+      },
+      {
         path: '',
         redirectTo: 'floor-plan',
         pathMatch: 'full',
