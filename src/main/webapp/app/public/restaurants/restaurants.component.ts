@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { BrandService } from 'app/entities/brand/service/brand.service';
+import { BrandCacheService } from 'app/core/cache/brand-cache.service';
 
 export interface RestaurantCard {
   id: number;
@@ -119,16 +119,16 @@ export default class RestaurantsComponent implements OnInit, OnDestroy {
   });
 
   private readonly destroy$ = new Subject<void>();
-  private readonly brandService = inject(BrandService);
+  private readonly brandCache = inject(BrandCacheService);
 
   ngOnInit(): void {
-    this.brandService
-      .query({ size: 20, sort: ['id,asc'] })
+    this.brandCache
+      .getBrands()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: res => {
-          if (res.body && res.body.length > 0) {
-            const cards: RestaurantCard[] = res.body.map(b => {
+        next: brands => {
+          if (brands.length > 0) {
+            const cards: RestaurantCard[] = brands.map(b => {
               const meta = BRAND_META[b.name ?? ''];
               return {
                 id: b.id ?? 0,

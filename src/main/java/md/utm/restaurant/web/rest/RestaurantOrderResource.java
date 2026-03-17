@@ -11,6 +11,7 @@ import md.utm.restaurant.repository.RestaurantOrderRepository;
 import md.utm.restaurant.repository.UserRepository;
 import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.MailService;
+import md.utm.restaurant.service.OrderNotificationService;
 import md.utm.restaurant.service.RestaurantOrderQueryService;
 import md.utm.restaurant.service.RestaurantOrderService;
 import md.utm.restaurant.service.criteria.RestaurantOrderCriteria;
@@ -55,13 +56,16 @@ public class RestaurantOrderResource {
 
     private final FloorPlanNotificationService floorPlanNotificationService;
 
+    private final OrderNotificationService orderNotificationService;
+
     public RestaurantOrderResource(
         RestaurantOrderService restaurantOrderService,
         RestaurantOrderRepository restaurantOrderRepository,
         RestaurantOrderQueryService restaurantOrderQueryService,
         UserRepository userRepository,
         MailService mailService,
-        FloorPlanNotificationService floorPlanNotificationService
+        FloorPlanNotificationService floorPlanNotificationService,
+        OrderNotificationService orderNotificationService
     ) {
         this.restaurantOrderService = restaurantOrderService;
         this.restaurantOrderRepository = restaurantOrderRepository;
@@ -69,6 +73,7 @@ public class RestaurantOrderResource {
         this.userRepository = userRepository;
         this.mailService = mailService;
         this.floorPlanNotificationService = floorPlanNotificationService;
+        this.orderNotificationService = orderNotificationService;
     }
 
     /**
@@ -131,6 +136,23 @@ public class RestaurantOrderResource {
         return ResponseEntity.created(new URI("/api/restaurant-orders/" + restaurantOrderDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, restaurantOrderDTO.getId().toString()))
             .body(restaurantOrderDTO);
+    }
+
+    /**
+     * {@code POST /restaurant-orders/:id/finalize} : Notify kitchen after all order items have been saved.
+     * Called by the client after creating the order and all its items, so the chef sees complete data.
+     */
+    @PostMapping("/{id}/finalize")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public ResponseEntity<Void> finalizeOrder(@PathVariable("id") Long id) {
+        restaurantOrderRepository
+            .findById(id)
+            .ifPresent(order -> {
+                if (order.getLocation() != null) {
+                    orderNotificationService.notifyOrderUpdate(order.getLocation().getId());
+                }
+            });
+        return ResponseEntity.ok().build();
     }
 
     /**

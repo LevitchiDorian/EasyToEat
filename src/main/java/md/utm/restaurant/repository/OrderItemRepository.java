@@ -43,4 +43,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
         countQuery = "select count(orderItem) from OrderItem orderItem where orderItem.order.id = :orderId"
     )
     Page<OrderItem> findByOrderId(@Param("orderId") Long orderId, Pageable pageable);
+
+    @Query("select oi from OrderItem oi left join fetch oi.menuItem where oi.order.id in :orderIds")
+    List<OrderItem> findByOrderIds(@Param("orderIds") List<Long> orderIds);
 }

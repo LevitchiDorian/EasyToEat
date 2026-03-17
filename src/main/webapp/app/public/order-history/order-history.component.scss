@@ -147,6 +147,11 @@
     color: hsl(var(--occupied));
     border: 1px solid hsl(var(--occupied) / 0.3);
   }
+  &--ready {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
   &--neutral {
     background: hsl(var(--muted) / 0.5);
     color: hsl(var(--muted-foreground));
@@ -244,6 +249,300 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* ── Section labels ───────────────────────────────────────────────── */
+.oh-section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--accent));
+  margin: 20px 0 10px;
+
+  &--past {
+    color: hsl(var(--muted-foreground));
+    margin-top: 28px;
+  }
+}
+
+.oh-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: hsl(var(--accent));
+  box-shadow: 0 0 0 0 hsl(var(--accent) / 0.4);
+  animation: oh-ping 1.5s ease-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes oh-ping {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--accent) / 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 7px hsl(var(--accent) / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--accent) / 0);
+  }
+}
+
+.oh-tab__count--live {
+  background: hsl(var(--accent) / 0.3);
+  animation: oh-ping 1.5s ease-out infinite;
+}
+
+/* ── Visit cards (active) ─────────────────────────────────────────── */
+.oh-visit {
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid hsl(var(--accent) / 0.2);
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: hsl(var(--accent) / 0.4);
+  }
+}
+
+.oh-visit__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.oh-visit__head-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.oh-visit__restaurant {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+
+.oh-visit__meta {
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.oh-visit__head-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.oh-visit__no-orders {
+  font-size: 0.83rem;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+  margin: 0 0 16px;
+}
+
+/* ── Orders list inside a visit ──────────────────────────────────── */
+.oh-visit__orders {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.oh-visit__order {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 12px;
+  background: hsl(var(--foreground) / 0.04);
+  border-radius: 10px;
+  border: 1px solid hsl(var(--border) / 0.4);
+
+  &--cancelled {
+    opacity: 0.45;
+  }
+}
+
+.oh-visit__order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.oh-visit__order-code {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: hsl(var(--accent));
+  letter-spacing: 0.04em;
+}
+
+.oh-visit__order-amount {
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.oh-visit__order-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ── Visit footer ────────────────────────────────────────────────── */
+.oh-visit__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid hsl(var(--border) / 0.4);
+  flex-wrap: wrap;
+}
+
+.oh-visit__total {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.oh-visit__total-label {
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.oh-visit__total-amount {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: hsl(var(--accent));
+}
+
+.oh-visit__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Visit action buttons ────────────────────────────────────────── */
+.oh-btn-order {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: hsl(var(--accent) / 0.12);
+  border: 1px solid hsl(var(--accent) / 0.4);
+  border-radius: 9px;
+  color: hsl(var(--accent));
+  font-size: 0.83rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    background: hsl(var(--accent) / 0.22);
+    border-color: hsl(var(--accent) / 0.7);
+  }
+}
+
+.oh-btn-bill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: hsl(var(--foreground) / 0.05);
+  border: 1px solid hsl(var(--border));
+  border-radius: 9px;
+  color: hsl(var(--foreground));
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background: hsl(var(--foreground) / 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.oh-bill-requested {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 9px;
+  color: #22c55e;
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.oh-btn-cancel-sm {
+  padding: 4px 10px;
+  background: hsl(var(--occupied) / 0.1);
+  border: 1px solid hsl(var(--occupied) / 0.3);
+  border-radius: 6px;
+  color: hsl(var(--occupied));
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+
+  &:hover {
+    background: hsl(var(--occupied) / 0.2);
+  }
+}
+
+/* ── Past orders list inside a past-visit card ───────────────────── */
+.oh-past-orders {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid hsl(var(--border) / 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.oh-past-order {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.oh-past-order__code {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  flex: 1;
+  min-width: 0;
+}
+
+.oh-past-order__amount {
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+  margin-left: auto;
 }
 
 // Add items button

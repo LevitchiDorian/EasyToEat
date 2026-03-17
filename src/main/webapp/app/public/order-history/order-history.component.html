@@ -61,8 +61,8 @@
           <path d="M16 10a4 4 0 0 1-8 0" />
         </svg>
         Comenzi
-        @if (orders().length > 0) {
-          <span class="oh-tab__count">{{ orders().length }}</span>
+        @if (activeVisits().length > 0) {
+          <span class="oh-tab__count oh-tab__count--live">{{ activeVisits().length }}</span>
         }
       </button>
     </div>
@@ -81,7 +81,7 @@
       <div class="rv-alert rv-alert--error">Nu am putut încărca istoricul. Încearcă din nou.</div>
     }
 
-    <!-- Reservations tab -->
+    <!-- ── RESERVATIONS TAB ────────────────────────────────────────── -->
     @else if (activeTab() === 'reservations') {
       @if (reservations().length === 0) {
         <div class="oh-empty glass animate-fade-in">
@@ -116,7 +116,6 @@
                 </div>
                 <span class="oh-badge oh-badge--{{ statusMod(res.status) }}">{{ reservationStatusLabel(res.status) }}</span>
               </div>
-
               <div class="oh-card__body">
                 <div class="oh-meta">
                   <svg
@@ -192,31 +191,213 @@
       }
     }
 
-    <!-- Orders tab -->
+    <!-- ── ORDERS TAB ──────────────────────────────────────────────── -->
     @else {
-      @if (orders().length === 0) {
-        <div class="oh-empty glass animate-fade-in">
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="oh-empty__icon"
-          >
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-          </svg>
-          <p class="oh-empty__title">Nicio comandă încă</p>
-          <p class="oh-empty__sub">Plasează o pre-comandă sau comandă din meniu.</p>
-          <a class="rv-btn rv-btn--primary" routerLink="/restaurante">Explorează restaurante</a>
+      <!-- Active Visits (today) -->
+      @if (activeVisits().length > 0) {
+        <div class="oh-section-label">
+          <span class="oh-live-dot"></span>
+          Vizite active azi
         </div>
-      } @else {
         <div class="oh-list animate-fade-in">
-          @for (order of orders(); track order.id) {
+          @for (visit of activeVisits(); track visit.reservation.id) {
+            <div class="oh-visit glass">
+              <!-- Visit header -->
+              <div class="oh-visit__header">
+                <div class="oh-visit__head-info">
+                  <span class="oh-visit__restaurant">{{ visit.locationName }}</span>
+                  <span class="oh-visit__meta">
+                    {{ visit.reservation.reservationDate?.format('DD MMM') }} · {{ visit.reservation.startTime ?? '' }} ·
+                    {{ visit.reservation.partySize ?? '?' }} pers.
+                  </span>
+                </div>
+                <div class="oh-visit__head-right">
+                  <span class="oh-badge oh-badge--{{ statusMod(visit.reservation.status) }}">
+                    {{ reservationStatusLabel(visit.reservation.status) }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Orders list -->
+              @if (visit.orders.length === 0) {
+                <p class="oh-visit__no-orders">Nicio comandă plasată încă.</p>
+              } @else {
+                <div class="oh-visit__orders">
+                  @for (order of visit.orders; track order.id) {
+                    <div class="oh-visit__order" [class.oh-visit__order--cancelled]="order.status === 'CANCELLED'">
+                      <div class="oh-visit__order-info">
+                        <span class="oh-visit__order-code">{{ order.orderCode ?? 'Comanda #' + order.id }}</span>
+                        @if (order.totalAmount != null) {
+                          <span class="oh-visit__order-amount">{{ order.totalAmount | number: '1.2-2' }} MDL</span>
+                        }
+                      </div>
+                      <div class="oh-visit__order-right">
+                        <span class="oh-badge oh-badge--{{ statusMod(order.status) }}">{{ orderStatusLabel(order.status) }}</span>
+                        @if (canCancelOrder(order)) {
+                          <button class="oh-btn-cancel-sm" (click)="cancelOrder(order)">Anulează</button>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- Visit footer: total + actions -->
+              <div class="oh-visit__footer">
+                @if (visit.orders.length > 0) {
+                  <div class="oh-visit__total">
+                    <span class="oh-visit__total-label">Total sesiune</span>
+                    <span class="oh-visit__total-amount">{{ visit.total | number: '1.2-2' }} MDL</span>
+                  </div>
+                }
+                <div class="oh-visit__actions">
+                  <button class="oh-btn-order" (click)="openNewOrderPicker(visit)">
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Comandă
+                  </button>
+                  @if (isBillRequested(visit.reservation.id)) {
+                    <span class="oh-bill-requested">
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                      </svg>
+                      Nota a fost solicitată
+                    </span>
+                  } @else {
+                    <button class="oh-btn-bill" (click)="requestBill(visit.reservation.id)" [disabled]="visit.orders.length === 0">
+                      <svg
+                        width="13"
+                        height="13"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                      </svg>
+                      Solicită nota
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Past Visits -->
+      @if (pastVisits().length > 0) {
+        <div class="oh-section-label oh-section-label--past">Vizite anterioare</div>
+        <div class="oh-list animate-fade-in">
+          @for (visit of pastVisits(); track visit.reservation.id) {
+            <div class="oh-card glass">
+              <div class="oh-card__head">
+                <div class="oh-card__info">
+                  <span class="oh-card__code">{{ visit.reservation.reservationCode ?? '—' }}</span>
+                  <span class="oh-card__restaurant">{{ visit.locationName }}</span>
+                </div>
+                <span class="oh-badge oh-badge--{{ statusMod(visit.reservation.status) }}">{{
+                  reservationStatusLabel(visit.reservation.status)
+                }}</span>
+              </div>
+              <div class="oh-card__body">
+                <div class="oh-meta">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <span>{{ visit.reservation.reservationDate?.format('DD MMM YYYY') ?? '—' }}</span>
+                </div>
+                <div class="oh-meta">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                  </svg>
+                  <span>{{ visit.orders.length }} comand{{ visit.orders.length === 1 ? 'ă' : 'e' }}</span>
+                </div>
+                <div class="oh-meta oh-meta--highlight">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                  </svg>
+                  <span>{{ visit.total | number: '1.2-2' }} MDL</span>
+                </div>
+              </div>
+              <!-- Individual past orders -->
+              <div class="oh-past-orders">
+                @for (order of visit.orders; track order.id) {
+                  <div class="oh-past-order">
+                    <span class="oh-past-order__code">{{ order.orderCode ?? 'Comanda #' + order.id }}</span>
+                    <span class="oh-badge oh-badge--{{ statusMod(order.status) }}">{{ orderStatusLabel(order.status) }}</span>
+                    @if (order.totalAmount != null) {
+                      <span class="oh-past-order__amount">{{ order.totalAmount | number: '1.2-2' }} MDL</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Standalone orders (delivery / takeaway) -->
+      @if (standaloneOrders().length > 0) {
+        <div class="oh-section-label oh-section-label--past">Comenzi individuale</div>
+        <div class="oh-list animate-fade-in">
+          @for (order of standaloneOrders(); track order.id) {
             <div class="oh-card glass">
               <div class="oh-card__head">
                 <div class="oh-card__info">
@@ -225,7 +406,6 @@
                 </div>
                 <span class="oh-badge oh-badge--{{ statusMod(order.status) }}">{{ orderStatusLabel(order.status) }}</span>
               </div>
-
               <div class="oh-card__body">
                 <div class="oh-meta">
                   <svg
@@ -300,39 +480,42 @@
                   </div>
                 }
               </div>
-              @if (isActiveOrder(order)) {
-                <div class="oh-card__actions">
-                  <button class="oh-btn-add" (click)="openPicker(order)">
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <line x1="12" y1="5" x2="12" y2="19" />
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                    </svg>
-                    Adaugă produse
-                  </button>
-                </div>
-              }
             </div>
           }
+        </div>
+      }
+
+      <!-- Empty state -->
+      @if (activeVisits().length === 0 && pastVisits().length === 0 && standaloneOrders().length === 0) {
+        <div class="oh-empty glass animate-fade-in">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="oh-empty__icon"
+          >
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+          </svg>
+          <p class="oh-empty__title">Nicio comandă încă</p>
+          <p class="oh-empty__sub">Plasează o pre-comandă sau comandă din meniu.</p>
+          <a class="rv-btn rv-btn--primary" routerLink="/restaurante">Explorează restaurante</a>
         </div>
       }
     }
   </div>
 
-  <!-- Add items picker overlay -->
-  @if (pickerOrderId() !== null) {
+  <!-- ── NEW ORDER PICKER OVERLAY ───────────────────────────────────── -->
+  @if (pickerReservationId() !== null) {
     <div class="oh-picker-overlay" (click)="closePicker()">
       <div class="oh-picker glass" (click)="$event.stopPropagation()">
         <div class="oh-picker__header">
-          <span>Adaugă produse la comanda #{{ pickerOrderId() }}</span>
+          <span>Comandă produse</span>
           <button class="oh-picker__close" (click)="closePicker()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -341,7 +524,7 @@
           </button>
         </div>
 
-        @if (addSuccess()) {
+        @if (orderSuccess()) {
           <div class="oh-picker__success">
             <svg
               width="20"
@@ -356,7 +539,7 @@
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
               <polyline points="22 4 12 14.01 9 11.01" />
             </svg>
-            Produsele au fost adăugate!
+            Comanda a fost plasată cu succes!
           </div>
         }
 
@@ -385,8 +568,8 @@
           @if (pickerEntries().length > 0) {
             <div class="oh-picker__footer">
               <span class="oh-picker__total">Total: {{ pickerTotal() | number: '1.2-2' }} MDL</span>
-              <button class="rv-btn rv-btn--primary oh-picker__confirm" (click)="confirmAddItems()" [disabled]="isAddingItems()">
-                {{ isAddingItems() ? 'Se adaugă...' : 'Confirmă adăugarea' }}
+              <button class="rv-btn rv-btn--primary oh-picker__confirm" (click)="confirmNewOrder()" [disabled]="isSubmittingOrder()">
+                {{ isSubmittingOrder() ? 'Se plasează...' : 'Plasează comanda' }}
               </button>
             </div>
           }

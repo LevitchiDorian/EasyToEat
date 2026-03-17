@@ -29,6 +29,17 @@ export default class NavbarComponent implements OnInit {
     () =>
       !this.isAdmin() && !this.isManager() && (this.accountRoleService.isStaff() || this.accountService.hasAnyAuthority([Authority.STAFF])),
   );
+  isChef = computed(
+    () =>
+      !this.isAdmin() &&
+      !this.isManager() &&
+      !this.isStaff() &&
+      (this.accountRoleService.isChef() || this.accountService.hasAnyAuthority([Authority.CHEF])),
+  );
+
+  // Hide public navbar for chef/staff — they have their own dedicated layout headers
+  showNavbar = computed(() => !this.isChef() && !this.isStaff());
+
   readonly accountRoleService = inject(AccountRoleService);
 
   private readonly accountService = inject(AccountService);

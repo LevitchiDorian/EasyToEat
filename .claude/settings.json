@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"c:/Users/levit/Desktop/EasyToEat/src/main/java/md/utm/restaurant/repository/RestaurantOrderRepository.java\":*)",
+      "Bash(node -e \":*)",
+      "Bash(node -e \"const fs=require\\(''fs''\\); const c=fs.readFileSync\\(''c:/Users/levit/Desktop/EasyToEat/src/main/webapp/app/chef/chef-dashboard/chef-dashboard.component.ts'',''utf8''\\); console.log\\(c.substring\\(0,500\\)\\);\")",
+      "Bash(node -p \"require\\(''fs''\\).existsSync\\(''c:/Users/levit/Desktop/EasyToEat/src/main/webapp/app/public/order-history/order-history.component.ts''\\)\")",
+      "Bash(node -p \"require\\(''fs''\\).readFileSync\\(''c:/Users/levit/Desktop/EasyToEat/src/main/webapp/app/public/order-history/order-history.component.ts'',''utf8''\\).includes\\(''subscribeToOrderLocations''\\)\")",
+      "Bash(node -p \"require\\(''fs''\\).readFileSync\\(''c:/Users/levit/Desktop/EasyToEat/src/main/webapp/app/public/order-history/order-history.component.ts'',''utf8''\\).includes\\(''ngOnDestroy''\\)\")",
+      "Bash(./mvnw compile:*)",
+      "Bash(npx tsc:*)",
+      "Bash(timeout 30 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev)",
+      "Bash(timeout 60 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev)",
+      "Bash(timeout 90 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev -Dskip.npm=true)",
+      "Bash(timeout 120 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev -Dskip.npm=true)",
+      "Bash(awk -F';' '{print NR\"\": \"\"NF\"\" values\"\"}' src/main/resources/config/liquibase/fake-data/reservation.csv)",
+      "Read(//c/Users/levit/Desktop/EasyToEat/NR==1{for\\(i=1;i<=NF;i++\\) printf \"\"\"\"%d:%s/n\"\"\"\",i,$i} NR==2{for\\(i=1;i<=NF;i++\\) printf \"\"\"\"%d:%s/**)",
+      "Read(//c/Users/levit/Desktop/EasyToEat/NR==3{for\\(i=1;i<=NF;i++\\) printf \"\"\"\"%d:%s/**)",
+      "Read(//tmp/**)",
+      "Bash(awk -F';' '{print NR\"\"\"\": \"\"\"\"NF\"\"\"\" values\"\"\"\"}' src/main/resources/config/liquibase/fake-data/restaurant_order.csv)",
+      "Read(//c/Users/levit/Desktop/EasyToEat/**)",
+      "Read(//c/Users/levit/Desktop/EasyToEat/NR<=4{for\\(i=1;i<=NF;i++\\) printf \"\"\"\"%d:%s/**)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /PID 4948 /F)",
+      "Bash(cmd.exe /c \"taskkill /PID 4948 /F\")",
+      "Bash(cmd.exe /c 'taskkill /F /PID 4948')",
+      "Bash(cmd.exe /c \"taskkill /F /PID 4948 2>&1\")",
+      "Bash(cmd.exe /c \"netstat -ano | findstr :8080\")",
+      "Bash(cmd.exe /c \"taskkill /F /IM java.exe 2>&1\")"
+    ],
+    "additionalDirectories": ["\\tmp"]
+  }
+}

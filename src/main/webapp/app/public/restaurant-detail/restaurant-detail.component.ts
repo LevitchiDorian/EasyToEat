@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -341,25 +341,19 @@ export default class RestaurantDetailComponent implements OnInit, OnDestroy {
     this.isLoadingMenu.set(true);
     const catUrl = this.configService.getEndpointFor('api/menu-categories?size=200');
     const itemUrl = this.configService.getEndpointFor('api/menu-items?size=500');
-    this.http.get<MenuCategory[]>(catUrl).subscribe({
-      next: cats => {
+    forkJoin({
+      cats: this.http.get<MenuCategory[]>(catUrl),
+      items: this.http.get<MenuItem[]>(itemUrl),
+    }).subscribe({
+      next: ({ cats, items }) => {
         const filtered = cats.filter(c => c.brand?.id === brandId && c.isActive !== false);
         filtered.sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
         this.menuCategories.set(filtered);
         if (filtered.length > 0) this.expandedCategoryId.set(filtered[0].id);
-
-        this.http.get<MenuItem[]>(itemUrl).subscribe({
-          next: items => {
-            const catIds = new Set(filtered.map(c => c.id));
-            this.menuItems.set(items.filter(i => i.category?.id !== undefined && catIds.has(i.category.id) && i.isAvailable !== false));
-            this.isLoadingMenu.set(false);
-            this.menuLoaded.set(true);
-          },
-          error: () => {
-            this.isLoadingMenu.set(false);
-            this.menuLoaded.set(true);
-          },
-        });
+        const catIds = new Set(filtered.map(c => c.id));
+        this.menuItems.set(items.filter(i => i.category?.id !== undefined && catIds.has(i.category.id) && i.isAvailable !== false));
+        this.isLoadingMenu.set(false);
+        this.menuLoaded.set(true);
       },
       error: () => {
         this.isLoadingMenu.set(false);

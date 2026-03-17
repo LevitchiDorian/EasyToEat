@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { BrandService } from 'app/entities/brand/service/brand.service';
+import { BrandCacheService } from 'app/core/cache/brand-cache.service';
 
 interface PreviewRestaurant {
   id: number;
@@ -63,13 +63,13 @@ const FALLBACK_SLOTS = [6, 4, 5, 3, 7];
 export class RestaurantsPreviewComponent implements OnInit {
   restaurants: PreviewRestaurant[] = [];
 
-  private readonly brandService = inject(BrandService);
+  private readonly brandCache = inject(BrandCacheService);
 
   ngOnInit(): void {
-    this.brandService.query({ size: 3, sort: ['id,asc'] }).subscribe({
-      next: res => {
-        if (res.body && res.body.length > 0) {
-          this.restaurants = res.body.map((b, i) => {
+    this.brandCache.getBrands().subscribe({
+      next: brands => {
+        if (brands.length > 0) {
+          this.restaurants = brands.slice(0, 3).map((b, i) => {
             const meta = BRAND_META[b.name ?? ''];
             return {
               id: b.id ?? i + 1,
@@ -88,7 +88,7 @@ export class RestaurantsPreviewComponent implements OnInit {
         }
       },
       error: () => {
-        this.restaurants = [];
+        /* keep empty */
       },
     });
   }

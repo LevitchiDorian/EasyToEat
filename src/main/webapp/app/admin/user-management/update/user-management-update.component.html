@@ -129,7 +129,9 @@
                       ? 'Manager'
                       : authority === 'ROLE_STAFF'
                         ? 'Staff'
-                        : authority
+                        : authority === 'ROLE_CHEF'
+                          ? 'Bucătar (Chef)'
+                          : authority
               }}
             </option>
           }
@@ -145,7 +147,29 @@
               <option [value]="loc.id">{{ loc.name }}</option>
             }
           </select>
-          <small style="color: rgba(255, 255, 255, 0.4); font-size: 0.75rem">Locația la care va fi asignat managerul / staff-ul</small>
+          <small style="color: rgba(255, 255, 255, 0.4); font-size: 0.75rem">Locația la care va fi asignat utilizatorul</small>
+        </div>
+      }
+
+      @if (isNewUser) {
+        <div class="rv-form-group">
+          <label for="field_password">Parolă</label>
+          <input
+            type="password"
+            id="field_password"
+            class="rv-input"
+            name="password"
+            formControlName="password"
+            placeholder="Minim 4 caractere"
+            autocomplete="new-password"
+          />
+          <small style="color: rgba(255, 255, 255, 0.4); font-size: 0.75rem">Lăsați gol pentru a trimite link de resetare prin email</small>
+          @let pwRef = editForm.get('password')!;
+          @if (pwRef.invalid && (pwRef.dirty || pwRef.touched)) {
+            @if (pwRef.errors?.['minlength']) {
+              <span class="rv-field-error">Minim 4 caractere.</span>
+            }
+          }
         </div>
       }
 

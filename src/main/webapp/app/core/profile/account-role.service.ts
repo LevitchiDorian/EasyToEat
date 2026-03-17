@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 export interface UserProfileInfo {
-  role: 'SUPER_ADMIN' | 'MANAGER' | 'STAFF' | 'CLIENT' | null;
+  role: 'SUPER_ADMIN' | 'MANAGER' | 'STAFF' | 'CHEF' | 'CLIENT' | null;
   locationId: number | null;
 }
 
@@ -41,8 +41,12 @@ export class AccountRoleService {
     return this.profile()?.role === 'STAFF';
   }
 
+  isChef(): boolean {
+    return this.profile()?.role === 'CHEF';
+  }
+
   hasLocationAccess(): boolean {
-    return this.isManager() || this.isStaff();
+    return this.isManager() || this.isStaff() || this.isChef();
   }
 
   locationId(): number | null {

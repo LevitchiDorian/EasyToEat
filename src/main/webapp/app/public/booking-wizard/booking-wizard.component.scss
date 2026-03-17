@@ -910,3 +910,58 @@
     }
   }
 }
+
+// ─── Closed message ──────────────────────────────────────────────────────────
+.rv-wiz__hours-loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.rv-wiz__closed-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.rv-wiz__closed-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.rv-wiz__closed-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.rv-wiz__closed-sub {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+  margin: 0;
+
+  strong {
+    color: var(--rv-orange, #f5a520);
+  }
+}
+
+.rv-wiz__closed-note {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.875rem;
+  max-width: 340px;
+  margin: 0;
+}
+
+.rv-wiz__closed-btn {
+  margin-top: 0.5rem;
+}
+
+.rv-spinner--sm {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}

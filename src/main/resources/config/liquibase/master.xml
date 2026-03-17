@@ -63,4 +63,5 @@
     <include file="config/liquibase/changelog/20260310000001_add_stock_quantity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260310000002_add_decorations_json.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260305000001_reload_data_always.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260311000001_add_chef.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

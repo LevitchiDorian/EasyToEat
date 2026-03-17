@@ -1,8 +1,10 @@
 package md.utm.restaurant.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import md.utm.restaurant.domain.Reservation;
+import md.utm.restaurant.domain.enumeration.ReservationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -44,4 +46,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
         "select reservation from Reservation reservation left join fetch reservation.location left join fetch reservation.client left join fetch reservation.room where reservation.id =:id"
     )
     Optional<Reservation> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query("select r from Reservation r left join fetch r.location where r.status in :statuses and r.reservationDate < :date")
+    List<Reservation> findActiveBeforeDate(@Param("statuses") List<ReservationStatus> statuses, @Param("date") LocalDate date);
+
+    @Query("select r from Reservation r left join fetch r.location where r.status in :statuses and r.reservationDate = :date")
+    List<Reservation> findActiveOnDate(@Param("statuses") List<ReservationStatus> statuses, @Param("date") LocalDate date);
 }

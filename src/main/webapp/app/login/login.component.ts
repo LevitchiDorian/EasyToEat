@@ -71,9 +71,9 @@ export default class LoginComponent implements OnInit, AfterViewInit {
   private readonly route = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    this.accountService.identity().subscribe(() => {
+    this.accountService.identity().subscribe(account => {
       if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['']);
+        this.navigateByRole(account?.authorities ?? []);
       }
     });
 
@@ -93,12 +93,28 @@ export default class LoginComponent implements OnInit, AfterViewInit {
     this.loginService.login(this.loginForm.getRawValue()).subscribe({
       next: () => {
         this.accountRoleService.load();
-        if (!this.router.getCurrentNavigation()) {
-          this.router.navigate(['']);
-        }
+        this.accountService.identity(true).subscribe(account => {
+          if (!this.router.getCurrentNavigation()) {
+            this.navigateByRole(account?.authorities ?? []);
+          }
+        });
       },
       error: () => this.authenticationError.set(true),
     });
+  }
+
+  private navigateByRole(authorities: string[]): void {
+    if (authorities.includes('ROLE_CHEF')) {
+      this.router.navigate(['/chef']);
+    } else if (authorities.includes('ROLE_STAFF') && !authorities.includes('ROLE_ADMIN') && !authorities.includes('ROLE_MANAGER')) {
+      this.router.navigate(['/staff']);
+    } else if (authorities.includes('ROLE_MANAGER') && !authorities.includes('ROLE_ADMIN')) {
+      this.router.navigate(['/manager']);
+    } else if (authorities.includes('ROLE_ADMIN')) {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['']);
+    }
   }
 
   register(): void {

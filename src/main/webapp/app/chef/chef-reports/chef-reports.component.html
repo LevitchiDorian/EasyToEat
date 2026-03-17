@@ -1,0 +1,52 @@
+<div class="cr-page">
+  <div class="cr-header">
+    <h2 class="cr-title">Raport comenzi</h2>
+    <div class="cr-period-tabs">
+      <button class="cr-period-btn" [class.cr-period-btn--active]="period() === 'day'" (click)="setPeriod('day')">Azi</button>
+      <button class="cr-period-btn" [class.cr-period-btn--active]="period() === 'week'" (click)="setPeriod('week')">7 zile</button>
+      <button class="cr-period-btn" [class.cr-period-btn--active]="period() === 'month'" (click)="setPeriod('month')">30 zile</button>
+    </div>
+  </div>
+
+  <p class="cr-subtitle">Date pentru {{ periodLabel() }}</p>
+
+  @if (isLoading()) {
+    <div class="cr-loading">
+      <div class="cr-spinner"></div>
+      <span>Se incarca raportul...</span>
+    </div>
+  } @else if (report()) {
+    <div class="cr-grid">
+      <div class="cr-stat cr-stat--blue">
+        <span class="cr-stat__val">{{ report()!.totalOrders }}</span>
+        <span class="cr-stat__label">Total comenzi</span>
+      </div>
+
+      <div class="cr-stat cr-stat--green">
+        <span class="cr-stat__val">{{ report()!.servedOrders }}</span>
+        <span class="cr-stat__label">Servite</span>
+      </div>
+
+      <div class="cr-stat cr-stat--red">
+        <span class="cr-stat__val">{{ report()!.cancelledOrders }}</span>
+        <span class="cr-stat__label">Anulate</span>
+      </div>
+
+      <div class="cr-stat cr-stat--orange">
+        <span class="cr-stat__val">{{ successRate() }}%</span>
+        <span class="cr-stat__label">Rată succes</span>
+      </div>
+    </div>
+
+    <div class="cr-revenue-card">
+      <div class="cr-revenue-card__row">
+        <span class="cr-revenue-card__label">Venit total</span>
+        <span class="cr-revenue-card__val cr-revenue-card__val--big">{{ report()!.totalRevenue | number: '1.2-2' }} MDL</span>
+      </div>
+      <div class="cr-revenue-card__row">
+        <span class="cr-revenue-card__label">Valoare medie / comandă</span>
+        <span class="cr-revenue-card__val">{{ report()!.avgOrderValue | number: '1.2-2' }} MDL</span>
+      </div>
+    </div>
+  }
+</div>

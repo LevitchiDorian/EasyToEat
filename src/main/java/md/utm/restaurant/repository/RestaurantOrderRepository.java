@@ -3,6 +3,7 @@ package md.utm.restaurant.repository;
 import java.util.List;
 import java.util.Optional;
 import md.utm.restaurant.domain.RestaurantOrder;
+import md.utm.restaurant.domain.enumeration.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -49,4 +50,24 @@ public interface RestaurantOrderRepository extends JpaRepository<RestaurantOrder
         "select restaurantOrder from RestaurantOrder restaurantOrder left join fetch restaurantOrder.location left join fetch restaurantOrder.client left join fetch restaurantOrder.assignedWaiter left join fetch restaurantOrder.table left join fetch restaurantOrder.promotion where restaurantOrder.id =:id"
     )
     Optional<RestaurantOrder> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query(
+        "select o from RestaurantOrder o left join fetch o.location left join fetch o.table left join fetch o.reservation where o.location.id = :locationId and o.status in :statuses order by o.createdAt asc"
+    )
+    List<RestaurantOrder> findByLocationIdAndStatusIn(@Param("locationId") Long locationId, @Param("statuses") List<OrderStatus> statuses);
+
+    @Query(
+        "select o from RestaurantOrder o left join fetch o.location left join fetch o.table left join fetch o.reservation where o.status in :statuses order by o.createdAt asc"
+    )
+    List<RestaurantOrder> findByStatusIn(@Param("statuses") List<OrderStatus> statuses);
+
+    @Query(
+        "select o from RestaurantOrder o left join fetch o.location left join fetch o.table where o.location.id = :locationId and o.status in :statuses and o.createdAt >= :from and o.createdAt < :to order by o.createdAt desc"
+    )
+    List<RestaurantOrder> findByLocationAndStatusAndPeriod(
+        @Param("locationId") Long locationId,
+        @Param("statuses") List<OrderStatus> statuses,
+        @Param("from") java.time.Instant from,
+        @Param("to") java.time.Instant to
+    );
 }

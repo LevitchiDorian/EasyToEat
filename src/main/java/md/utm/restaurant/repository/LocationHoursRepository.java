@@ -37,4 +37,10 @@ public interface LocationHoursRepository extends JpaRepository<LocationHours, Lo
 
     @Query("select locationHours from LocationHours locationHours left join fetch locationHours.location where locationHours.id =:id")
     Optional<LocationHours> findOneWithToOneRelationships(@Param("id") Long id);
+
+    @Query("select lh from LocationHours lh where lh.location.id in :locationIds and lh.dayOfWeek = :day")
+    List<LocationHours> findByLocationIdsAndDay(@Param("locationIds") List<Long> locationIds, @Param("day") java.time.DayOfWeek day);
+
+    @Query("select lh from LocationHours lh where lh.location.id = :locationId and lh.dayOfWeek = :day")
+    Optional<LocationHours> findByLocationIdAndDay(@Param("locationId") Long locationId, @Param("day") java.time.DayOfWeek day);
 }

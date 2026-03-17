@@ -1,140 +1,151 @@
-<nav class="rv-navbar glass-strong" [class.rv-navbar--scrolled]="scrolled">
-  <div class="rv-navbar__inner">
-    <!-- Logo -->
-    <a class="rv-navbar__logo" routerLink="/" (click)="collapseNavbar()">
-      <span class="rv-navbar__logo-icon">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="14" cy="14" r="14" fill="#f5a520" />
-          <path d="M10 8v12M14 8v5a3 3 0 0 0 3 3v4" stroke="#000" stroke-width="2" stroke-linecap="round" />
-        </svg>
-      </span>
-      <span class="rv-navbar__logo-text">EasyToEat</span>
-    </a>
-
-    <!-- Desktop navigation -->
-    <ul class="rv-navbar__nav">
-      <li>
-        <a class="rv-navbar__link" routerLink="/restaurante" routerLinkActive="rv-navbar__link--active" (click)="collapseNavbar()"
-          >Restaurante</a
-        >
-      </li>
-      <li>
-        <a class="rv-navbar__link" routerLink="/cum-functioneaza" routerLinkActive="rv-navbar__link--active" (click)="collapseNavbar()"
-          >Cum funcționează</a
-        >
-      </li>
-      <li>
-        <a class="rv-navbar__link" routerLink="/pentru-afaceri" routerLinkActive="rv-navbar__link--active" (click)="collapseNavbar()"
-          >Pentru afaceri</a
-        >
-      </li>
-    </ul>
-
-    <!-- Right actions -->
-    <div class="rv-navbar__actions">
-      @let accountRef = account();
-      @if (accountRef !== null) {
-        <!-- Logged-in user dropdown -->
-        <div ngbDropdown display="dynamic" class="rv-user-dropdown">
-          <button class="rv-navbar__user-btn" ngbDropdownToggle>
-            @if (accountRef.imageUrl) {
-              <img [src]="accountRef.imageUrl" class="rv-avatar" alt="Avatar" />
-            } @else {
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-              </svg>
-            }
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end rv-dropdown" ngbDropdownMenu>
-            <li class="rv-dropdown__header">{{ accountRef.login }}</li>
-            <li><a class="dropdown-item rv-dropdown__item" routerLink="/profil" (click)="collapseNavbar()">Profilul meu</a></li>
-            <li><a class="dropdown-item rv-dropdown__item" routerLink="/istoricul-meu" (click)="collapseNavbar()">Istoricul meu</a></li>
-            <li><a class="dropdown-item rv-dropdown__item" routerLink="/account/password" (click)="collapseNavbar()">Schimbă parola</a></li>
-            @if (isAdmin()) {
-              <!-- Super Admin links -->
-              <li><hr class="dropdown-divider" /></li>
-              <li class="rv-dropdown__section-label">Super Admin</li>
-              <li>
-                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/user-management" (click)="collapseNavbar()"
-                  >Utilizatori & Roluri</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/floor-plan" (click)="collapseNavbar()"
-                  >Planul sălii (toate)</a
-                >
-              </li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/health" (click)="collapseNavbar()">Sănătate sistem</a></li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/metrics" (click)="collapseNavbar()">Metrici</a></li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/logs" (click)="collapseNavbar()">Loguri</a></li>
-              <li>
-                <a class="dropdown-item rv-dropdown__item" routerLink="/admin/configuration" (click)="collapseNavbar()">Configurare</a>
-              </li>
-            } @else if (isManager()) {
-              <!-- Manager links -->
-              <li><hr class="dropdown-divider" /></li>
-              <li class="rv-dropdown__section-label">Manager</li>
-              <li>
-                <a class="dropdown-item rv-dropdown__item" routerLink="/manager/floor-plan" (click)="collapseNavbar()">Harta sălii</a>
-              </li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/rezervari" (click)="collapseNavbar()">Rezervări</a></li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/personal" (click)="collapseNavbar()">Personal</a></li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/meniu" (click)="collapseNavbar()">Meniu</a></li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/rapoarte" (click)="collapseNavbar()">Rapoarte</a></li>
-            } @else if (isStaff()) {
-              <!-- Staff links -->
-              <li><hr class="dropdown-divider" /></li>
-              <li class="rv-dropdown__section-label">Staff</li>
-              <li><a class="dropdown-item rv-dropdown__item" routerLink="/staff" (click)="collapseNavbar()">Panou Staff</a></li>
-            }
-            <li>
-              <hr class="dropdown-divider" />
-            </li>
-            <li><button class="dropdown-item rv-dropdown__item" (click)="logout()">Ieși din cont</button></li>
-          </ul>
-        </div>
-      } @else {
-        <button class="rv-navbar__user-btn" (click)="login()">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+@if (showNavbar()) {
+  <nav class="rv-navbar glass-strong" [class.rv-navbar--scrolled]="scrolled">
+    <div class="rv-navbar__inner">
+      <!-- Logo -->
+      <a class="rv-navbar__logo" routerLink="/" (click)="collapseNavbar()">
+        <span class="rv-navbar__logo-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="14" fill="#f5a520" />
+            <path d="M10 8v12M14 8v5a3 3 0 0 0 3 3v4" stroke="#000" stroke-width="2" stroke-linecap="round" />
           </svg>
+        </span>
+        <span class="rv-navbar__logo-text">EasyToEat</span>
+      </a>
+
+      <!-- Desktop navigation -->
+      <ul class="rv-navbar__nav">
+        <li>
+          <a class="rv-navbar__link" routerLink="/restaurante" routerLinkActive="rv-navbar__link--active" (click)="collapseNavbar()"
+            >Restaurante</a
+          >
+        </li>
+        <li>
+          <a class="rv-navbar__link" routerLink="/cum-functioneaza" routerLinkActive="rv-navbar__link--active" (click)="collapseNavbar()"
+            >Cum funcționează</a
+          >
+        </li>
+        <li>
+          <a class="rv-navbar__link" routerLink="/pentru-afaceri" routerLinkActive="rv-navbar__link--active" (click)="collapseNavbar()"
+            >Pentru afaceri</a
+          >
+        </li>
+      </ul>
+
+      <!-- Right actions -->
+      <div class="rv-navbar__actions">
+        @let accountRef = account();
+        @if (accountRef !== null) {
+          <!-- Logged-in user dropdown -->
+          <div ngbDropdown display="dynamic" class="rv-user-dropdown">
+            <button class="rv-navbar__user-btn" ngbDropdownToggle>
+              @if (accountRef.imageUrl) {
+                <img [src]="accountRef.imageUrl" class="rv-avatar" alt="Avatar" />
+              } @else {
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>
+              }
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end rv-dropdown" ngbDropdownMenu>
+              <li class="rv-dropdown__header">{{ accountRef.login }}</li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/profil" (click)="collapseNavbar()">Profilul meu</a></li>
+              <li><a class="dropdown-item rv-dropdown__item" routerLink="/istoricul-meu" (click)="collapseNavbar()">Istoricul meu</a></li>
+              <li>
+                <a class="dropdown-item rv-dropdown__item" routerLink="/account/password" (click)="collapseNavbar()">Schimbă parola</a>
+              </li>
+              @if (isAdmin()) {
+                <!-- Super Admin links -->
+                <li><hr class="dropdown-divider" /></li>
+                <li class="rv-dropdown__section-label">Super Admin</li>
+                <li>
+                  <a class="dropdown-item rv-dropdown__item" routerLink="/admin/user-management" (click)="collapseNavbar()"
+                    >Utilizatori & Roluri</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item rv-dropdown__item" routerLink="/admin/floor-plan" (click)="collapseNavbar()"
+                    >Planul sălii (toate)</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item rv-dropdown__item" routerLink="/admin/health" (click)="collapseNavbar()">Sănătate sistem</a>
+                </li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/metrics" (click)="collapseNavbar()">Metrici</a></li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/admin/logs" (click)="collapseNavbar()">Loguri</a></li>
+                <li>
+                  <a class="dropdown-item rv-dropdown__item" routerLink="/admin/configuration" (click)="collapseNavbar()">Configurare</a>
+                </li>
+              } @else if (isManager()) {
+                <!-- Manager links -->
+                <li><hr class="dropdown-divider" /></li>
+                <li class="rv-dropdown__section-label">Manager</li>
+                <li>
+                  <a class="dropdown-item rv-dropdown__item" routerLink="/manager/floor-plan" (click)="collapseNavbar()">Harta sălii</a>
+                </li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/rezervari" (click)="collapseNavbar()">Rezervări</a></li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/personal" (click)="collapseNavbar()">Personal</a></li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/meniu" (click)="collapseNavbar()">Meniu</a></li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/manager/rapoarte" (click)="collapseNavbar()">Rapoarte</a></li>
+              } @else if (isStaff()) {
+                <!-- Staff links -->
+                <li><hr class="dropdown-divider" /></li>
+                <li class="rv-dropdown__section-label">Staff</li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/staff" (click)="collapseNavbar()">Panou Staff</a></li>
+              } @else if (isChef()) {
+                <!-- Chef links -->
+                <li><hr class="dropdown-divider" /></li>
+                <li class="rv-dropdown__section-label">Bucătar</li>
+                <li><a class="dropdown-item rv-dropdown__item" routerLink="/chef" (click)="collapseNavbar()">Bucătărie</a></li>
+              }
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li><button class="dropdown-item rv-dropdown__item" (click)="logout()">Ieși din cont</button></li>
+            </ul>
+          </div>
+        } @else {
+          <button class="rv-navbar__user-btn" (click)="login()">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+          </button>
+        }
+
+        <!-- Mobile hamburger -->
+        <button class="rv-navbar__hamburger" (click)="toggleNavbar()" [attr.aria-expanded]="!isNavbarCollapsed()">
+          <span></span><span></span><span></span>
         </button>
-      }
-
-      <!-- Mobile hamburger -->
-      <button class="rv-navbar__hamburger" (click)="toggleNavbar()" [attr.aria-expanded]="!isNavbarCollapsed()">
-        <span></span><span></span><span></span>
-      </button>
+      </div>
     </div>
-  </div>
 
-  <!-- Mobile menu -->
-  <div class="rv-navbar__mobile-menu" [class.rv-navbar__mobile-menu--open]="!isNavbarCollapsed()">
-    <a class="rv-mobile-link" routerLink="/restaurante" (click)="collapseNavbar()">Restaurante</a>
-    <a class="rv-mobile-link" routerLink="/cum-functioneaza" (click)="collapseNavbar()">Cum funcționează</a>
-    <a class="rv-mobile-link" routerLink="/pentru-afaceri" (click)="collapseNavbar()">Pentru afaceri</a>
-    @if (account() === null) {
-      <a class="rv-mobile-link rv-mobile-link--cta" routerLink="/login" (click)="collapseNavbar()">Autentificare</a>
-    }
-  </div>
-</nav>
+    <!-- Mobile menu -->
+    <div class="rv-navbar__mobile-menu" [class.rv-navbar__mobile-menu--open]="!isNavbarCollapsed()">
+      <a class="rv-mobile-link" routerLink="/restaurante" (click)="collapseNavbar()">Restaurante</a>
+      <a class="rv-mobile-link" routerLink="/cum-functioneaza" (click)="collapseNavbar()">Cum funcționează</a>
+      <a class="rv-mobile-link" routerLink="/pentru-afaceri" (click)="collapseNavbar()">Pentru afaceri</a>
+      @if (account() === null) {
+        <a class="rv-mobile-link rv-mobile-link--cta" routerLink="/login" (click)="collapseNavbar()">Autentificare</a>
+      }
+    </div>
+  </nav>
+}

@@ -11,6 +11,7 @@ import md.utm.restaurant.repository.ReservationRepository;
 import md.utm.restaurant.repository.UserRepository;
 import md.utm.restaurant.service.FloorPlanNotificationService;
 import md.utm.restaurant.service.MailService;
+import md.utm.restaurant.service.OrderNotificationService;
 import md.utm.restaurant.service.ReservationQueryService;
 import md.utm.restaurant.service.ReservationService;
 import md.utm.restaurant.service.criteria.ReservationCriteria;
@@ -55,13 +56,16 @@ public class ReservationResource {
 
     private final FloorPlanNotificationService floorPlanNotificationService;
 
+    private final OrderNotificationService orderNotificationService;
+
     public ReservationResource(
         ReservationService reservationService,
         ReservationRepository reservationRepository,
         ReservationQueryService reservationQueryService,
         UserRepository userRepository,
         MailService mailService,
-        FloorPlanNotificationService floorPlanNotificationService
+        FloorPlanNotificationService floorPlanNotificationService,
+        OrderNotificationService orderNotificationService
     ) {
         this.reservationService = reservationService;
         this.reservationRepository = reservationRepository;
@@ -69,6 +73,7 @@ public class ReservationResource {
         this.userRepository = userRepository;
         this.mailService = mailService;
         this.floorPlanNotificationService = floorPlanNotificationService;
+        this.orderNotificationService = orderNotificationService;
     }
 
     /**
@@ -267,5 +272,23 @@ public class ReservationResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    /**
+     * {@code POST /reservations/:id/request-bill} : Client requests the bill for a reservation.
+     * Notifies staff via WebSocket.
+     */
+    @PostMapping("/{id}/request-bill")
+    public ResponseEntity<Void> requestBill(@PathVariable("id") Long id) {
+        LOG.debug("REST request to request bill for Reservation : {}", id);
+        reservationRepository
+            .findOneWithEagerRelationships(id)
+            .ifPresent(reservation -> {
+                if (reservation.getLocation() != null) {
+                    orderNotificationService.notifyOrderUpdate(reservation.getLocation().getId());
+                    floorPlanNotificationService.notifyUpdate(reservation.getLocation().getId());
+                }
+            });
+        return ResponseEntity.ok().build();
     }
 }

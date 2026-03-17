@@ -63,6 +63,12 @@ const routes: Routes = [
     loadChildren: () => import('./staff/staff.routes'),
   },
 
+  // ── Chef section (ROLE_CHEF) ──────────────────────────────────────────────
+  {
+    path: 'chef',
+    loadChildren: () => import('./chef/chef.routes'),
+  },
+
   // ── Account section ──────────────────────────────────────────────────────
   {
     path: 'account',

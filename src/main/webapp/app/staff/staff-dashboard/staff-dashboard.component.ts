@@ -7,6 +7,7 @@ import { interval, Subscription } from 'rxjs';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { FloorMapComponent, FloorPlan, FloorTable } from 'app/public/floor-map/floor-map.component';
 import { FloorPlanWsService } from 'app/core/floor-plan-ws/floor-plan-ws.service';
+import { OrdersWsService } from 'app/core/orders-ws/orders-ws.service';
 
 interface OrderLine {
   id: number;
@@ -76,11 +77,15 @@ interface FloorPlanResponse {
 
 interface OrderItem {
   id: number;
+  orderCode?: string;
   status: string;
   totalAmount?: number;
   notes?: string;
+  isPreOrder?: boolean;
+  createdAt?: string;
   client?: { id: number; firstName?: string; lastName?: string };
   table?: { id: number; tableNumber?: string };
+  reservation?: { id: number; reservationCode?: string };
 }
 
 interface CheckInAlert {
@@ -90,6 +95,19 @@ interface CheckInAlert {
   clientName: string;
   startTime: string;
   extendCount: number;
+}
+
+interface ReadyAlert {
+  orderId: number;
+  orderCode?: string;
+  tableNumber: string;
+}
+
+interface StaffNotification {
+  id: string;
+  type: 'NEW_ORDER' | 'NEW_RESERVATION';
+  title: string;
+  message: string;
 }
 
 type SideTab = 'masa' | 'rezervari' | 'comenzi';
@@ -106,6 +124,7 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly configService = inject(ApplicationConfigService);
   private readonly floorPlanWs = inject(FloorPlanWsService);
+  private readonly ordersWs = inject(OrdersWsService);
 
   isLoading = signal(false);
   error = signal<string | null>(null);
@@ -126,12 +145,28 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
   isLoadingTableOrder = signal(false);
 
   checkInAlerts = signal<CheckInAlert[]>([]);
+  readyAlerts = signal<ReadyAlert[]>([]);
+  staffNotifications = signal<StaffNotification[]>([]);
+
+  // Order detail expansion
+  expandedOrderId = signal<number | null>(null);
+  expandedItems = signal<OrderLine[]>([]);
+  isLoadingItems = signal(false);
+  private readonly orderItemsCache = new Map<number, OrderLine[]>();
 
   private refreshSub?: Subscription;
+  private ordersRefreshSub?: Subscription;
   private wsSub?: Subscription;
+  private orderWsSub?: Subscription;
   private minuteTick = 0;
   private readonly dismissedAlerts = new Set<number>();
   private readonly extendedAlerts = new Map<number, number>(); // reservationId → extendedUntil timestamp
+  private readonly knownReadyIds = new Set<number>();
+  private readonly dismissedReadyIds = new Set<number>();
+  private readonly knownOrderIds = new Set<number>();
+  private ordersInitialized = false;
+  private readonly knownReservationIds = new Set<number>();
+  private reservationsInitialized = false;
 
   totalTables = computed(() => {
     const r = this.rawResponse();
@@ -163,8 +198,17 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
       .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? '')),
   );
 
+  sortedActiveOrders = computed((): OrderItem[] =>
+    [...this.activeOrders()].sort((a, b) => (a.createdAt ?? '').localeCompare(b.createdAt ?? '')),
+  );
+
   ngOnInit(): void {
     this.loadFloorPlan();
+    // Refresh active orders every 15 seconds independently of the floor plan
+    this.ordersRefreshSub = interval(15_000).subscribe(() => {
+      const locId = this.rawResponse()?.locationId;
+      if (locId) this.loadActiveOrders(locId);
+    });
     this.refreshSub = interval(1000).subscribe(() => {
       const c = this.refreshCountdown() - 1;
       if (c <= 0) {
@@ -183,7 +227,9 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.refreshSub?.unsubscribe();
+    this.ordersRefreshSub?.unsubscribe();
     this.wsSub?.unsubscribe();
+    this.orderWsSub?.unsubscribe();
   }
 
   loadFloorPlan(silent = false): void {
@@ -218,6 +264,21 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
             this.loadFloorPlan(true);
           });
         }
+        if (!this.orderWsSub) {
+          this.orderWsSub = this.ordersWs.watchLocation(res.locationId).subscribe(msg => {
+            if (msg['itemReady']) {
+              const tableNumber = msg['tableNumber'] as string;
+              const itemName = msg['itemName'] as string;
+              const notifId = `item-${Date.now()}`;
+              this.staffNotifications.update(prev => [
+                ...prev,
+                { id: notifId, type: 'NEW_ORDER' as const, title: `Masa ${tableNumber} — fel gata!`, message: itemName },
+              ]);
+              setTimeout(() => this.dismissNotification(notifId), 10000);
+            }
+            this.loadActiveOrders(res.locationId);
+          });
+        }
       },
       error: () => {
         this.error.set('Nu s-a putut încărca planul sălii. Verificați conexiunea.');
@@ -240,6 +301,30 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
     this.http.get<ReservationInfo[]>(url).subscribe({
       next: data => {
         this.allReservations.set(data);
+
+        const newResNotifs: StaffNotification[] = [];
+        if (this.reservationsInitialized) {
+          for (const res of data) {
+            if (!this.knownReservationIds.has(res.id) && res.status !== 'CANCELLED') {
+              const name = [res.clientFirstName, res.clientLastName].filter(Boolean).join(' ') || res.clientLogin || 'Client';
+              newResNotifs.push({
+                id: `res-${res.id}`,
+                type: 'NEW_RESERVATION',
+                title: 'Rezervare nouă',
+                message: `${name} — ora ${res.startTime}, ${res.partySize} pers.`,
+              });
+            }
+          }
+        }
+        this.knownReservationIds.clear();
+        for (const res of data) this.knownReservationIds.add(res.id);
+        this.reservationsInitialized = true;
+
+        if (newResNotifs.length > 0) {
+          this.staffNotifications.update(prev => [...prev, ...newResNotifs]);
+          for (const n of newResNotifs) setTimeout(() => this.dismissNotification(n.id), 10000);
+        }
+
         this.isLoadingReservations.set(false);
       },
       error: () => this.isLoadingReservations.set(false),
@@ -248,14 +333,95 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
 
   private loadActiveOrders(locationId: number): void {
     this.isLoadingOrders.set(true);
-    const url = this.configService.getEndpointFor(`api/restaurant-orders?locationId.equals=${locationId}&size=100&sort=id,desc`);
+    const url = this.configService.getEndpointFor(
+      `api/restaurant-orders?locationId.equals=${locationId}` +
+        `&status.in=SUBMITTED&status.in=PREPARING&status.in=READY` +
+        `&size=200&sort=createdAt,asc`,
+    );
     this.http.get<OrderItem[]>(url).subscribe({
       next: data => {
-        this.activeOrders.set(data.filter(o => ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'].includes(o.status)));
+        const active = data;
+        this.activeOrders.set(active);
+
+        const newReadyAlerts: ReadyAlert[] = [];
+        const newOrderNotifs: StaffNotification[] = [];
+
+        for (const ord of active) {
+          // New order notification (only after first load)
+          if (this.ordersInitialized && !this.knownOrderIds.has(ord.id)) {
+            const tableStr = ord.table?.tableNumber ? ` — Masa ${ord.table.tableNumber}` : '';
+            newOrderNotifs.push({
+              id: `order-${ord.id}`,
+              type: 'NEW_ORDER',
+              title: 'Comandă nouă',
+              message: `${ord.orderCode ?? '#' + ord.id}${tableStr}`,
+            });
+          }
+          // Ready alert
+          if (ord.status === 'READY' && !this.knownReadyIds.has(ord.id) && !this.dismissedReadyIds.has(ord.id)) {
+            newReadyAlerts.push({ orderId: ord.id, orderCode: ord.orderCode, tableNumber: ord.table?.tableNumber ?? '?' });
+          }
+        }
+
+        // Rebuild known sets
+        this.knownOrderIds.clear();
+        this.knownReadyIds.clear();
+        for (const ord of active) {
+          this.knownOrderIds.add(ord.id);
+          if (ord.status === 'READY') this.knownReadyIds.add(ord.id);
+        }
+        this.ordersInitialized = true;
+
+        if (newReadyAlerts.length > 0) this.readyAlerts.update(prev => [...prev, ...newReadyAlerts]);
+        if (newOrderNotifs.length > 0) {
+          this.staffNotifications.update(prev => [...prev, ...newOrderNotifs]);
+          for (const n of newOrderNotifs) setTimeout(() => this.dismissNotification(n.id), 8000);
+        }
+
+        // Invalidate cached items for orders whose status may have changed
+        for (const ord of active) {
+          if (this.orderItemsCache.has(ord.id)) this.orderItemsCache.delete(ord.id);
+        }
+
         this.isLoadingOrders.set(false);
       },
       error: () => this.isLoadingOrders.set(false),
     });
+  }
+
+  dismissReadyAlert(orderId: number): void {
+    this.dismissedReadyIds.add(orderId);
+    this.readyAlerts.update(prev => prev.filter(a => a.orderId !== orderId));
+  }
+
+  dismissNotification(id: string): void {
+    this.staffNotifications.update(prev => prev.filter(n => n.id !== id));
+  }
+
+  toggleOrderDetail(orderId: number): void {
+    if (this.expandedOrderId() === orderId) {
+      this.expandedOrderId.set(null);
+      this.expandedItems.set([]);
+      return;
+    }
+    this.expandedOrderId.set(orderId);
+    const cached = this.orderItemsCache.get(orderId);
+    if (cached) {
+      this.expandedItems.set(cached);
+      return;
+    }
+    this.isLoadingItems.set(true);
+    this.expandedItems.set([]);
+    this.http
+      .get<OrderLine[]>(this.configService.getEndpointFor(`api/order-items?restaurantOrderId.equals=${orderId}&size=100`))
+      .subscribe({
+        next: items => {
+          this.orderItemsCache.set(orderId, items);
+          if (this.expandedOrderId() === orderId) this.expandedItems.set(items);
+          this.isLoadingItems.set(false);
+        },
+        error: () => this.isLoadingItems.set(false),
+      });
   }
 
   onDateChange(newDate: string): void {
@@ -353,7 +519,7 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
     const url = this.configService.getEndpointFor(`api/restaurant-orders?tableId.equals=${tableId}&size=1&sort=id,desc`);
     this.http.get<any[]>(url).subscribe({
       next: orders => {
-        const active = orders.filter(o => ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'].includes(o.status));
+        const active = orders.filter(o => ['SUBMITTED', 'PREPARING', 'READY'].includes(o.status));
         if (active.length > 0) {
           this.fetchOrderItems(active[0]);
         } else {
@@ -446,12 +612,17 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
   }
 
   alertPresent(alert: CheckInAlert): void {
-    // Mark table as OCCUPIED
     this.http
       .patch(this.configService.getEndpointFor(`api/restaurant-tables/${alert.tableId}`), { id: alert.tableId, status: 'OCCUPIED' })
       .subscribe();
+    this.http
+      .patch(this.configService.getEndpointFor(`api/reservations/${alert.reservationId}`), { id: alert.reservationId, status: 'CONFIRMED' })
+      .subscribe();
     this.dismissedAlerts.add(alert.reservationId);
     this.checkInAlerts.update(prev => prev.filter(a => a.reservationId !== alert.reservationId));
+    const locId = this.rawResponse()?.locationId;
+    if (locId) this.loadActiveOrders(locId);
+    this.activeTab.set('comenzi');
   }
 
   alertExtend(alert: CheckInAlert): void {
@@ -522,8 +693,9 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
       CONFIRMED: 'Confirmată',
       COMPLETED: 'Finalizată',
       CANCELLED: 'Anulată',
+      SUBMITTED: 'La bucătărie',
       PREPARING: 'Se prepară',
-      READY: 'Gata',
+      READY: 'Gata de servire',
     };
     return map[status] ?? status;
   }
@@ -531,7 +703,7 @@ export default class StaffDashboardComponent implements OnInit, OnDestroy {
   statusClass(status: string): string {
     if (status === 'AVAILABLE' || status === 'COMPLETED') return 'sd-badge sd-badge--green';
     if (status === 'RESERVED' || status === 'PENDING' || status === 'CONFIRMED') return 'sd-badge sd-badge--amber';
-    if (status === 'OCCUPIED' || status === 'PREPARING' || status === 'READY') return 'sd-badge sd-badge--blue';
+    if (status === 'OCCUPIED' || status === 'PREPARING' || status === 'READY' || status === 'SUBMITTED') return 'sd-badge sd-badge--blue';
     return 'sd-badge sd-badge--red';
   }
 

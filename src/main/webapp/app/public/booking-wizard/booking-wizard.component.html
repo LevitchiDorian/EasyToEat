@@ -54,29 +54,47 @@
       <!-- ═══ STEP: CHOICE ════════════════════════════════════════ -->
       @if (step() === 'CHOICE') {
         <div class="rv-wiz__step rv-wiz__step--choice">
-          <h3 class="rv-wiz__step-title">Ce dorești să faci?</h3>
-          <div class="rv-wiz__choice-grid">
-            <button class="rv-wiz__choice-card" (click)="chooseBookingType('RESERVATION')">
-              <div class="rv-wiz__choice-icon">🍽️</div>
-              <h4>Rezervare masă</h4>
-              <p>Rezervă o masă la restaurant, cu sau fără pre-comandă</p>
-              <span class="rv-wiz__choice-arrow">→</span>
-            </button>
+          @if (isCheckingHours()) {
+            <div class="rv-wiz__hours-loading">
+              <div class="rv-spinner rv-spinner--sm"></div>
+            </div>
+          } @else if (locationIsOpen() === false) {
+            <div class="rv-wiz__closed-msg">
+              <div class="rv-wiz__closed-icon">🌙</div>
+              <h3 class="rv-wiz__closed-title">Restaurantul este închis momentan</h3>
+              @if (locationOpenTime() && locationCloseTime()) {
+                <p class="rv-wiz__closed-sub">
+                  Program de astăzi: <strong>{{ locationOpenTime() }} – {{ locationCloseTime() }}</strong>
+                </p>
+              }
+              <p class="rv-wiz__closed-note">Poți reveni în intervalul orar de funcționare pentru a plasa o rezervare sau comandă.</p>
+              <button class="rv-btn rv-btn--ghost rv-wiz__closed-btn" (click)="close()">Închide</button>
+            </div>
+          } @else {
+            <h3 class="rv-wiz__step-title">Ce dorești să faci?</h3>
+            <div class="rv-wiz__choice-grid">
+              <button class="rv-wiz__choice-card" (click)="chooseBookingType('RESERVATION')">
+                <div class="rv-wiz__choice-icon">🍽️</div>
+                <h4>Rezervare masă</h4>
+                <p>Rezervă o masă la restaurant, cu sau fără pre-comandă</p>
+                <span class="rv-wiz__choice-arrow">→</span>
+              </button>
 
-            <button class="rv-wiz__choice-card" (click)="chooseBookingType('DELIVERY')">
-              <div class="rv-wiz__choice-icon">🛵</div>
-              <h4>Livrare la domiciliu</h4>
-              <p>Comandă și primești mâncarea acasă</p>
-              <span class="rv-wiz__choice-arrow">→</span>
-            </button>
+              <button class="rv-wiz__choice-card" (click)="chooseBookingType('DELIVERY')">
+                <div class="rv-wiz__choice-icon">🛵</div>
+                <h4>Livrare la domiciliu</h4>
+                <p>Comandă și primești mâncarea acasă</p>
+                <span class="rv-wiz__choice-arrow">→</span>
+              </button>
 
-            <button class="rv-wiz__choice-card" (click)="chooseBookingType('TAKEAWAY')">
-              <div class="rv-wiz__choice-icon">📦</div>
-              <h4>Ridicare la pachet</h4>
-              <p>Comandă online și ridici gata pregătit</p>
-              <span class="rv-wiz__choice-arrow">→</span>
-            </button>
-          </div>
+              <button class="rv-wiz__choice-card" (click)="chooseBookingType('TAKEAWAY')">
+                <div class="rv-wiz__choice-icon">📦</div>
+                <h4>Ridicare la pachet</h4>
+                <p>Comandă online și ridici gata pregătit</p>
+                <span class="rv-wiz__choice-arrow">→</span>
+              </button>
+            </div>
+          }
         </div>
       }
 

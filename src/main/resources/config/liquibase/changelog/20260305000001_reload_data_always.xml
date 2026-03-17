@@ -14,9 +14,10 @@
     <!-- Step 1: Ensure new roles exist, then delete all data in reverse FK order -->
     <changeSet id="20260305000001-1-delete" author="dev" context="dev">
         <validCheckSum>ANY</validCheckSum>
-        <!-- Ensure ROLE_MANAGER and ROLE_STAFF exist before inserting user_authorities -->
+        <!-- Ensure custom roles exist before inserting user_authorities -->
         <sql>INSERT INTO jhi_authority (name) VALUES ('ROLE_MANAGER') ON CONFLICT DO NOTHING;</sql>
         <sql>INSERT INTO jhi_authority (name) VALUES ('ROLE_STAFF') ON CONFLICT DO NOTHING;</sql>
+        <sql>INSERT INTO jhi_authority (name) VALUES ('ROLE_CHEF') ON CONFLICT DO NOTHING;</sql>
         <sql>DELETE FROM order_item_option_selection;</sql>
         <sql>DELETE FROM order_item;</sql>
         <sql>DELETE FROM payment;</sql>

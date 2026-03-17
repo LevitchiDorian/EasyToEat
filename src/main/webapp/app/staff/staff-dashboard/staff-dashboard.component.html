@@ -31,10 +31,10 @@
       <div class="sd-stat sd-stat--muted">
         <span>{{ totalTables() }} total</span>
       </div>
-      @if (activeOrders().length > 0) {
+      @if (sortedActiveOrders().length > 0) {
         <div class="sd-stat sd-stat--blue">
           <span class="sd-stat__dot"></span>
-          <span>{{ activeOrders().length }} comenzi</span>
+          <span>{{ sortedActiveOrders().length }} comenzi</span>
         </div>
       }
     </div>
@@ -125,7 +125,7 @@
           Rezervări ({{ todayReservations().length }})
         </button>
         <button class="sd-tab" [class.sd-tab--active]="activeTab() === 'comenzi'" (click)="setTab('comenzi')">
-          Comenzi ({{ activeOrders().length }})
+          Comenzi ({{ sortedActiveOrders().length }})
         </button>
       </div>
 
@@ -287,11 +287,11 @@
           <h3 class="sd-panel__section-title">Rezervări – {{ selectedDate() }}</h3>
           @if (isLoadingReservations()) {
             <p class="sd-empty-list">Se încarcă...</p>
-          } @else if (allReservations().length === 0) {
+          } @else if (todayReservations().length === 0) {
             <p class="sd-empty-list">Nicio rezervare pentru data selectată.</p>
           } @else {
             <ul class="sd-res-list">
-              @for (res of allReservations(); track res.id) {
+              @for (res of todayReservations(); track res.id) {
                 <li class="sd-res-item" [class.sd-res-item--muted]="res.status === 'CANCELLED'">
                   <div class="sd-res-item__time">{{ res.startTime }}</div>
                   <div class="sd-res-item__info">
@@ -324,30 +324,58 @@
           <h3 class="sd-panel__section-title">Comenzi active</h3>
           @if (isLoadingOrders()) {
             <p class="sd-empty-list">Se încarcă...</p>
-          } @else if (activeOrders().length === 0) {
+          } @else if (sortedActiveOrders().length === 0) {
             <p class="sd-empty-list">Nicio comandă activă momentan.</p>
           } @else {
-            <ul class="sd-res-list">
-              @for (ord of activeOrders(); track ord.id) {
-                <li class="sd-res-item">
-                  <div class="sd-res-item__time">#{{ ord.id }}</div>
-                  <div class="sd-res-item__info">
-                    <div class="sd-res-item__name">
-                      {{ ord.client?.firstName }} {{ ord.client?.lastName }}
-                      @if (ord.table?.tableNumber) {
-                        · Masa {{ ord.table?.tableNumber }}
-                      }
-                    </div>
-                    <div class="sd-res-item__meta">
-                      <span [class]="statusClass(ord.status)">{{ statusLabel(ord.status) }}</span>
-                      @if (ord.totalAmount) {
-                        · {{ ord.totalAmount | number: '1.2-2' }} MDL
-                      }
-                    </div>
-                    @if (ord.notes) {
-                      <div class="sd-res-item__note">{{ ord.notes }}</div>
+            <ul class="sd-ord-list">
+              @for (ord of sortedActiveOrders(); track ord.id) {
+                <li class="sd-ord-item" [class.sd-ord-item--expanded]="expandedOrderId() === ord.id" (click)="toggleOrderDetail(ord.id)">
+                  <div class="sd-ord-item__row">
+                    <span class="sd-ord-item__code sd-mono">{{ ord.orderCode ?? '#' + ord.id }}</span>
+                    @if (ord.table?.tableNumber) {
+                      <span class="sd-ord-item__table">Masa {{ ord.table!.tableNumber }}</span>
                     }
+                    <span [class]="statusClass(ord.status)">{{ statusLabel(ord.status) }}</span>
+                    @if (ord.totalAmount) {
+                      <span class="sd-ord-item__total">{{ ord.totalAmount | number: '1.0-0' }} MDL</span>
+                    }
+                    <svg
+                      class="sd-ord-item__chevron"
+                      [class.sd-ord-item__chevron--open]="expandedOrderId() === ord.id"
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
                   </div>
+                  @if (expandedOrderId() === ord.id) {
+                    <div class="sd-ord-detail" (click)="$event.stopPropagation()">
+                      @if (isLoadingItems()) {
+                        <p class="sd-ord-detail__loading">Se încarcă...</p>
+                      } @else if (expandedItems().length === 0) {
+                        <p class="sd-ord-detail__loading">Fără produse</p>
+                      } @else {
+                        <ul class="sd-ord-lines">
+                          @for (item of expandedItems(); track item.id) {
+                            <li class="sd-ord-line">
+                              <span class="sd-ord-line__qty">{{ item.quantity }}×</span>
+                              <span class="sd-ord-line__name">{{ item.menuItem?.name ?? 'Produs' }}</span>
+                              <span class="sd-ord-line__price">{{ item.totalPrice | number: '1.0-0' }} MDL</span>
+                            </li>
+                          }
+                        </ul>
+                        @if (ord.totalAmount) {
+                          <div class="sd-ord-detail__total">
+                            Total: <strong>{{ ord.totalAmount | number: '1.2-2' }} MDL</strong>
+                          </div>
+                        }
+                      }
+                    </div>
+                  }
                 </li>
               }
             </ul>
@@ -356,6 +384,115 @@
       }
     </aside>
   </div>
+
+  <!-- ── Staff toast notifications (new order / new reservation) ─────────── -->
+  @if (staffNotifications().length > 0) {
+    <div class="sd-toast-stack">
+      @for (notif of staffNotifications(); track notif.id) {
+        <div
+          class="sd-toast"
+          [class.sd-toast--order]="notif.type === 'NEW_ORDER'"
+          [class.sd-toast--reservation]="notif.type === 'NEW_RESERVATION'"
+        >
+          <div class="sd-toast__icon">
+            @if (notif.type === 'NEW_ORDER') {
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+              </svg>
+            } @else {
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+            }
+          </div>
+          <div class="sd-toast__body">
+            <div class="sd-toast__title">{{ notif.title }}</div>
+            <div class="sd-toast__msg">{{ notif.message }}</div>
+          </div>
+          <button class="sd-toast__close" (click)="dismissNotification(notif.id)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ── Ready order notifications ─────────────────────────────────────────── -->
+  @if (readyAlerts().length > 0) {
+    <div class="sd-ready-stack">
+      @for (alert of readyAlerts(); track alert.orderId) {
+        <div class="sd-ready-alert glass">
+          <div class="sd-ready-alert__icon">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+              <line x1="6" y1="1" x2="6" y2="4" />
+              <line x1="10" y1="1" x2="10" y2="4" />
+              <line x1="14" y1="1" x2="14" y2="4" />
+            </svg>
+          </div>
+          <div class="sd-ready-alert__body">
+            <div class="sd-ready-alert__title">Comandă gata de servire!</div>
+            <div class="sd-ready-alert__meta">
+              @if (alert.orderCode) {
+                <strong>{{ alert.orderCode }}</strong> ·
+              }
+              Masa <strong>{{ alert.tableNumber }}</strong>
+            </div>
+          </div>
+          <button class="sd-checkin-btn sd-checkin-btn--present" (click)="dismissReadyAlert(alert.orderId)">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Ridicat
+          </button>
+        </div>
+      }
+    </div>
+  }
 
   <!-- ── Check-in alert notifications ──────────────────────────────────────── -->
   @if (checkInAlerts().length > 0) {

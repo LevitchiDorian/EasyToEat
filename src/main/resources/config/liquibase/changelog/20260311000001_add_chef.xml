@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Add ROLE_CHEF authority -->
+    <changeSet id="20260311000001-1-role" author="dev">
+        <sql>INSERT INTO jhi_authority (name) VALUES ('ROLE_CHEF') ON CONFLICT DO NOTHING;</sql>
+    </changeSet>
+
+    <!-- Add chef1-8 users (IDs 18-25), one per location, context=dev -->
+    <changeSet id="20260311000001-2-users" author="dev" context="dev">
+        <insert tableName="jhi_user">
+            <column name="id" value="18"/><column name="login" value="chef1"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Gheorghe"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef1@laplacinte.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+        <insert tableName="jhi_user">
+            <column name="id" value="19"/><column name="login" value="chef2"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Oxana"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef2@laplacinte.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+        <insert tableName="jhi_user">
+            <column name="id" value="20"/><column name="login" value="chef3"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Valeriu"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef3@andyspizza.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+        <insert tableName="jhi_user">
+            <column name="id" value="21"/><column name="login" value="chef4"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Larisa"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef4@andyspizza.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+        <insert tableName="jhi_user">
+            <column name="id" value="22"/><column name="login" value="chef5"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Nichita"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef5@sushihouse.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+        <insert tableName="jhi_user">
+            <column name="id" value="23"/><column name="login" value="chef6"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Irina"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef6@vatraneamului.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+        <insert tableName="jhi_user">
+            <column name="id" value="24"/><column name="login" value="chef7"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Pavel"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef7@greenhills.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+        <insert tableName="jhi_user">
+            <column name="id" value="25"/><column name="login" value="chef8"/>
+            <column name="password_hash" value="$2a$10$VEjxo0jq2YG9Rbk2HmX9S.k1uZBGYUHdUcid3g/vfiEl7lwWgOH/K"/>
+            <column name="first_name" value="Alina"/><column name="last_name" value="Bucătar"/>
+            <column name="email" value="chef8@greenhills.md"/><column name="activated" valueBoolean="true"/>
+            <column name="lang_key" value="ro"/><column name="created_by" value="system"/><column name="last_modified_by" value="system"/>
+        </insert>
+
+        <!-- ROLE_USER + ROLE_CHEF for each chef -->
+        <insert tableName="jhi_user_authority"><column name="user_id" value="18"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="18"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="19"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="19"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="20"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="20"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="21"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="21"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="22"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="22"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="23"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="23"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="24"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="24"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="25"/><column name="authority_name" value="ROLE_USER"/></insert>
+        <insert tableName="jhi_user_authority"><column name="user_id" value="25"/><column name="authority_name" value="ROLE_CHEF"/></insert>
+
+        <!-- User profiles: CHEF role linked to locations 1-8 (ids 16-23 continue from the user_profile.csv max id=15) -->
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (16, 'CHEF', NOW(), 18, 1, false, false, 0);</sql>
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (17, 'CHEF', NOW(), 19, 2, false, false, 0);</sql>
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (18, 'CHEF', NOW(), 20, 3, false, false, 0);</sql>
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (19, 'CHEF', NOW(), 21, 4, false, false, 0);</sql>
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (20, 'CHEF', NOW(), 22, 5, false, false, 0);</sql>
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (21, 'CHEF', NOW(), 23, 6, false, false, 0);</sql>
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (22, 'CHEF', NOW(), 24, 7, false, false, 0);</sql>
+        <sql>INSERT INTO user_profile (id, role, created_at, user_id, location_id, receive_email_notifications, receive_push_notifications, loyalty_points) VALUES (23, 'CHEF', NOW(), 25, 8, false, false, 0);</sql>
+    </changeSet>
+
+</databaseChangeLog>

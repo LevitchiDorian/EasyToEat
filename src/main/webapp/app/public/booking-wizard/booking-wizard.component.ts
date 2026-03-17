@@ -124,6 +124,12 @@ export class BookingWizardComponent implements OnInit {
   eventType = 'aniversare';
   specialRequests = '';
 
+  // Hours status
+  isCheckingHours = signal(false);
+  locationIsOpen = signal<boolean | null>(null);
+  locationOpenTime = signal<string | null>(null);
+  locationCloseTime = signal<string | null>(null);
+
   // Submit state
   isSubmitting = signal(false);
   confirmationCode = signal<string | null>(null);
@@ -147,6 +153,29 @@ export class BookingWizardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAccount();
+    this.checkLocationHours();
+  }
+
+  private checkLocationHours(): void {
+    this.isCheckingHours.set(true);
+    this.http
+      .get<{
+        isOpen: boolean;
+        openTime: string | null;
+        closeTime: string | null;
+      }>(this.configService.getEndpointFor(`api/public/locations/${this.locationId}/hours-status`))
+      .subscribe({
+        next: res => {
+          this.locationIsOpen.set(res.isOpen);
+          this.locationOpenTime.set(res.openTime);
+          this.locationCloseTime.set(res.closeTime);
+          this.isCheckingHours.set(false);
+        },
+        error: () => {
+          this.locationIsOpen.set(true); // assume open on error
+          this.isCheckingHours.set(false);
+        },
+      });
   }
 
   private loadAccount(): void {
@@ -684,6 +713,7 @@ export class BookingWizardComponent implements OnInit {
             this.http.post<{ id: number; orderCode: string }>(this.configService.getEndpointFor('api/restaurant-orders'), orderBody),
           );
           await this.createOrderItems(order.id);
+          await firstValueFrom(this.http.post(this.configService.getEndpointFor(`api/restaurant-orders/${order.id}/finalize`), {}));
         }
 
         this.confirmationCode.set(reservation.reservationCode ?? resCode);
@@ -713,6 +743,7 @@ export class BookingWizardComponent implements OnInit {
           this.http.post<{ id: number; orderCode: string }>(this.configService.getEndpointFor('api/restaurant-orders'), orderBody),
         );
         await this.createOrderItems(order.id);
+        await firstValueFrom(this.http.post(this.configService.getEndpointFor(`api/restaurant-orders/${order.id}/finalize`), {}));
         this.confirmationCode.set(order.orderCode ?? orderCode);
       }
 

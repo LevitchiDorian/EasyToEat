@@ -41,6 +41,9 @@ export default class UserManagementUpdateComponent implements OnInit {
 
   editForm = new FormGroup({
     id: new FormControl(userTemplate.id),
+    password: new FormControl('', {
+      validators: [Validators.minLength(4), Validators.maxLength(50)],
+    }),
     login: new FormControl(userTemplate.login, {
       nonNullable: true,
       validators: [
@@ -88,13 +91,18 @@ export default class UserManagementUpdateComponent implements OnInit {
   }
 
   get needsLocation(): boolean {
-    return this.selectedAuthority === 'ROLE_MANAGER' || this.selectedAuthority === 'ROLE_STAFF';
+    const a = this.selectedAuthority;
+    return a === 'ROLE_MANAGER' || a === 'ROLE_STAFF' || a === 'ROLE_CHEF';
+  }
+
+  get isNewUser(): boolean {
+    return !this.editForm.value.id;
   }
 
   selectAuthority(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     this.editForm.get('authorities')?.setValue(value ? [value] : []);
-    if (value !== 'ROLE_MANAGER' && value !== 'ROLE_STAFF') {
+    if (!this.needsLocation) {
       this.selectedLocationId.set(null);
     }
   }
@@ -111,14 +119,18 @@ export default class UserManagementUpdateComponent implements OnInit {
   save(): void {
     this.isSaving.set(true);
     const user = this.editForm.getRawValue();
+    const plainPassword = (user as any).password as string | undefined;
     if (user.id !== null) {
       this.userService.update(user).subscribe({
-        next: () => this.assignLocationThenFinish(user.login ?? ''),
+        next: () => this.assignLocationThenFinish(user.login ?? '', plainPassword),
         error: () => this.onSaveError(),
       });
     } else {
       this.userService.create(user).subscribe({
-        next: createdUser => this.assignLocationThenFinish((createdUser as IUser).login ?? user.login ?? ''),
+        next: createdUser => {
+          const login = (createdUser as IUser).login ?? user.login ?? '';
+          this.assignLocationThenFinish(login, plainPassword);
+        },
         error: () => this.onSaveError(),
       });
     }
@@ -141,17 +153,37 @@ export default class UserManagementUpdateComponent implements OnInit {
     });
   }
 
-  private assignLocationThenFinish(login: string): void {
-    if (!this.needsLocation || !login) {
-      this.onSaveSuccess();
-      return;
+  private assignLocationThenFinish(login: string, password?: string | null): void {
+    const steps: Array<() => Promise<void>> = [];
+
+    // Step 1: assign location if needed
+    if (this.needsLocation && login) {
+      const locId = this.selectedLocationId();
+      const auth = this.selectedAuthority;
+      const role = auth === 'ROLE_MANAGER' ? 'MANAGER' : auth === 'ROLE_STAFF' ? 'STAFF' : auth === 'ROLE_CHEF' ? 'CHEF' : null;
+      steps.push(
+        () =>
+          new Promise<void>(resolve => {
+            this.http
+              .patch(this.configService.getEndpointFor(`api/admin/users/${login}/location`), { locationId: locId, role })
+              .subscribe({ next: () => resolve(), error: () => resolve() });
+          }),
+      );
     }
-    const locId = this.selectedLocationId();
-    const auth = this.selectedAuthority;
-    const role = auth === 'ROLE_MANAGER' ? 'MANAGER' : auth === 'ROLE_STAFF' ? 'STAFF' : null;
-    this.http
-      .patch(this.configService.getEndpointFor(`api/admin/users/${login}/location`), { locationId: locId, role })
-      .subscribe({ next: () => this.onSaveSuccess(), error: () => this.onSaveSuccess() });
+
+    // Step 2: set password if provided
+    if (password && password.trim().length >= 4 && login) {
+      steps.push(
+        () =>
+          new Promise<void>(resolve => {
+            this.http
+              .patch(this.configService.getEndpointFor(`api/admin/users/${login}/set-password`), { password })
+              .subscribe({ next: () => resolve(), error: () => resolve() });
+          }),
+      );
+    }
+
+    Promise.all(steps.map(s => s())).then(() => this.onSaveSuccess());
   }
 
   private onSaveSuccess(): void {

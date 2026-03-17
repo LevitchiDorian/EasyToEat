@@ -5,7 +5,8 @@
       "Read(//c/Users/levit/.claude/projects/c--Users-levit-Desktop-EasyToEat/memory/**)",
       "Bash(\"c:/Users/levit/Desktop/EasyToEat/src/main/resources/config/liquibase/fake-data/user_profile.csv\":*)",
       "Bash(\"c:\\\\Users\\\\levit\\\\Desktop\\\\EasyToEat\\\\src\\\\main\\\\webapp\\\\app\\\\manager\\\\manager-reservations\\\\manager-reservations.component.ts.bak\")",
-      "Bash(xargs grep -l \"OrderItemCriteria\")"
+      "Bash(xargs grep -l \"OrderItemCriteria\")",
+      "Bash(grep -E \"\\\\.\\(java|ts\\)$\")"
     ],
     "additionalDirectories": ["c:\\Users\\levit\\.claude\\projects\\c--Users-levit-Desktop-EasyToEat\\memory"]
   }

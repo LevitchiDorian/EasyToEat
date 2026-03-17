@@ -8,6 +8,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { FloorMapComponent, FloorPlan, FloorTable } from 'app/public/floor-map/floor-map.component';
 import { StaffFloorPlanResponse, StaffTableInfo, LocationOption } from 'app/admin/staff-floor-plan/staff-floor-plan.component';
 import { FloorPlanWsService } from 'app/core/floor-plan-ws/floor-plan-ws.service';
+import { OrdersWsService } from 'app/core/orders-ws/orders-ws.service';
 
 interface ReservationItem {
   id: number;
@@ -64,6 +65,7 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
   private readonly configService = inject(ApplicationConfigService);
   private readonly accountService = inject(AccountService);
   private readonly floorPlanWs = inject(FloorPlanWsService);
+  private readonly ordersWs = inject(OrdersWsService);
 
   isAdmin = signal(false);
   isLoading = signal(false);
@@ -88,6 +90,7 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
 
   private refreshSub?: Subscription;
   private wsSub?: Subscription;
+  private orderWsSub?: Subscription;
 
   totalTables = computed(() => {
     const r = this.rawResponse();
@@ -144,6 +147,7 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.refreshSub?.unsubscribe();
     this.wsSub?.unsubscribe();
+    this.orderWsSub?.unsubscribe();
   }
 
   private loadLocations(): void {
@@ -181,6 +185,9 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
         if (!this.wsSub) {
           this.wsSub = this.floorPlanWs.watchLocation(res.locationId).subscribe(() => this.loadMyFloorPlan(true));
         }
+        if (!this.orderWsSub) {
+          this.orderWsSub = this.ordersWs.watchLocation(res.locationId).subscribe(() => this.loadActiveOrders(res.locationId));
+        }
       },
       error: () => {
         this.error.set('Nu s-a putut încărca planul sălii.');
@@ -203,6 +210,9 @@ export default class ManagerFloorPlanComponent implements OnInit, OnDestroy {
         this.loadSideData(locationId);
         if (!this.wsSub) {
           this.wsSub = this.floorPlanWs.watchLocation(locationId).subscribe(() => this.loadFloorPlan(locationId, true));
+        }
+        if (!this.orderWsSub) {
+          this.orderWsSub = this.ordersWs.watchLocation(locationId).subscribe(() => this.loadActiveOrders(locationId));
         }
       },
       error: () => {

@@ -1,0 +1,131 @@
+.chef-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--rv-bg);
+  padding-top: var(--rv-navbar-height, 64px);
+}
+
+.chef-topbar {
+  position: sticky;
+  top: var(--rv-navbar-height, 64px);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 52px;
+  border-bottom: 1px solid var(--rv-border);
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__brand {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--rv-orange);
+  }
+
+  &__sep {
+    color: var(--rv-border);
+  }
+
+  &__title {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  &__center {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+
+    svg {
+      color: var(--rv-orange);
+    }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__loc {
+    font-size: 0.78rem;
+    color: var(--rv-orange);
+    font-weight: 600;
+  }
+
+  &__user {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  &__logout {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--rv-border);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+
+    &:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+.chef-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.chef-nav__link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  &--active {
+    background: rgba(245, 165, 32, 0.15);
+    color: var(--rv-orange);
+  }
+}
+
+.chef-main {
+  flex: 1;
+  overflow: auto;
+}

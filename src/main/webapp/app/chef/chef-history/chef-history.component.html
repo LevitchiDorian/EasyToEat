@@ -1,0 +1,91 @@
+<div class="ch-page">
+  <div class="ch-header">
+    <h2 class="ch-title">Istoric comenzi</h2>
+    <div class="ch-controls">
+      <input type="date" class="ch-date-input" [value]="selectedDate()" (change)="onDateChange($any($event.target).value)" />
+      <button class="ch-btn-refresh" (click)="load()" [disabled]="isLoading()">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M23 4v6h-6" />
+          <path d="M1 20v-6h6" />
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+        </svg>
+        Actualizează
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary chips -->
+  @if (!isLoading()) {
+    <div class="ch-summary">
+      <div class="ch-chip ch-chip--served">
+        <span class="ch-chip__val">{{ servedOrders().length }}</span>
+        <span class="ch-chip__label">Servite</span>
+      </div>
+      <div class="ch-chip ch-chip--cancelled">
+        <span class="ch-chip__val">{{ cancelledOrders().length }}</span>
+        <span class="ch-chip__label">Anulate</span>
+      </div>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="ch-loading">
+      <div class="ch-spinner"></div>
+      <span>Se incarca istoricul...</span>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="ch-empty">
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+        <line x1="3" y1="6" x2="21" y2="6" />
+      </svg>
+      <p>Nicio comandă finalizată în această zi.</p>
+    </div>
+  } @else {
+    <div class="ch-list">
+      @for (order of orders(); track order.id) {
+        <div class="ch-card" [class.ch-card--cancelled]="order.status === 'CANCELLED'">
+          <div class="ch-card__head">
+            <span class="ch-card__code">#{{ order.orderCode }}</span>
+            @if (order.tableNumber) {
+              <span class="ch-card__table">Masa {{ order.tableNumber }}</span>
+            }
+            <span class="ch-card__time">{{ elapsedLabel(order.createdAt) }}</span>
+            <span class="ch-badge ch-badge--{{ order.status === 'SERVED' ? 'served' : 'cancelled' }}">
+              {{ statusLabel(order.status) }}
+            </span>
+          </div>
+          <div class="ch-card__items">
+            @for (item of order.items; track item.id) {
+              <div class="ch-item">
+                <span class="ch-item__qty">x{{ item.quantity }}</span>
+                <span class="ch-item__name">{{ item.menuItemName }}</span>
+                @if (item.specialInstructions) {
+                  <span class="ch-item__note">{{ item.specialInstructions }}</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

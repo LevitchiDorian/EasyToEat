@@ -1,0 +1,248 @@
+<div class="kds">
+  @if (isLoading()) {
+    <div class="kds__loading">
+      <div class="kds__spinner"></div>
+      <span>Se incarca comenzile...</span>
+    </div>
+  }
+
+  <!-- ── Preparing detail modal ──────────────────────────────────────────────── -->
+  @if (preparingModal(); as modal) {
+    <div class="kds-modal-backdrop" (click)="closePreparingModal()">
+      <div class="kds-modal" (click)="$event.stopPropagation()">
+        <div class="kds-modal__header">
+          <div class="kds-modal__title">
+            <span class="kds-modal__code">#{{ modal.orderCode }}</span>
+            @if (modal.tableNumber) {
+              <span class="kds-modal__table">Masa {{ modal.tableNumber }}</span>
+            }
+          </div>
+          <button class="kds-modal__close" (click)="closePreparingModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <ul class="kds-modal__items">
+          @for (item of modal.items; track item.id) {
+            <li class="kds-modal__item" [class.kds-modal__item--done]="item.status === 'READY'">
+              <span class="kds-modal__qty">{{ item.quantity }}×</span>
+              <div class="kds-modal__item-info">
+                <span class="kds-modal__name">{{ item.menuItemName }}</span>
+                @if (item.specialInstructions) {
+                  <span class="kds-modal__note">{{ item.specialInstructions }}</span>
+                }
+              </div>
+              @if (item.status === 'READY') {
+                <span class="kds-modal__done-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Gata
+                </span>
+              } @else {
+                <button class="kds-modal__btn-ready" (click)="markItemReady(item.id, modal.id)">Gata ✓</button>
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+  }
+
+  @if (!isLoading()) {
+    <div class="kds__board">
+      <!-- Column 1: Comenzi noi (SUBMITTED) -->
+      <div class="kds__col">
+        <div class="kds__col-header kds__col-header--new">
+          <div class="kds__col-dot kds__col-dot--new"></div>
+          <span class="kds__col-title">Comenzi noi</span>
+          <span class="kds__col-badge">{{ submitted().length }}</span>
+        </div>
+        <div class="kds__col-body">
+          @for (order of submitted(); track order.id) {
+            <div
+              class="kds__card"
+              [class.kds__card--urgent]="isUrgent(order.createdAt, order.status)"
+              draggable="true"
+              (dragstart)="onDragStart(order.id)"
+              (dragend)="onDragEnd()"
+            >
+              <div class="kds__card-header">
+                <span class="kds__card-code">#{{ order.orderCode }}</span>
+                @if (order.tableNumber) {
+                  <span class="kds__card-table">Masa {{ order.tableNumber }}</span>
+                }
+                @if (order.isPreOrder && order.reservationStartTime) {
+                  <span class="kds__card-arrival" [class.kds__card-arrival--soon]="minutesUntilArrival(order) <= 30">
+                    ⏰ {{ order.reservationStartTime }}
+                  </span>
+                } @else {
+                  <span class="kds__card-time" [class.kds__card-time--urgent]="isUrgent(order.createdAt, order.status)">{{
+                    elapsedLabel(order.createdAt)
+                  }}</span>
+                }
+              </div>
+              <div class="kds__card-items">
+                @for (item of order.items; track item.id) {
+                  <div class="kds__item">
+                    <span class="kds__item-qty">x{{ item.quantity }}</span>
+                    <div class="kds__item-info">
+                      <span class="kds__item-name">{{ item.menuItemName }}</span>
+                      @if (item.specialInstructions) {
+                        <span class="kds__item-note">{{ item.specialInstructions }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="kds__card-action">
+                <button class="kds__btn kds__btn--start" (click)="updateStatus(order.id, 'PREPARING')">Incepe prepararea</button>
+              </div>
+            </div>
+          }
+          @if (submitted().length === 0) {
+            <div class="kds__empty"><span>Nicio comanda noua</span></div>
+          }
+        </div>
+      </div>
+
+      <!-- Column 2: In preparare (PREPARING) -->
+      <div
+        class="kds__col"
+        [class.kds__col--dragover]="dragOverColumn() === 'PREPARING'"
+        (dragover)="onDragOver($event, 'PREPARING')"
+        (dragleave)="onDragLeave()"
+        (drop)="onDrop($event, 'PREPARING')"
+      >
+        <div class="kds__col-header kds__col-header--prep">
+          <div class="kds__col-dot kds__col-dot--prep"></div>
+          <span class="kds__col-title">In preparare</span>
+          <span class="kds__col-badge">{{ preparing().length }}</span>
+        </div>
+        <div class="kds__col-body">
+          @for (order of preparing(); track order.id) {
+            <div
+              class="kds__card kds__card--preparing"
+              [class.kds__card--urgent]="isUrgent(order.createdAt, order.status)"
+              draggable="true"
+              (dragstart)="onDragStart(order.id)"
+              (dragend)="onDragEnd()"
+            >
+              <div class="kds__card-header">
+                <span class="kds__card-code">#{{ order.orderCode }}</span>
+                @if (order.tableNumber) {
+                  <span class="kds__card-table">Masa {{ order.tableNumber }}</span>
+                }
+                @if (order.isPreOrder && order.reservationStartTime) {
+                  <span class="kds__card-arrival" [class.kds__card-arrival--soon]="minutesUntilArrival(order) <= 30">
+                    ⏰ {{ order.reservationStartTime }}
+                  </span>
+                } @else {
+                  <span class="kds__card-time" [class.kds__card-time--urgent]="isUrgent(order.createdAt, order.status)">{{
+                    elapsedLabel(order.createdAt)
+                  }}</span>
+                }
+              </div>
+              <div class="kds__card-items">
+                @for (item of order.items; track item.id) {
+                  <div class="kds__item">
+                    <span class="kds__item-qty">x{{ item.quantity }}</span>
+                    <div class="kds__item-info">
+                      <span class="kds__item-name">{{ item.menuItemName }}</span>
+                      @if (item.specialInstructions) {
+                        <span class="kds__item-note">{{ item.specialInstructions }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="kds__card-action kds__card-action--prep">
+                <button class="kds__btn kds__btn--detail" (click)="openPreparingModal(order, $event)">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  Detalii
+                </button>
+                <button class="kds__btn kds__btn--done" (click)="updateStatus(order.id, 'READY')">Gata pentru servire</button>
+              </div>
+            </div>
+          }
+          @if (preparing().length === 0) {
+            <div class="kds__empty kds__drop-hint"><span>Trageti comenzile aici</span></div>
+          }
+        </div>
+      </div>
+
+      <!-- Column 3: Gata (READY) -->
+      <div
+        class="kds__col"
+        [class.kds__col--dragover]="dragOverColumn() === 'READY'"
+        (dragover)="onDragOver($event, 'READY')"
+        (dragleave)="onDragLeave()"
+        (drop)="onDrop($event, 'READY')"
+      >
+        <div class="kds__col-header kds__col-header--ready">
+          <div class="kds__col-dot kds__col-dot--ready"></div>
+          <span class="kds__col-title">Gata de servire</span>
+          <span class="kds__col-badge">{{ ready().length }}</span>
+        </div>
+        <div class="kds__col-body">
+          @for (order of ready(); track order.id) {
+            <div class="kds__card kds__card--ready" [class.kds__card--ready-old]="isReadyOld(order)">
+              <div class="kds__card-header">
+                <span class="kds__card-code">#{{ order.orderCode }}</span>
+                @if (order.tableNumber) {
+                  <span class="kds__card-table">Masa {{ order.tableNumber }}</span>
+                }
+                <span class="kds__card-time">{{ readyElapsed(order) }}</span>
+              </div>
+              <div class="kds__card-items">
+                @for (item of order.items; track item.id) {
+                  <div class="kds__item">
+                    <span class="kds__item-qty">x{{ item.quantity }}</span>
+                    <div class="kds__item-info">
+                      <span class="kds__item-name">{{ item.menuItemName }}</span>
+                      @if (item.specialInstructions) {
+                        <span class="kds__item-note">{{ item.specialInstructions }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="kds__card-action">
+                <button class="kds__btn kds__btn--serve" (click)="serveOrder(order.id)">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Marcat ca servit
+                </button>
+              </div>
+            </div>
+          }
+          @if (ready().length === 0) {
+            <div class="kds__empty kds__drop-hint"><span>Trageti comenzile aici</span></div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

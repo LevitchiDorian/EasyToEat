@@ -7,5 +7,6 @@ public enum UserRole {
     SUPER_ADMIN,
     MANAGER,
     STAFF,
+    CHEF,
     CLIENT,
 }

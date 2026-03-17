@@ -54,4 +54,7 @@ public interface ReservationTableRepository extends JpaRepository<ReservationTab
         """
     )
     List<ReservationTable> findActiveByLocationAndDate(@Param("locationId") Long locationId, @Param("date") LocalDate date);
+
+    @Query("select rt from ReservationTable rt join fetch rt.table where rt.reservation.id = :reservationId")
+    List<ReservationTable> findByReservationId(@Param("reservationId") Long reservationId);
 }
